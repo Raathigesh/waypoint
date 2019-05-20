@@ -1,10 +1,13 @@
 import * as vscode from "vscode";
 import ContentProvider from "./ContentProvider";
 import { join } from "path";
+import Indexer from "./indexer/Indexer";
+import Project from "./indexer/Project";
 
 export function activate(context: vscode.ExtensionContext) {
   const contentProvider = new ContentProvider();
   let currentPanel: vscode.WebviewPanel | undefined = undefined;
+  const indexer = new Indexer();
 
   let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
     if (currentPanel) {
@@ -36,6 +39,13 @@ export function activate(context: vscode.ExtensionContext) {
       undefined,
       context.subscriptions
     );
+
+    if (vscode.workspace.rootPath) {
+      const project: Project = {
+        root: vscode.workspace.rootPath
+      };
+      indexer.parse(project);
+    }
 
     currentPanel.onDidDispose(
       () => {

@@ -121,6 +121,7 @@
   },
   "dependencies": {
     "@babel/traverse": "^7.4.3",
-    "rebass": "^3.1.0"
+    "rebass": "^3.1.0",
+    "recursive-readdir": "^2.2.2"
   }
 }
