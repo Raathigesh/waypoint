@@ -3,13 +3,15 @@
     "module": "commonjs",
     "target": "es6",
     "outDir": "out",
-    "lib": ["es6", "dom", "es2017.object"],
+    "lib": ["es6", "dom", "es2017.object", "esnext.asynciterable"],
     "sourceMap": true,
     "rootDir": "src",
     "strict": true,
     "allowSyntheticDefaultImports": true,
     "jsx": "react",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "include": ["src"],
   "exclude": ["src/ui"]

@@ -1,8 +1,10 @@
 import * as recursiveReadDir from "recursive-readdir";
+import { Service } from "typedi";
 import Project from "./Project";
 import SourceFile from "./SourceFile";
 import { getFileType } from "../utils/file";
 
+@Service()
 export default class Indexer {
   public files: { [path: string]: SourceFile } = {};
 

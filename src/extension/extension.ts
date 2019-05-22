@@ -1,13 +1,13 @@
 import * as vscode from "vscode";
 import ContentProvider from "./ContentProvider";
 import { join } from "path";
-import Indexer from "./indexer/Indexer";
 import Project from "./indexer/Project";
+import { startApiServer } from "./api";
+import { Container } from "typedi";
 
 export function activate(context: vscode.ExtensionContext) {
   const contentProvider = new ContentProvider();
   let currentPanel: vscode.WebviewPanel | undefined = undefined;
-  const indexer = new Indexer();
 
   let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
     if (currentPanel) {
@@ -44,8 +44,10 @@ export function activate(context: vscode.ExtensionContext) {
       const project: Project = {
         root: vscode.workspace.rootPath
       };
-      indexer.parse(project);
+      Container.set("project", project);
     }
+
+    startApiServer();
 
     currentPanel.onDidDispose(
       () => {

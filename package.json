@@ -121,7 +121,11 @@
   },
   "dependencies": {
     "@babel/traverse": "^7.4.3",
+    "graphql-yoga": "^1.17.4",
     "rebass": "^3.1.0",
-    "recursive-readdir": "^2.2.2"
+    "recursive-readdir": "^2.2.2",
+    "reflect-metadata": "^0.1.13",
+    "type-graphql": "^0.17.4",
+    "typedi": "^0.8.0"
   }
 }
