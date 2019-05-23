@@ -1,0 +1,9 @@
+subscription {
+  searchResults {
+    items {
+      name
+      exportStatus
+      filePath
+    }
+  }
+}

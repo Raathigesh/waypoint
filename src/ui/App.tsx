@@ -1,42 +1,30 @@
-import React, { useReducer, useEffect, Fragment } from "react";
-import {
-  Layout as LayoutIcon,
-  Maximize,
-  Square,
-  Droplet,
-  Edit,
-  Edit2,
-  Grid,
-  Crosshair,
-  Sun,
-  Disc
-} from "react-feather";
-import { ThemeProvider, createGlobalStyle } from "styled-components";
-import theme from "./theme";
-import { Flex } from "rebass";
-import Theme from "./theme";
+import React, { Fragment } from "react";
+import { ApolloProvider } from "react-apollo";
+import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks";
+import { BrowserRouter as Router, Link, Route } from "react-router-dom";
 import "react-tippy/dist/tippy.css";
+import { ThemeProvider } from "styled-components";
+import client from "./ApolloClient";
+import { GlobalStyles } from "./GlobalStyles";
+import Search from "./search/Search";
+import theme from "./theme";
 
 declare var acquireVsCodeApi: any;
-const vscode = acquireVsCodeApi();
-
-const GlobalStyles = createGlobalStyle`
-body {
-  background-color: ${Theme.colors.background};
-  height: 100vh;
-  padding: 0px;
-}
-`;
-
-const InitialState = {
-  declarations: null
-};
 
 export default function App() {
   return (
     <Fragment>
       <GlobalStyles />
-      <ThemeProvider theme={theme}>hello</ThemeProvider>
+      <ThemeProvider theme={theme}>
+        <ApolloProvider client={client}>
+          <ApolloHooksProvider client={client}>
+            <Search />
+            <Router>
+              <Route exact path="/" component={Search} />
+            </Router>
+          </ApolloHooksProvider>
+        </ApolloProvider>
+      </ThemeProvider>
     </Fragment>
   );
 }

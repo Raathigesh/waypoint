@@ -2,7 +2,7 @@ import { GraphQLServer } from "graphql-yoga";
 import { buildSchema } from "type-graphql";
 import { Container } from "typedi";
 import "reflect-metadata";
-import { pubSub } from "./pubSub";
+import { pubSub } from "./eventSystem/pubSub";
 import SymbolsResolver from "./resolvers/Symbols";
 
 export async function getSchema() {

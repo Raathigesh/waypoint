@@ -1,0 +1,3 @@
+mutation Search($query: String!) {
+  search(query: $query)
+}

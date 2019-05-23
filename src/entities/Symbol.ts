@@ -2,12 +2,12 @@ import { ObjectType, Field } from "type-graphql";
 
 @ObjectType()
 export class Symbol {
-  @Field()
+  @Field({ nullable: true })
   name: string = "";
 
-  @Field()
-  exportStatus: "default" | "named" | "none" = "none";
+  @Field({ nullable: true })
+  exportStatus: string = "none";
 
-  @Field()
+  @Field({ nullable: true })
   filePath: string = "";
 }

@@ -7,6 +7,6 @@ render(<App />, document.getElementById("root"));
 if ((module as any).hot) {
   (module as any).hot.accept("./App", () => {
     const NextApp = require("./App").default;
-    render(<App />, document.getElementById("root"));
+    render(<NextApp />, document.getElementById("root"));
   });
 }

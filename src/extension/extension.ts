@@ -9,56 +9,52 @@ export function activate(context: vscode.ExtensionContext) {
   const contentProvider = new ContentProvider();
   let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
-  let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
-    if (currentPanel) {
-      currentPanel.reveal(vscode.ViewColumn.Two);
-    } else {
-      currentPanel = vscode.window.createWebviewPanel(
-        "insight",
-        "Insight",
-        vscode.ViewColumn.Two,
-        {
-          enableScripts: true,
-          retainContextWhenHidden: true
-        }
-      );
+  // let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
+  // });
+  // context.subscriptions.push(disposable);
+
+  currentPanel = vscode.window.createWebviewPanel(
+    "insight",
+    "Insight",
+    vscode.ViewColumn.Two,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true
     }
+  );
 
-    currentPanel.webview.html = contentProvider.getContent(context);
+  currentPanel.webview.html = contentProvider.getContent(context);
 
-    const root = join(context.extensionPath, "icons");
-    currentPanel.iconPath = {
-      dark: vscode.Uri.file(join(root, "icon-light.png")),
-      light: vscode.Uri.file(join(root, "icon-dark.png"))
+  const root = join(context.extensionPath, "icons");
+  currentPanel.iconPath = {
+    dark: vscode.Uri.file(join(root, "icon-light.png")),
+    light: vscode.Uri.file(join(root, "icon-dark.png"))
+  };
+
+  currentPanel.webview.onDidReceiveMessage(
+    message => {
+      // message received
+    },
+    undefined,
+    context.subscriptions
+  );
+
+  if (vscode.workspace.rootPath) {
+    const project: Project = {
+      root: vscode.workspace.rootPath
     };
+    Container.set("project", project);
+  }
 
-    currentPanel.webview.onDidReceiveMessage(
-      message => {
-        // message received
-      },
-      undefined,
-      context.subscriptions
-    );
+  startApiServer();
 
-    if (vscode.workspace.rootPath) {
-      const project: Project = {
-        root: vscode.workspace.rootPath
-      };
-      Container.set("project", project);
-    }
-
-    startApiServer();
-
-    currentPanel.onDidDispose(
-      () => {
-        currentPanel = undefined;
-      },
-      null,
-      context.subscriptions
-    );
-  });
-
-  context.subscriptions.push(disposable);
+  currentPanel.onDidDispose(
+    () => {
+      currentPanel = undefined;
+    },
+    null,
+    context.subscriptions
+  );
 }
 
 export function deactivate() {}
