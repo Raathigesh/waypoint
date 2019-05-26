@@ -1,13 +1,14 @@
 import React, { Fragment } from "react";
 import { ApolloProvider } from "react-apollo";
 import { ApolloProvider as ApolloHooksProvider } from "react-apollo-hooks";
-import { BrowserRouter as Router, Link, Route } from "react-router-dom";
+import { MemoryRouter as Router, Route, Switch } from "react-router-dom";
 import "react-tippy/dist/tippy.css";
 import { ThemeProvider } from "styled-components";
 import client from "./ApolloClient";
 import { GlobalStyles } from "./GlobalStyles";
 import Search from "./search/Search";
 import theme from "./theme";
+import ConfigureRules from "./search/rules/Rules";
 
 declare var acquireVsCodeApi: any;
 
@@ -18,9 +19,9 @@ export default function App() {
       <ThemeProvider theme={theme}>
         <ApolloProvider client={client}>
           <ApolloHooksProvider client={client}>
-            <Search />
-            <Router>
-              <Route exact path="/" component={Search} />
+            <Router initialEntries={["/configureRules"]} initialIndex={0}>
+              <Route exact path="/search" component={Search} />
+              <Route path="/configureRules" component={ConfigureRules} />
             </Router>
           </ApolloHooksProvider>
         </ApolloProvider>

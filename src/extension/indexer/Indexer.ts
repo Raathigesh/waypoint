@@ -10,13 +10,19 @@ export default class Indexer {
 
   public async parse(project: Project) {
     const files = await this.readProjectFiles(project.root);
+
+    const promises: any = [];
+
     files
       .filter(filePath => getFileType(filePath) !== "UNSUPPORTED")
       .forEach(filePath => {
         const sourceFile = new SourceFile();
-        sourceFile.parse(filePath);
+        const parsePromise = sourceFile.parse(filePath);
+        promises.push(parsePromise);
         this.files[filePath] = sourceFile;
       });
+
+    await Promise.all(promises);
   }
 
   private async readProjectFiles(root: string) {

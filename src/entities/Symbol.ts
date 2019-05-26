@@ -1,7 +1,9 @@
 import { ObjectType, Field } from "type-graphql";
 
+export type FlakeType = "function" | "variable" | "class" | "unknown";
+
 @ObjectType()
-export class Symbol {
+export class Flake {
   @Field({ nullable: true })
   name: string = "";
 
@@ -10,4 +12,7 @@ export class Symbol {
 
   @Field({ nullable: true })
   filePath: string = "";
+
+  @Field({ nullable: true })
+  type: FlakeType = "unknown";
 }

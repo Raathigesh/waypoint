@@ -1,8 +1,8 @@
 import { ObjectType, Field } from "type-graphql";
-import { Symbol } from "./Symbol";
+import { Flake } from "./Symbol";
 
 @ObjectType()
 export class SearchResult {
-  @Field(returns => [Symbol])
-  items: Array<Symbol> = [];
+  @Field(returns => [Flake])
+  items: Array<Flake> = [];
 }

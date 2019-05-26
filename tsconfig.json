@@ -13,6 +13,5 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["src"],
-  "exclude": ["src/ui"]
+  "include": ["src"]
 }

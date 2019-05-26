@@ -4,6 +4,7 @@ subscription {
       name
       exportStatus
       filePath
+      type
     }
   }
 }

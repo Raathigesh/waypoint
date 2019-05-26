@@ -8,7 +8,7 @@ import {
 } from "type-graphql";
 import { ContainerInstance, Service } from "typedi";
 import * as vscode from "vscode";
-import { Symbol } from "../../../entities/Symbol";
+import { Flake } from "../../../entities/Symbol";
 import Indexer from "../../indexer/Indexer";
 import Project from "../../indexer/Project";
 import { Events, SearchQueryChangeEvent } from "../eventSystem/Events";
@@ -51,14 +51,15 @@ export default class SymbolsResolver {
     topics: [Events.SEARCH_QUERY_CHANGE]
   })
   public searchResults(@Root() event: SearchQueryChangeEvent) {
-    const symbols: Symbol[] = [];
+    const symbols: Flake[] = [];
 
     Object.entries(this.indexer.files).forEach(([path, file]) => {
       file.classes.forEach(classSymbol => {
         symbols.push({
           exportStatus: classSymbol.exportStatus,
           filePath: path,
-          name: classSymbol.name
+          name: classSymbol.name,
+          type: "class"
         });
       });
 
@@ -66,13 +67,23 @@ export default class SymbolsResolver {
         symbols.push({
           exportStatus: functionSymbol.exportStatus,
           filePath: path,
-          name: functionSymbol.name
+          name: functionSymbol.name,
+          type: "function"
+        });
+      });
+
+      file.variables.forEach(variableSymbol => {
+        symbols.push({
+          exportStatus: variableSymbol.exportStatus,
+          filePath: path,
+          name: variableSymbol.name,
+          type: "variable"
         });
       });
     });
 
     const result = new SearchResult();
-    result.items = symbols;
+    result.items = []; // symbols;
 
     return result;
   }

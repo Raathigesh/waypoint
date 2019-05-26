@@ -101,6 +101,7 @@
     "apollo-client-preset": "^1.0.8",
     "apollo-link-ws": "^1.0.17",
     "babel-loader": "^8.0.5",
+    "babel-plugin-styled-components": "^1.10.0",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",
     "file-loader": "^3.0.1",
