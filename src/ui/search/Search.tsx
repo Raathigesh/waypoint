@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
-import { useSubscription, useMutation } from "react-apollo-hooks";
-import SubscribeForSearchResults from "./gql/SubscribeForSearchResults.gql";
-import SearchMutation from "./gql/SearchMutation.gql";
-import Reindex from "./gql/Reindex.gql";
-import { SearchResult } from "../../entities/SearchResult";
-import ResultItem from "./ResultItem/";
-import { Flex } from "rebass";
+import { useMutation, useSubscription } from "react-apollo-hooks";
 import { Link } from "react-router-dom";
+import { Flex } from "rebass";
+import Reindex from "./gql/Reindex.gql";
+import SearchMutation from "./gql/SearchMutation.gql";
+import SubscribeForSearchResults from "./gql/SubscribeForSearchResults.gql";
+import ResultItem from "./ResultItem/";
+import { SearchResult } from "../../entities/SearchResult";
 
 interface SearchResults {
   searchResults: SearchResult;
