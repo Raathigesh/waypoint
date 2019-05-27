@@ -2,6 +2,7 @@ import { ApolloClient, HttpLink, InMemoryCache } from "apollo-client-preset";
 import { WebSocketLink } from "apollo-link-ws";
 import { getMainDefinition } from "apollo-utilities";
 import { split } from "apollo-link";
+import { typeDefs, resolvers } from "./ClientState";
 
 declare var PRODUCTION: boolean;
 
@@ -33,9 +34,25 @@ const link = split(
   httpLink
 );
 
+const cache = new InMemoryCache();
+
 const client = new ApolloClient({
   link,
-  cache: new InMemoryCache()
+  cache,
+  typeDefs,
+  resolvers
+});
+
+cache.writeData({
+  data: {
+    rules: [
+      {
+        name: "Rule 1",
+        pathPattern: "/src",
+        __typename: "Rule"
+      }
+    ]
+  }
 });
 
 export default client;

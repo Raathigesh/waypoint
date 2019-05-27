@@ -4,6 +4,7 @@ import { join } from "path";
 import Project from "./indexer/Project";
 import { startApiServer } from "./api";
 import { Container } from "typedi";
+import { WorkspaceState } from "./services/WorkspaceState";
 
 export function activate(context: vscode.ExtensionContext) {
   const contentProvider = new ContentProvider();
@@ -31,13 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
     light: vscode.Uri.file(join(root, "icon-dark.png"))
   };
 
-  currentPanel.webview.onDidReceiveMessage(
-    message => {
-      // message received
-    },
-    undefined,
-    context.subscriptions
-  );
+  const workplaceState = new WorkspaceState(currentPanel.webview, context);
 
   if (vscode.workspace.rootPath) {
     const project: Project = {

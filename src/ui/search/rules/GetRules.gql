@@ -1,0 +1,6 @@
+query GetRules {
+  rules {
+    name
+    pathPattern
+  }
+}
