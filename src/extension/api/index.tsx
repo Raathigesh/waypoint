@@ -3,7 +3,7 @@ import { buildSchema } from "type-graphql";
 import { Container } from "typedi";
 import "reflect-metadata";
 import { pubSub } from "./eventSystem/pubSub";
-import SymbolsResolver from "./resolvers/Symbols";
+import SymbolsResolver from "../../blocks/findMySymbol/api/Symbols";
 
 export async function getSchema() {
   return await buildSchema({

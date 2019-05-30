@@ -1,7 +1,7 @@
 import React from "react";
 import { Flex, Text, Box } from "rebass";
 import { Tooltip } from "react-tippy";
-import { Flake } from "../../../entities/Symbol";
+import { Flake } from "../../entities/Symbol";
 import FlakeIcon from "./Icon";
 
 interface Props {

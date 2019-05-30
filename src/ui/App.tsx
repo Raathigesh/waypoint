@@ -6,9 +6,9 @@ import "react-tippy/dist/tippy.css";
 import { ThemeProvider } from "styled-components";
 import client from "./ApolloClient";
 import { GlobalStyles } from "./GlobalStyles";
-import Search from "./search/Search";
+import Search from "../blocks/findMySymbol/view/Search";
 import theme from "./theme";
-import ConfigureRules from "./search/rules/Rules";
+import ConfigureRules from "../blocks/findMySymbol/view/rules/Rules";
 
 declare var acquireVsCodeApi: any;
 

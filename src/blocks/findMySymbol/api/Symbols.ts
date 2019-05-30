@@ -8,13 +8,16 @@ import {
 } from "type-graphql";
 import { ContainerInstance, Service } from "typedi";
 import * as vscode from "vscode";
-import { Flake } from "../../../entities/Symbol";
-import Indexer from "../../indexer/Indexer";
-import Project from "../../indexer/Project";
-import { Events, SearchQueryChangeEvent } from "../eventSystem/Events";
-import { pubSub } from "../eventSystem/pubSub";
-import { Status } from "../Status";
-import { SearchResult } from "../../../entities/SearchResult";
+import { Flake } from "../entities/Symbol";
+import Indexer from "../../../indexer/Indexer";
+import Project from "../../../indexer/Project";
+import {
+  Events,
+  SearchQueryChangeEvent
+} from "../../../extension/api/eventSystem/Events";
+import { pubSub } from "../../../extension/api/eventSystem/pubSub";
+import { Status } from "../../../extension/api/Status";
+import { SearchResult } from "../entities/SearchResult";
 
 @Service()
 @Resolver(SearchResult)

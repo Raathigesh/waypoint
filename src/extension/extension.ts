@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
 import ContentProvider from "./ContentProvider";
 import { join } from "path";
-import Project from "./indexer/Project";
+import Project from "../indexer/Project";
 import { startApiServer } from "./api";
 import { Container } from "typedi";
 import { WorkspaceState } from "./services/WorkspaceState";

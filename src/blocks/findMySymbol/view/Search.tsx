@@ -5,8 +5,8 @@ import { Flex } from "rebass";
 import Reindex from "./gql/Reindex.gql";
 import SearchMutation from "./gql/SearchMutation.gql";
 import SubscribeForSearchResults from "./gql/SubscribeForSearchResults.gql";
-import ResultItem from "./ResultItem/";
-import { SearchResult } from "../../entities/SearchResult";
+import ResultItem from "./ResultItem";
+import { SearchResult } from "../entities/SearchResult";
 
 interface SearchResults {
   searchResults: SearchResult;
