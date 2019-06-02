@@ -86,7 +86,7 @@ export default class SymbolsResolver {
     });
 
     const result = new SearchResult();
-    result.items = []; // symbols;
+    result.items = symbols;
 
     return result;
   }

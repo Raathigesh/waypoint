@@ -11,7 +11,7 @@ module.exports = env => ({
     publicPath: "http://localhost:9000/"
   },
   resolve: {
-    extensions: [".ts", ".tsx", ".js", ".jsx"]
+    extensions: [".mjs", ".ts", ".tsx", ".js", ".jsx"]
   },
   devServer: {
     contentBase: path.resolve(__dirname, "../dist/ui"),

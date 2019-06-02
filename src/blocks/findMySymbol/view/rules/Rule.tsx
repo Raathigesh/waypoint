@@ -13,6 +13,7 @@ export default function Rule() {
         File/directory path pattern
         <TextInput />
       </Flex>
+      <button>Save</button>
     </Flex>
   );
 }

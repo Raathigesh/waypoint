@@ -98,8 +98,6 @@
     "@types/rebass": "^3.0.3",
     "@types/styled-components": "4.1.10",
     "@types/styled-system": "^4.1.1",
-    "apollo-client-preset": "^1.0.8",
-    "apollo-link-ws": "^1.0.17",
     "babel-loader": "^8.0.5",
     "babel-plugin-styled-components": "^1.10.0",
     "cross-env": "^5.2.0",
@@ -109,8 +107,6 @@
     "html-webpack-plugin": "^3.2.0",
     "html-webpack-template": "^6.2.0",
     "react": "^16.8.6",
-    "react-apollo": "^2.5.6",
-    "react-apollo-hooks": "^0.4.5",
     "react-color": "^2.17.2",
     "react-dom": "^16.8.6",
     "react-feather": "^1.1.6",
@@ -121,6 +117,7 @@
     "style-loader": "^0.23.1",
     "styled-components": "^4.2.0",
     "styled-system": "^4.1.0",
+    "subscriptions-transport-ws": "^0.9.16",
     "typescript": "3.3.4000",
     "vscode": "^1.1.28",
     "webpack": "^4.30.0",
@@ -129,11 +126,16 @@
   },
   "dependencies": {
     "@babel/traverse": "^7.4.3",
+    "graphql": "^14.3.1",
     "graphql-yoga": "^1.17.4",
     "rebass": "^3.1.0",
     "recursive-readdir": "^2.2.2",
     "reflect-metadata": "^0.1.13",
     "type-graphql": "^0.17.4",
-    "typedi": "^0.8.0"
+    "typedi": "^0.8.0",
+    "urql": "^1.0.5"
+  },
+  "resolutions": {
+    "graphql": "^14.3.1"
   }
 }
