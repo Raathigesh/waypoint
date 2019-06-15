@@ -42,9 +42,13 @@ export default class SymbolsResolver {
   }
 
   @Mutation(returns => String)
-  public search(@Arg("query") query: string) {
+  public search(
+    @Arg("query") query: string,
+    @Arg("selector") selector: string
+  ) {
     const event: SearchQueryChangeEvent = {
-      query
+      query,
+      selector
     };
     pubSub.publish(Events.SEARCH_QUERY_CHANGE, event);
     return Status.OK;
@@ -56,32 +60,40 @@ export default class SymbolsResolver {
   public searchResults(@Root() event: SearchQueryChangeEvent) {
     const symbols: Flake[] = [];
 
+    const selector = eval(`(${event.selector})`);
+
     Object.entries(this.indexer.files).forEach(([path, file]) => {
       file.classes.forEach(classSymbol => {
-        symbols.push({
-          exportStatus: classSymbol.exportStatus,
-          filePath: path,
-          name: classSymbol.name,
-          type: "class"
-        });
+        if (selector(path)) {
+          symbols.push({
+            exportStatus: classSymbol.exportStatus,
+            filePath: path,
+            name: classSymbol.name,
+            type: "class"
+          });
+        }
       });
 
       file.functions.forEach(functionSymbol => {
-        symbols.push({
-          exportStatus: functionSymbol.exportStatus,
-          filePath: path,
-          name: functionSymbol.name,
-          type: "function"
-        });
+        if (selector(path)) {
+          symbols.push({
+            exportStatus: functionSymbol.exportStatus,
+            filePath: path,
+            name: functionSymbol.name,
+            type: "function"
+          });
+        }
       });
 
       file.variables.forEach(variableSymbol => {
-        symbols.push({
-          exportStatus: variableSymbol.exportStatus,
-          filePath: path,
-          name: variableSymbol.name,
-          type: "variable"
-        });
+        if (selector(path)) {
+          symbols.push({
+            exportStatus: variableSymbol.exportStatus,
+            filePath: path,
+            name: variableSymbol.name,
+            type: "variable"
+          });
+        }
       });
     });
 

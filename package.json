@@ -131,6 +131,7 @@
     "rebass": "^3.1.0",
     "recursive-readdir": "^2.2.2",
     "reflect-metadata": "^0.1.13",
+    "tmp": "^0.1.0",
     "type-graphql": "^0.17.4",
     "typedi": "^0.8.0",
     "urql": "^1.0.5"

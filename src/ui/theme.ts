@@ -1,16 +1,17 @@
 import { useContext } from "react";
 import { ThemeContext } from "styled-components";
 
-const getVariableValue = (name: string) =>
-  getComputedStyle(document.documentElement).getPropertyValue(name);
-
-export interface ThemeColors {}
+export interface ThemeColors {
+  backgroundLight: string;
+}
 export interface Theme {
   colors: ThemeColors;
 }
 
 const DefaultTheme: Theme = {
-  colors: {}
+  colors: {
+    backgroundLight: "#ECF2F7"
+  }
 };
 
 export default DefaultTheme;

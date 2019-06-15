@@ -5,14 +5,11 @@ import Project from "../indexer/Project";
 import { startApiServer } from "./api";
 import { Container } from "typedi";
 import { WorkspaceState } from "./services/WorkspaceState";
+import { TempFileHandler } from "./services/TempFileHandler";
 
 export function activate(context: vscode.ExtensionContext) {
   const contentProvider = new ContentProvider();
   let currentPanel: vscode.WebviewPanel | undefined = undefined;
-
-  // let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
-  // });
-  // context.subscriptions.push(disposable);
 
   currentPanel = vscode.window.createWebviewPanel(
     "insight",
@@ -33,6 +30,7 @@ export function activate(context: vscode.ExtensionContext) {
   };
 
   const workplaceState = new WorkspaceState(currentPanel.webview, context);
+  const tempFileHandler = new TempFileHandler(currentPanel.webview, context);
 
   if (vscode.workspace.rootPath) {
     const project: Project = {

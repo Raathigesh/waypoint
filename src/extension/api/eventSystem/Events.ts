@@ -4,4 +4,5 @@ export const Events = {
 
 export interface SearchQueryChangeEvent {
   query: string;
+  selector: string;
 }

@@ -1,12 +1,15 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import { Flex } from "rebass";
-import Reindex from "./gql/Reindex.gql";
+import { useMutation, useSubscription } from "urql";
+import ReIndex from "./gql/Reindex.gql";
 import SearchMutation from "./gql/SearchMutation.gql";
 import SubscribeForSearchResults from "./gql/SubscribeForSearchResults.gql";
 import ResultItem from "./ResultItem";
+import BlockFrame from "../../../primitives/BlockFrame/BlockFrame";
 import { SearchResult } from "../entities/SearchResult";
-import { useMutation, useSubscription } from "urql";
+import { Settings } from "react-feather";
+import { createTempFile, useWorkspaceState } from "../../../ui/MessageHandler";
+import { InitialFileContent } from "./Const";
 
 interface SearchResults {
   searchResults: SearchResult;
@@ -14,27 +17,47 @@ interface SearchResults {
 
 export default function Search() {
   const [, search] = useMutation(SearchMutation);
+  const [, reIndex] = useMutation(ReIndex);
 
-  const [, reindex] = useMutation(Reindex);
+  const [workspaceState, setWorkspaceState] = useWorkspaceState();
+  const ruleFileContent =
+    (workspaceState && workspaceState["SearchRule"]) || InitialFileContent;
+
   useEffect(() => {
-    reindex().then(() => {
+    reIndex().then(() => {
       search({
-        query: ""
+        query: "",
+        selector: ruleFileContent
       });
     });
   }, []);
 
   const [{ data }] = useSubscription({ query: SubscribeForSearchResults });
-  console.log(data);
+
   return (
-    <Flex flexWrap="wrap" p={2}>
-      Results
-      <Link to="/configureRules">Configure rules</Link>
-      {data &&
-        (data as any).searchResults &&
-        (data as SearchResults).searchResults.items.map(item => (
-          <ResultItem flake={item} />
-        ))}
-    </Flex>
+    <BlockFrame
+      options={[
+        {
+          Icon: Settings,
+          onClick: () => {
+            createTempFile(ruleFileContent, updatedContent => {
+              setWorkspaceState({ SearchRule: updatedContent });
+              search({
+                query: "",
+                selector: updatedContent
+              });
+            });
+          }
+        }
+      ]}
+    >
+      <Flex flexWrap="wrap" p={2}>
+        {data &&
+          (data as any).searchResults &&
+          (data as SearchResults).searchResults.items.map(item => (
+            <ResultItem flake={item} />
+          ))}
+      </Flex>
+    </BlockFrame>
   );
 }
