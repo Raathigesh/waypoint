@@ -15,4 +15,7 @@ export class Flake {
 
   @Field({ nullable: true })
   type: FlakeType = "unknown";
+
+  @Field({ nullable: true })
+  category: string = "";
 }

@@ -6,6 +6,7 @@ interface Props {
   children: any;
   options: {
     Icon: any;
+    tooltip: string;
     onClick: () => void;
   }[];
 }
@@ -13,8 +14,8 @@ interface Props {
 export default function BlockFrame({ children, options }: Props) {
   return (
     <Card m="4" borderRadius="2px">
-      <Flex>{children}</Flex>
       <BlockOptions options={options} />
+      <Flex>{children}</Flex>
     </Card>
   );
 }

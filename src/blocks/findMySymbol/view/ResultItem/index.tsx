@@ -10,18 +10,35 @@ interface Props {
 
 export default function ResultItem({ flake: { name, type } }: Props) {
   return (
-    <Flex p={2} css={{ cursor: "pointer" }}>
-      <Tooltip title={type} size="small" animate="fade">
+    <Flex
+      pr={2}
+      css={{ cursor: "pointer" }}
+      width="200px"
+      marginRight="5px"
+      marginBottom="10px"
+    >
+      <Tooltip
+        title={type}
+        size="small"
+        animate="fade"
+        style={{ width: "100%" }}
+      >
         <Flex
           alignItems="center"
           bg="backgroundLight"
-          p="2"
+          p={2}
           css={{ borderRadius: "5px" }}
         >
           <Box pr={1} pt={0.5}>
             <FlakeIcon type={type} />
           </Box>
-          <Text fontWeight={500}>{name}</Text>
+          <Text
+            fontSize={12}
+            fontWeight={500}
+            css={{ textOverflow: "ellipsis", overflow: "hidden" }}
+          >
+            {name}
+          </Text>
         </Flex>
       </Tooltip>
     </Flex>

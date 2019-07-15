@@ -63,35 +63,39 @@ export default class SymbolsResolver {
     const selector = eval(`(${event.selector})`);
 
     Object.entries(this.indexer.files).forEach(([path, file]) => {
+      const selectorResult = selector(path);
       file.classes.forEach(classSymbol => {
-        if (selector(path)) {
+        if (selectorResult.include) {
           symbols.push({
             exportStatus: classSymbol.exportStatus,
             filePath: path,
             name: classSymbol.name,
-            type: "class"
+            type: "class",
+            category: selectorResult.category
           });
         }
       });
 
       file.functions.forEach(functionSymbol => {
-        if (selector(path)) {
+        if (selectorResult.include) {
           symbols.push({
             exportStatus: functionSymbol.exportStatus,
             filePath: path,
             name: functionSymbol.name,
-            type: "function"
+            type: "function",
+            category: selectorResult.category
           });
         }
       });
 
       file.variables.forEach(variableSymbol => {
-        if (selector(path)) {
+        if (selectorResult.include) {
           symbols.push({
             exportStatus: variableSymbol.exportStatus,
             filePath: path,
             name: variableSymbol.name,
-            type: "variable"
+            type: "variable",
+            category: selectorResult.category
           });
         }
       });

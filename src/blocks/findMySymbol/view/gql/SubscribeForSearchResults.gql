@@ -5,6 +5,7 @@ subscription {
       exportStatus
       filePath
       type
+      category
     }
   }
 }
