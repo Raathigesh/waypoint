@@ -5,6 +5,9 @@ export const Events = {
     CreateTempFile: "CreateTeamFile",
     CreatedTempFile: "CreatedTempFile",
     UpdatedTempFile: "UpdatedTempFile"
+  },
+  Window: {
+    ShowTextDocument: "ShowTextDocument"
   }
 };
 

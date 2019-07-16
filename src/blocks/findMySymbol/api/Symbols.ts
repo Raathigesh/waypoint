@@ -64,41 +64,47 @@ export default class SymbolsResolver {
 
     Object.entries(this.indexer.files).forEach(([path, file]) => {
       const selectorResult = selector(path);
-      file.classes.forEach(classSymbol => {
-        if (selectorResult.include) {
-          symbols.push({
-            exportStatus: classSymbol.exportStatus,
-            filePath: path,
-            name: classSymbol.name,
-            type: "class",
-            category: selectorResult.category
-          });
-        }
-      });
+      file.classes
+        .filter(item => item.name.includes(event.query))
+        .forEach(classSymbol => {
+          if (selectorResult.include) {
+            symbols.push({
+              exportStatus: classSymbol.exportStatus,
+              filePath: path,
+              name: classSymbol.name,
+              type: "class",
+              category: selectorResult.category
+            });
+          }
+        });
 
-      file.functions.forEach(functionSymbol => {
-        if (selectorResult.include) {
-          symbols.push({
-            exportStatus: functionSymbol.exportStatus,
-            filePath: path,
-            name: functionSymbol.name,
-            type: "function",
-            category: selectorResult.category
-          });
-        }
-      });
+      file.functions
+        .filter(item => item.name.includes(event.query))
+        .forEach(functionSymbol => {
+          if (selectorResult.include) {
+            symbols.push({
+              exportStatus: functionSymbol.exportStatus,
+              filePath: path,
+              name: functionSymbol.name,
+              type: "function",
+              category: selectorResult.category
+            });
+          }
+        });
 
-      file.variables.forEach(variableSymbol => {
-        if (selectorResult.include) {
-          symbols.push({
-            exportStatus: variableSymbol.exportStatus,
-            filePath: path,
-            name: variableSymbol.name,
-            type: "variable",
-            category: selectorResult.category
-          });
-        }
-      });
+      file.variables
+        .filter(item => item.name.includes(event.query))
+        .forEach(variableSymbol => {
+          if (selectorResult.include) {
+            symbols.push({
+              exportStatus: variableSymbol.exportStatus,
+              filePath: path,
+              name: variableSymbol.name,
+              type: "variable",
+              category: selectorResult.category
+            });
+          }
+        });
     });
 
     const result = new SearchResult();

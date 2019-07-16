@@ -11,7 +11,7 @@ export default function Items({ items }: Props) {
   return (
     <Flex flexWrap="wrap" pb={2} pt={2}>
       {items.map(item => (
-        <ResultItem flake={item} />
+        <ResultItem flake={item} onClick={() => {}} />
       ))}
     </Flex>
   );

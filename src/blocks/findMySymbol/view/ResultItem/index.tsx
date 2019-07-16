@@ -6,9 +6,13 @@ import FlakeIcon from "./Icon";
 
 interface Props {
   flake: Flake;
+  onClick: (path: string) => void;
 }
 
-export default function ResultItem({ flake: { name, type } }: Props) {
+export default function ResultItem({
+  flake: { name, type, filePath },
+  onClick
+}: Props) {
   return (
     <Flex
       pr={2}
@@ -16,6 +20,7 @@ export default function ResultItem({ flake: { name, type } }: Props) {
       width="200px"
       marginRight="5px"
       marginBottom="10px"
+      onClick={() => onClick(filePath)}
     >
       <Tooltip
         title={type}

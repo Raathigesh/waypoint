@@ -6,6 +6,7 @@ import { startApiServer } from "./api";
 import { Container } from "typedi";
 import { WorkspaceState } from "./services/WorkspaceState";
 import { TempFileHandler } from "./services/TempFileHandler";
+import { WindowHandler } from "./services/WindowHandler";
 
 export function activate(context: vscode.ExtensionContext) {
   const contentProvider = new ContentProvider();
@@ -31,6 +32,7 @@ export function activate(context: vscode.ExtensionContext) {
 
   const workplaceState = new WorkspaceState(currentPanel.webview, context);
   const tempFileHandler = new TempFileHandler(currentPanel.webview, context);
+  const windowHandler = new WindowHandler(currentPanel.webview, context);
 
   if (vscode.workspace.rootPath) {
     const project: Project = {

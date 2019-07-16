@@ -48,23 +48,22 @@ export function createTempFile(
   );
 }
 
-export function useWorkspaceState() {
-  const [state, setState] = useState<any>(null);
-
-  useEffect(() => {
-    sendMessageToExtension(Events.GetWorkspaceState);
+export function getWorkspaceState() {
+  return new Promise((resolve, reject) => {
     messageHandler.addSubscriber(
       Events.GetWorkspaceState,
       (workspaceState: any) => {
-        setState(workspaceState || null);
+        resolve(workspaceState || null);
       }
     );
-  }, []);
+    sendMessageToExtension(Events.GetWorkspaceState);
+  });
+}
 
-  const updateWorkspaceState = (state: any) => {
-    sendMessageToExtension(Events.SaveWorkspaceState, state);
-    setState(state);
-  };
+export function setWorkspaceState(state: any) {
+  sendMessageToExtension(Events.SaveWorkspaceState, state);
+}
 
-  return [state, updateWorkspaceState];
+export function openFile(path: string) {
+  sendMessageToExtension(Events.Window.ShowTextDocument, { path });
 }
