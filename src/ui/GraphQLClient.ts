@@ -10,10 +10,6 @@ declare var PRODUCTION: boolean;
 
 let WS_URL = "ws://localhost:4545";
 let HTTP_URL = "http://localhost:4545";
-if (PRODUCTION) {
-  WS_URL = `ws://${window.location.host}`;
-  HTTP_URL = `http://${window.location.host}`;
-}
 
 export function getAPIUrl() {
   return HTTP_URL;

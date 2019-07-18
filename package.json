@@ -3,7 +3,7 @@
   "displayName": "Insight",
   "description": "Know your app better",
   "publisher": "raathigeshan",
-  "version": "0.6.0",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.33.0"
   },
@@ -17,7 +17,7 @@
     "type": "git",
     "url": "https://github.com/Raathigesh/insight.git"
   },
-  "icon": "icons/marketplace.png",
+  "icon": "icons/icon.png",
   "galleryBanner": {
     "color": "#111111",
     "theme": "dark"
@@ -27,47 +27,9 @@
     "commands": [
       {
         "command": "insight.showPanel",
-        "title": "Toggle Insight panel",
-        "icon": {
-          "dark": "./icons/icon-light.png",
-          "light": "./icons/icon-dark.png"
-        }
+        "title": "Toggle Insight panel"
       }
-    ],
-    "menus": {
-      "editor/title": [
-        {
-          "when": "resourceLangId == css",
-          "command": "insight.showPanel",
-          "alt": "insight.showPanel",
-          "group": "navigation"
-        },
-        {
-          "when": "resourceLangId == scss",
-          "command": "insight.showPanel",
-          "alt": "insight.showPanel",
-          "group": "navigation"
-        },
-        {
-          "when": "resourceLangId == javascript",
-          "command": "insight.showPanel",
-          "alt": "insight.showPanel",
-          "group": "navigation"
-        },
-        {
-          "when": "resourceLangId == javascriptreact",
-          "command": "insight.showPanel",
-          "alt": "insight.showPanel",
-          "group": "navigation"
-        },
-        {
-          "when": "resourceLangId == typescriptreact",
-          "command": "insight.showPanel",
-          "alt": "insight.showPanel",
-          "group": "navigation"
-        }
-      ]
-    }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "yarn run build",
@@ -79,7 +41,7 @@
     "build-ui": "webpack --env.production --config ./webpack.config.js",
     "build": "rimraf out && yarn compile && yarn build-ui",
     "package-ext": "vsce package",
-    "publish-ext": "vsce publish"
+    "publish-ext": "vsce publish --yarn"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",

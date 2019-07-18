@@ -9,6 +9,15 @@ import { TempFileHandler } from "./services/TempFileHandler";
 import { WindowHandler } from "./services/WindowHandler";
 
 export function activate(context: vscode.ExtensionContext) {
+  let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
+    initialize(context);
+  });
+  context.subscriptions.push(disposable);
+}
+
+export function deactivate() {}
+
+function initialize(context: vscode.ExtensionContext) {
   const contentProvider = new ContentProvider();
   let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
@@ -51,5 +60,3 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions
   );
 }
-
-export function deactivate() {}
