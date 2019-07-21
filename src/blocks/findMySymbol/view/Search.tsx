@@ -5,7 +5,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import ReIndex from "./gql/Reindex.gql";
 import SearchMutation from "./gql/SearchMutation.gql";
 import SubscribeForSearchResults from "./gql/SubscribeForSearchResults.gql";
-import BlockFrame from "../../../primitives/BlockFrame/BlockFrame";
+import BlockFrame from "common/components/BlockFrame/BlockFrame";
 import { SearchResult } from "../entities/SearchResult";
 import { Settings, Grid } from "react-feather";
 import {
@@ -13,10 +13,9 @@ import {
   getWorkspaceState,
   setWorkspaceState,
   openFile
-} from "../../../ui/MessageHandler";
+} from "./EventBus";
 import { InitialFileContent } from "./Const";
 import { Flake } from "../entities/Symbol";
-import Items from "./Items";
 import { Flex } from "rebass";
 import ResultItem from "./ResultItem";
 

@@ -1,36 +1,5 @@
-import { Events } from "../events/Events";
-import { useState, useEffect } from "react";
-
-declare var acquireVsCodeApi: any;
-const vscode = acquireVsCodeApi();
-
-class MessageHandler {
-  private subscribers: { [event: string]: any[] } = {};
-
-  constructor() {
-    window.addEventListener("message", ({ data }) => {
-      const subscribersForType = this.subscribers[data.type] || [];
-      subscribersForType.forEach(subscriber => {
-        subscriber(data.payload);
-      });
-    });
-  }
-
-  addSubscriber(event: string, handler: any) {
-    if (!this.subscribers[event]) {
-      this.subscribers[event] = [];
-    }
-    this.subscribers[event].push(handler);
-  }
-}
-const messageHandler = new MessageHandler();
-
-export function sendMessageToExtension(eventId: string, payload?: any) {
-  vscode.postMessage({
-    type: eventId,
-    payload
-  });
-}
+import { sendMessageToExtension, messageHandler } from "common/MessageHandler";
+import { Events } from "../Events";
 
 export function createTempFile(
   fileContent: string,

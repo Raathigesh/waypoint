@@ -1,6 +1,6 @@
 import { Flex } from "rebass";
 import React from "react";
-import TextInput from "../../../../primitives/TextInput/TextInput";
+import TextInput from "common/components/TextInput/TextInput";
 
 export default function Rule() {
   return (

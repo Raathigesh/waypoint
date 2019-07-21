@@ -44,7 +44,7 @@ export default class ContentProvider {
   }
 
   getContent(context: ExtensionContext) {
-    if (process.env.developement) {
+    if (process.env.development) {
       return this.getDevServerContent();
     }
 

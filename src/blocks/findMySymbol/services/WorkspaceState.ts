@@ -1,5 +1,6 @@
 import vscode from "vscode";
-import { WebviewMessageEvent, Events } from "../../events/Events";
+import { Events } from "../Events";
+import { WebviewMessageEvent } from "common/types";
 
 export class WorkspaceState {
   constructor(

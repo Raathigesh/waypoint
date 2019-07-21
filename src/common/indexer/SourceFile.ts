@@ -6,7 +6,7 @@ import traverse from "@babel/traverse";
 import { NodePath } from "babel-traverse";
 import FunctionDefinition from "./FunctionDefinition";
 import ClassDefinition from "./classDefinition";
-import { getFileType } from "../extension/utils/file";
+import { getFileType } from "../../extension/utils/file";
 import VariableDeclaration from "./VariableDeclaration";
 
 export default class SourceFile {

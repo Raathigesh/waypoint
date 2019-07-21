@@ -2,7 +2,7 @@ import * as recursiveReadDir from "recursive-readdir";
 import { Service } from "typedi";
 import Project from "./Project";
 import SourceFile from "./SourceFile";
-import { getFileType } from "../extension/utils/file";
+import { getFileType } from "../../extension/utils/file";
 
 @Service()
 export default class Indexer {

@@ -2,12 +2,15 @@ import { GraphQLServer } from "graphql-yoga";
 import { buildSchema } from "type-graphql";
 import { Container } from "typedi";
 import "reflect-metadata";
-import { pubSub } from "./eventSystem/pubSub";
-import SymbolsResolver from "../../blocks/findMySymbol/api/Symbols";
+import { pubSub } from "./pubSub";
+import blocks from "../../blocks/extension-register";
 
 export async function getSchema() {
   return await buildSchema({
-    resolvers: [SymbolsResolver],
+    resolvers: blocks.reduce(
+      (acc, block) => [...acc, ...block.resolvers],
+      [] as any
+    ),
     pubSub: pubSub as any,
     container: Container
   });

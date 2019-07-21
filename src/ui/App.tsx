@@ -6,8 +6,7 @@ import { Provider } from "urql";
 import { GlobalStyles } from "./GlobalStyles";
 import { client } from "./GraphQLClient";
 import theme from "./theme";
-import ConfigureRules from "../blocks/findMySymbol/view/rules/Rules";
-import Search from "../blocks/findMySymbol/view/Search";
+import blocks from "../blocks/ui-register";
 
 export default function App() {
   return (
@@ -16,8 +15,9 @@ export default function App() {
       <Provider value={client}>
         <ThemeProvider theme={theme}>
           <Router initialEntries={["/search"]} initialIndex={0}>
-            <Route exact path="/search" component={Search} />
-            <Route path="/configureRules" component={ConfigureRules} />
+            {blocks.map(({ view }) => (
+              <Route exact path={view.path} component={view.Component} />
+            ))}
           </Router>
         </ThemeProvider>
       </Provider>

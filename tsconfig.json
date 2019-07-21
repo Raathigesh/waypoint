@@ -11,7 +11,11 @@
     "jsx": "react",
     "skipLibCheck": true,
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "baseUrl": "./src",
+    "paths": {
+      "common": ["./common"]
+    }
   },
   "include": ["src"]
 }

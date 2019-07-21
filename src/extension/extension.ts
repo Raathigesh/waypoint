@@ -1,12 +1,10 @@
 import * as vscode from "vscode";
 import ContentProvider from "./ContentProvider";
 import { join } from "path";
-import Project from "../indexer/Project";
+import Project from "../common/indexer/Project";
 import { startApiServer } from "./api";
 import { Container } from "typedi";
-import { WorkspaceState } from "./services/WorkspaceState";
-import { TempFileHandler } from "./services/TempFileHandler";
-import { WindowHandler } from "./services/WindowHandler";
+import blocks from "../blocks/extension-register";
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
@@ -39,9 +37,13 @@ function initialize(context: vscode.ExtensionContext) {
     light: vscode.Uri.file(join(root, "icon-dark.png"))
   };
 
-  const workplaceState = new WorkspaceState(currentPanel.webview, context);
-  const tempFileHandler = new TempFileHandler(currentPanel.webview, context);
-  const windowHandler = new WindowHandler(currentPanel.webview, context);
+  for (const block of blocks) {
+    block.services.forEach(WorkspaceState => {
+      if (currentPanel) {
+        new WorkspaceState(currentPanel.webview, context);
+      }
+    });
+  }
 
   if (vscode.workspace.rootPath) {
     const project: Project = {

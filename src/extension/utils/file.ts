@@ -1,4 +1,4 @@
-import { FileType } from "../../indexer/FileType";
+import { FileType } from "../../common/indexer/FileType";
 
 export const getFileType = (path: string): FileType => {
   const extension = path.split(".").pop();

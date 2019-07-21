@@ -7,7 +7,8 @@ import vscode, {
   ViewColumn
 } from "vscode";
 import * as tmp from "tmp";
-import { WebviewMessageEvent, Events } from "../../events/Events";
+import { Events } from "../Events";
+import { WebviewMessageEvent } from "common/types";
 
 export class TempFileHandler {
   constructor(

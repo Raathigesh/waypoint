@@ -10,8 +10,3 @@ export const Events = {
     ShowTextDocument: "ShowTextDocument"
   }
 };
-
-export interface WebviewMessageEvent {
-  type: string;
-  payload: any;
-}
