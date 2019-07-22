@@ -5,4 +5,7 @@ import { Flake } from "./Symbol";
 export class SearchResult {
   @Field(returns => [Flake])
   items: Array<Flake> = [];
+
+  @Field(returns => [String])
+  categories: Array<String> = [];
 }

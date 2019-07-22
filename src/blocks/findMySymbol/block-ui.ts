@@ -3,7 +3,7 @@ import Search from "./view/Search";
 
 const findMySymbol = {
   view: {
-    path: "search",
+    path: "/search",
     Component: Search
   }
 } as BlockUI;

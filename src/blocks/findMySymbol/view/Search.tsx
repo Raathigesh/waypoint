@@ -8,6 +8,7 @@ import SubscribeForSearchResults from "./gql/SubscribeForSearchResults.gql";
 import BlockFrame from "common/components/BlockFrame/BlockFrame";
 import { SearchResult } from "../entities/SearchResult";
 import { Settings, Grid } from "react-feather";
+import Select from "react-select";
 import {
   createTempFile,
   getWorkspaceState,
@@ -15,7 +16,6 @@ import {
   openFile
 } from "./EventBus";
 import { InitialFileContent } from "./Const";
-import { Flake } from "../entities/Symbol";
 import { Flex } from "rebass";
 import ResultItem from "./ResultItem";
 
@@ -26,6 +26,7 @@ interface SearchResults {
 export default function Search() {
   const [, search] = useMutation(SearchMutation);
   const [, reIndex] = useMutation(ReIndex);
+  const [category, setCategory] = useState(null);
 
   const [ruleContent, setRuleContent] = useState("");
 
@@ -52,22 +53,21 @@ export default function Search() {
 
   const [{ data }] = useSubscription({ query: SubscribeForSearchResults });
 
-  const items =
+  let items =
     (data &&
       (data as any).searchResults &&
       (data as SearchResults).searchResults.items) ||
     [];
 
-  const groupedItems: { [group: string]: Flake[] } = items.reduce(
-    (acc: { [group: string]: Flake[] }, item) => {
-      if (!acc[item.category]) {
-        acc[item.category] = [];
-      }
-      acc[item.category].push(item);
-      return acc;
-    },
-    {}
-  );
+  if (category) {
+    items = items.filter(item => item.category === category);
+  }
+
+  const categories =
+    (data &&
+      (data as any).searchResults &&
+      (data as SearchResults).searchResults.categories) ||
+    [];
 
   return (
     <BlockFrame
@@ -90,6 +90,25 @@ export default function Search() {
       ]}
     >
       <Flex flexDirection="column">
+        <Select
+          defaultValue={null}
+          isClearable
+          options={categories.map(category => ({
+            label: category,
+            value: category
+          }))}
+          onChange={(option: any) => {
+            if (option === undefined) {
+              return;
+            }
+
+            if (option === null) {
+              setCategory(option);
+            } else {
+              setCategory(option.value);
+            }
+          }}
+        />
         <input
           type="text"
           onChange={e => {
@@ -115,8 +134,8 @@ export default function Search() {
                   columnCount={columnCount}
                   columnWidth={columnWidth}
                   height={height}
-                  rowCount={items.length / 3 + 2}
-                  rowHeight={45}
+                  rowCount={items.length / columnCount}
+                  rowHeight={40}
                   width={width}
                 >
                   {({ columnIndex, rowIndex, style }: any) => {

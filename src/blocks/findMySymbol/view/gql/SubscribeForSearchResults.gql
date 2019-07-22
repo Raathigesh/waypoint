@@ -7,5 +7,6 @@ subscription {
       type
       category
     }
+    categories
   }
 }

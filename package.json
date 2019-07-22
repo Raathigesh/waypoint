@@ -74,7 +74,7 @@
     "react-dom": "^16.8.6",
     "react-feather": "^1.1.6",
     "react-router-dom": "^5.0.0",
-    "react-select": "^2.4.3",
+    "react-select": "^3.0.4",
     "react-tippy": "^1.2.3",
     "rimraf": "^2.6.3",
     "style-loader": "^0.23.1",

@@ -56,13 +56,18 @@ export default class SymbolsResolver {
   })
   public searchResults(@Root() event: SearchQueryChangeEvent) {
     const symbols: Flake[] = [];
+    const categories: Set<String> = new Set();
 
     const selector = eval(`(${event.selector})`);
 
     Object.entries(this.indexer.files).forEach(([path, file]) => {
       const selectorResult = selector(path);
+      categories.add(selectorResult.category);
+
       file.classes
-        .filter(item => item.name.includes(event.query))
+        .filter(item =>
+          item.name.toLowerCase().includes(event.query.toLowerCase())
+        )
         .forEach(classSymbol => {
           if (selectorResult.include) {
             symbols.push({
@@ -76,7 +81,9 @@ export default class SymbolsResolver {
         });
 
       file.functions
-        .filter(item => item.name.includes(event.query))
+        .filter(item =>
+          item.name.toLowerCase().includes(event.query.toLowerCase())
+        )
         .forEach(functionSymbol => {
           if (selectorResult.include) {
             symbols.push({
@@ -90,7 +97,9 @@ export default class SymbolsResolver {
         });
 
       file.variables
-        .filter(item => item.name.includes(event.query))
+        .filter(item =>
+          item.name.toLowerCase().includes(event.query.toLowerCase())
+        )
         .forEach(variableSymbol => {
           if (selectorResult.include) {
             symbols.push({
@@ -106,6 +115,7 @@ export default class SymbolsResolver {
 
     const result = new SearchResult();
     result.items = symbols;
+    result.categories = Array.from(categories);
 
     return result;
   }
