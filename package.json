@@ -85,21 +85,21 @@
     "vscode": "^1.1.28",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.1",
-    "webpack-dev-server": "^3.3.1"
+    "webpack-dev-server": "^3.3.1",
+    "react-virtualized-auto-sizer": "^1.0.2",
+    "react-window": "^1.8.5",
+    "rebass": "^3.1.0",
+    "urql": "^1.0.5"
   },
   "dependencies": {
     "@babel/traverse": "^7.4.3",
     "graphql": "^14.3.1",
     "graphql-yoga": "^1.17.4",
-    "react-virtualized-auto-sizer": "^1.0.2",
-    "react-window": "^1.8.5",
-    "rebass": "^3.1.0",
     "recursive-readdir": "^2.2.2",
     "reflect-metadata": "^0.1.13",
     "tmp": "^0.1.0",
     "type-graphql": "^0.17.4",
-    "typedi": "^0.8.0",
-    "urql": "^1.0.5"
+    "typedi": "^0.8.0"
   },
   "resolutions": {
     "graphql": "^14.3.1"
