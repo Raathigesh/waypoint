@@ -146,7 +146,7 @@ export default function Search() {
                         <ResultItem
                           flake={items[itemIndex]}
                           onClick={path => {
-                            openFile(path);
+                            openFile(path, items[itemIndex].location);
                           }}
                         />
                       </Flex>

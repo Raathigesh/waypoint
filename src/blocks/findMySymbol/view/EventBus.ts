@@ -1,5 +1,6 @@
 import { sendMessageToExtension, messageHandler } from "common/MessageHandler";
 import { Events } from "../Events";
+import { Location } from "../entities/Location";
 
 export function createTempFile(
   fileContent: string,
@@ -33,6 +34,6 @@ export function setWorkspaceState(state: any) {
   sendMessageToExtension(Events.SaveWorkspaceState, state);
 }
 
-export function openFile(path: string) {
-  sendMessageToExtension(Events.Window.ShowTextDocument, { path });
+export function openFile(path: string, location?: Location) {
+  sendMessageToExtension(Events.Window.ShowTextDocument, { path, location });
 }

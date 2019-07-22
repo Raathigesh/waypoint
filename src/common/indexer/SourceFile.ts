@@ -26,11 +26,13 @@ export default class SourceFile {
           functionDefinition.name =
             (declaration.id && declaration.id.name) || "";
           functionDefinition.exportStatus = "named";
+          functionDefinition.location = path.node.loc;
           this.functions.push(functionDefinition);
         } else if (declaration && declaration.type === "ClassDeclaration") {
           const classDefinition = new ClassDefinition();
           classDefinition.name = (declaration.id && declaration.id.name) || "";
           classDefinition.exportStatus = "named";
+          classDefinition.location = path.node.loc;
           this.classes.push(classDefinition);
         } else if (declaration && declaration.type === "VariableDeclaration") {
           const variableDeclaration = new VariableDeclaration();
@@ -40,6 +42,7 @@ export default class SourceFile {
               (declaration.declarations[0].id as any).name) ||
             "";
           variableDeclaration.exportStatus = "named";
+          variableDeclaration.location = path.node.loc;
           this.variables.push(variableDeclaration);
         }
       },
@@ -50,11 +53,13 @@ export default class SourceFile {
           functionDefinition.name =
             (declaration.id && declaration.id.name) || "";
           functionDefinition.exportStatus = "default";
+          functionDefinition.location = path.node.loc;
           this.functions.push(functionDefinition);
         } else if (declaration && declaration.type === "ClassDeclaration") {
           const classDefinition = new ClassDefinition();
           classDefinition.name = (declaration.id && declaration.id.name) || "";
           classDefinition.exportStatus = "default";
+          classDefinition.location = path.node.loc;
           this.classes.push(classDefinition);
         } else if (declaration && declaration.type === "VariableDeclaration") {
           const variableDeclaration = new VariableDeclaration();
@@ -64,6 +69,7 @@ export default class SourceFile {
               (declaration.declarations[0].id as any).name) ||
             "";
           variableDeclaration.exportStatus = "default";
+          variableDeclaration.location = path.node.loc;
           this.variables.push(variableDeclaration);
         }
       }

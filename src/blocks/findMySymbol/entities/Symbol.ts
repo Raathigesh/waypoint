@@ -1,4 +1,5 @@
 import { ObjectType, Field } from "type-graphql";
+import { Location } from "./Location";
 
 export type FlakeType = "function" | "variable" | "class" | "unknown";
 
@@ -18,4 +19,7 @@ export class Flake {
 
   @Field({ nullable: true })
   category: string = "";
+
+  @Field(returns => Location, { nullable: true })
+  location?: Location;
 }

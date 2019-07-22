@@ -4,7 +4,8 @@ import vscode, {
   Uri,
   Position,
   window,
-  ViewColumn
+  ViewColumn,
+  Selection
 } from "vscode";
 
 import { Events } from "../Events";
@@ -17,9 +18,13 @@ export class WindowHandler {
   ) {
     webview.onDidReceiveMessage((event: WebviewMessageEvent) => {
       if (event.type === Events.Window.ShowTextDocument) {
-        const { path, range } = event.payload;
+        const { path, location } = event.payload;
         window.showTextDocument(Uri.file(path), {
-          viewColumn: ViewColumn.One
+          viewColumn: ViewColumn.One,
+          selection: new Selection(
+            new Position(location.start.line, location.start.column),
+            new Position(location.end.line, location.end.column)
+          )
         });
       }
     }, context.subscriptions);

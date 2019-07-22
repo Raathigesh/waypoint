@@ -75,7 +75,8 @@ export default class SymbolsResolver {
               filePath: path,
               name: classSymbol.name,
               type: "class",
-              category: selectorResult.category
+              category: selectorResult.category,
+              location: classSymbol.location
             });
           }
         });
@@ -91,7 +92,8 @@ export default class SymbolsResolver {
               filePath: path,
               name: functionSymbol.name,
               type: "function",
-              category: selectorResult.category
+              category: selectorResult.category,
+              location: functionSymbol.location
             });
           }
         });
@@ -107,7 +109,8 @@ export default class SymbolsResolver {
               filePath: path,
               name: variableSymbol.name,
               type: "variable",
-              category: selectorResult.category
+              category: selectorResult.category,
+              location: variableSymbol.location
             });
           }
         });

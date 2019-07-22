@@ -6,6 +6,16 @@ subscription {
       filePath
       type
       category
+      location {
+        start {
+          line
+          column
+        }
+        end {
+          line
+          column
+        }
+      }
     }
     categories
   }
