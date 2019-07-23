@@ -26,6 +26,7 @@ interface SearchResults {
 export default function Search() {
   const [, search] = useMutation(SearchMutation);
   const [, reIndex] = useMutation(ReIndex);
+  const [query, setQuery] = useState("");
   const [category, setCategory] = useState(null);
 
   const [ruleContent, setRuleContent] = useState("");
@@ -62,6 +63,14 @@ export default function Search() {
   if (category) {
     items = items.filter(item => item.category === category);
   }
+
+  if (query.trim() !== "") {
+    items = items.filter(item =>
+      item.name.toLowerCase().includes(query.toLowerCase())
+    );
+  }
+
+  console.log(items);
 
   const categories =
     (data &&
@@ -112,10 +121,7 @@ export default function Search() {
         <input
           type="text"
           onChange={e => {
-            search({
-              query: e.target.value,
-              selector: ruleContent
-            });
+            setQuery(e.target.value);
           }}
         />
         <Flex
@@ -139,8 +145,7 @@ export default function Search() {
                   width={width}
                 >
                   {({ columnIndex, rowIndex, style }: any) => {
-                    const itemIndex =
-                      rowIndex * columnCount + (columnIndex + 1);
+                    const itemIndex = rowIndex * columnCount + columnIndex;
                     return items[itemIndex] ? (
                       <Flex flexDirection="column" style={style}>
                         <ResultItem
