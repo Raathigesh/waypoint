@@ -18,6 +18,7 @@ import {
 import { InitialFileContent } from "./Const";
 import { Flex } from "rebass";
 import ResultItem from "./ResultItem";
+import Button from "common/components/Button";
 
 interface SearchResults {
   searchResults: SearchResult;
@@ -77,51 +78,58 @@ export default function Search() {
     [];
 
   return (
-    <BlockFrame
-      options={[
-        {
-          Icon: Settings,
-          tooltip: "Open rule script",
-          onClick: async () => {
-            const ruleFileContent = await getRunFileContent();
-            setRuleContent(ruleFileContent);
-            createTempFile(ruleFileContent, updatedContent => {
-              setWorkspaceState({ SearchRule: updatedContent });
-              search({
-                query: "",
-                selector: updatedContent
-              });
-            });
-          }
-        }
-      ]}
-    >
+    <BlockFrame options={[]}>
       <Flex flexDirection="column">
-        <Select
-          defaultValue={null}
-          isClearable
-          options={categories.map(category => ({
-            label: category,
-            value: category
-          }))}
-          onChange={(option: any) => {
-            if (option === undefined) {
-              return;
-            }
+        <Flex flexDirection="column" mb={2} mt={2}>
+          <input
+            type="text"
+            onChange={e => {
+              setQuery(e.target.value);
+            }}
+          />
+        </Flex>
+        <Flex mb={2}>
+          <Select
+            defaultValue={null}
+            isClearable
+            styles={{
+              container: provided => ({
+                ...provided,
+                width: "250px"
+              })
+            }}
+            options={categories.map(category => ({
+              label: category,
+              value: category
+            }))}
+            onChange={(option: any) => {
+              if (option === undefined) {
+                return;
+              }
 
-            if (option === null) {
-              setCategory(option);
-            } else {
-              setCategory(option.value);
-            }
-          }}
-        />
-        <input
-          type="text"
-          onChange={e => {
-            setQuery(e.target.value);
-          }}
-        />
+              if (option === null) {
+                setCategory(option);
+              } else {
+                setCategory(option.value);
+              }
+            }}
+          />
+          <Button
+            onClick={async () => {
+              const ruleFileContent = await getRunFileContent();
+              setRuleContent(ruleFileContent);
+              createTempFile(ruleFileContent, updatedContent => {
+                setWorkspaceState({ SearchRule: updatedContent });
+                search({
+                  query: "",
+                  selector: updatedContent
+                });
+              });
+            }}
+            Icon={Settings}
+            label="Open rule script"
+          />
+        </Flex>
         <Flex
           flexDirection="column"
           css={{

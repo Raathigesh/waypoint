@@ -4,7 +4,9 @@ import { join } from "path";
 import Project from "../common/indexer/Project";
 import { Container } from "typedi";
 import blocks from "../blocks/extension-register";
-import { spawn } from "child_process";
+import { spawn, ChildProcess } from "child_process";
+
+let serverProcess: ChildProcess | null = null;
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
@@ -17,7 +19,11 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-export function deactivate() {}
+export function deactivate() {
+  if (serverProcess) {
+    serverProcess.kill();
+  }
+}
 
 function initialize(context: vscode.ExtensionContext) {
   const contentProvider = new ContentProvider();
@@ -61,7 +67,7 @@ function initialize(context: vscode.ExtensionContext) {
     require("./api").startApiServer();
   } else {
     console.log("Spawning API server");
-    const process = spawn(
+    serverProcess = spawn(
       "node",
       [join(context.extensionPath, "./out/extension/api/index.js")],
       {
@@ -70,13 +76,13 @@ function initialize(context: vscode.ExtensionContext) {
         }
       }
     );
-    process.stdout &&
-      process.stdout.on("data", (data: string) => {
+    serverProcess.stdout &&
+      serverProcess.stdout.on("data", (data: string) => {
         console.log(data.toString().trim());
       });
 
-    process.stderr &&
-      process.stderr.on("data", (data: string) => {
+    serverProcess.stderr &&
+      serverProcess.stderr.on("data", (data: string) => {
         console.log(data.toString().trim());
       });
   }
