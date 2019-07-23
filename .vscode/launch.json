@@ -13,7 +13,7 @@
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
       "env": {
-        "development": "true"
+        "dev": "true"
       }
     },
     {

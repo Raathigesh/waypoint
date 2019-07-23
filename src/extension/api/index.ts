@@ -3,7 +3,7 @@ import { buildSchema } from "type-graphql";
 import { Container } from "typedi";
 import "reflect-metadata";
 import { pubSub } from "./pubSub";
-import blocks from "../../blocks/extension-register";
+import blocks from "../../blocks/extension-backend";
 
 export async function getSchema() {
   return await buildSchema({
@@ -30,4 +30,9 @@ export async function startApiServer() {
       console.log(`⚡  Insight is running at ${url} `);
     }
   );
+}
+
+if (!process.env.dev) {
+  console.log("executing startApiServer");
+  startApiServer();
 }

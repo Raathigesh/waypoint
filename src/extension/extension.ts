@@ -2,14 +2,18 @@ import * as vscode from "vscode";
 import ContentProvider from "./ContentProvider";
 import { join } from "path";
 import Project from "../common/indexer/Project";
-import { startApiServer } from "./api";
 import { Container } from "typedi";
 import blocks from "../blocks/extension-register";
+import { spawn } from "child_process";
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
     initialize(context);
   });
+
+  if (process.env.dev) {
+    initialize(context);
+  }
   context.subscriptions.push(disposable);
 }
 
@@ -50,9 +54,32 @@ function initialize(context: vscode.ExtensionContext) {
       root: vscode.workspace.rootPath
     };
     Container.set("project", project);
+    process.env.projectRoot = vscode.workspace.rootPath;
   }
 
-  startApiServer();
+  if (process.env.dev) {
+    require("./api").startApiServer();
+  } else {
+    console.log("Spawning API server");
+    const process = spawn(
+      "node",
+      [join(context.extensionPath, "./out/extension/api/index.js")],
+      {
+        env: {
+          projectRoot: vscode.workspace.rootPath
+        }
+      }
+    );
+    process.stdout &&
+      process.stdout.on("data", (data: string) => {
+        console.log(data.toString().trim());
+      });
+
+    process.stderr &&
+      process.stderr.on("data", (data: string) => {
+        console.log(data.toString().trim());
+      });
+  }
 
   currentPanel.onDidDispose(
     () => {

@@ -1,5 +1,8 @@
 export interface BlockExtension {
   services: any[];
+}
+
+export interface BlockBackend {
   resolvers: any[];
 }
 

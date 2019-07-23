@@ -7,7 +7,6 @@ import {
   Root
 } from "type-graphql";
 import { ContainerInstance, Service } from "typedi";
-import * as vscode from "vscode";
 import { Flake } from "../entities/Symbol";
 import Indexer from "../../../common/indexer/Indexer";
 import Project from "../../../common/indexer/Project";
@@ -32,7 +31,7 @@ export default class SymbolsResolver {
   @Mutation(returns => String)
   public async reindex() {
     const project: Project = {
-      root: vscode.workspace.rootPath || ""
+      root: process.env.projectRoot || ""
     };
     await this.indexer.parse(project);
     return Status.OK;

@@ -70,8 +70,6 @@ export default function Search() {
     );
   }
 
-  console.log(items);
-
   const categories =
     (data &&
       (data as any).searchResults &&
