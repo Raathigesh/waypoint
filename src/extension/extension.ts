@@ -1,8 +1,6 @@
 import * as vscode from "vscode";
 import ContentProvider from "./ContentProvider";
 import { join } from "path";
-import Project from "../common/indexer/Project";
-import { Container } from "typedi";
 import blocks from "../blocks/extension-register";
 import { spawn, ChildProcess } from "child_process";
 
@@ -28,6 +26,9 @@ export function deactivate() {
 function initialize(context: vscode.ExtensionContext) {
   const contentProvider = new ContentProvider();
   let currentPanel: vscode.WebviewPanel | undefined = undefined;
+
+  const outputChannel = vscode.window.createOutputChannel("Insight");
+  outputChannel.show();
 
   currentPanel = vscode.window.createWebviewPanel(
     "insight",
@@ -56,34 +57,31 @@ function initialize(context: vscode.ExtensionContext) {
   }
 
   if (vscode.workspace.rootPath) {
-    const project: Project = {
-      root: vscode.workspace.rootPath
-    };
-    Container.set("project", project);
     process.env.projectRoot = vscode.workspace.rootPath;
   }
 
   if (process.env.dev) {
+    outputChannel.appendLine("Starting API server in-process");
     require("./api").startApiServer();
   } else {
-    console.log("Spawning API server");
-    serverProcess = spawn(
-      "node",
-      [join(context.extensionPath, "./out/extension/api/index.js")],
-      {
-        env: {
-          projectRoot: vscode.workspace.rootPath
-        }
-      }
+    const APIServerEntryPath = join(
+      context.extensionPath,
+      "./out/extension/api/index.js"
     );
+    outputChannel.appendLine(`Spawning API server : ${APIServerEntryPath}`);
+    serverProcess = spawn("node", [APIServerEntryPath], {
+      env: {
+        projectRoot: vscode.workspace.rootPath
+      }
+    });
     serverProcess.stdout &&
       serverProcess.stdout.on("data", (data: string) => {
-        console.log(data.toString().trim());
+        outputChannel.appendLine(data.toString().trim());
       });
 
     serverProcess.stderr &&
       serverProcess.stderr.on("data", (data: string) => {
-        console.log(data.toString().trim());
+        outputChannel.appendLine(data.toString().trim());
       });
   }
 

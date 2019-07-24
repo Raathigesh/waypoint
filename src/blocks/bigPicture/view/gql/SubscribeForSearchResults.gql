@@ -1,0 +1,22 @@
+subscription {
+  searchResults {
+    items {
+      name
+      exportStatus
+      filePath
+      type
+      category
+      location {
+        start {
+          line
+          column
+        }
+        end {
+          line
+          column
+        }
+      }
+    }
+    categories
+  }
+}
