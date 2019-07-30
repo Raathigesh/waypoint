@@ -1,8 +1,8 @@
-import SymbolsResolver from "./api/Symbols";
+import UsageResolver from "./api/File";
 import { BlockBackend } from "common/Block";
 
 const findMySymbol = {
-  resolvers: [SymbolsResolver]
+  resolvers: [UsageResolver]
 } as BlockBackend;
 
 export default findMySymbol;

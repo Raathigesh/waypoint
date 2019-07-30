@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Flake } from "../entities/Symbol";
 import { Flex } from "rebass";
 import Select from "react-select";
 import styled from "styled-components";

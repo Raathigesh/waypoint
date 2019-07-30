@@ -1,5 +1,5 @@
 import { ObjectType, Field } from "type-graphql";
-import { Flake } from "./Symbol";
+import { Flake } from "common/entities/Symbol";
 
 @ObjectType()
 export class SearchResult {

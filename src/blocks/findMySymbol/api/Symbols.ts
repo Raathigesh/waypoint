@@ -7,13 +7,14 @@ import {
   Root
 } from "type-graphql";
 import { ContainerInstance, Service } from "typedi";
-import { Flake } from "../entities/Symbol";
+
 import Indexer from "../../../common/indexer/Indexer";
 import Project from "../../../common/indexer/Project";
 import { Events, SearchQueryChangeEvent } from "./Events";
 import { pubSub } from "../../../extension/api/pubSub";
 import { Status } from "../../../extension/api/Status";
 import { SearchResult } from "../entities/SearchResult";
+import { Flake } from "common/entities/Symbol";
 
 @Service()
 @Resolver(SearchResult)

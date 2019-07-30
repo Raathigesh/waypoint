@@ -3,6 +3,7 @@ import ContentProvider from "./ContentProvider";
 import { join } from "path";
 import blocks from "../blocks/extension-register";
 import { spawn, ChildProcess } from "child_process";
+require("module-alias/register");
 
 let serverProcess: ChildProcess | null = null;
 

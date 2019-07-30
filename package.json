@@ -76,25 +76,26 @@
     "react-router-dom": "^5.0.0",
     "react-select": "^3.0.4",
     "react-tippy": "^1.2.3",
+    "react-virtualized-auto-sizer": "^1.0.2",
+    "react-window": "^1.8.5",
+    "rebass": "^3.1.0",
     "rimraf": "^2.6.3",
     "style-loader": "^0.23.1",
     "styled-components": "^4.2.0",
     "styled-system": "^4.1.0",
     "subscriptions-transport-ws": "^0.9.16",
     "typescript": "3.3.4000",
+    "urql": "^1.0.5",
     "vscode": "^1.1.28",
     "webpack": "^4.30.0",
     "webpack-cli": "^3.3.1",
-    "webpack-dev-server": "^3.3.1",
-    "react-virtualized-auto-sizer": "^1.0.2",
-    "react-window": "^1.8.5",
-    "rebass": "^3.1.0",
-    "urql": "^1.0.5"
+    "webpack-dev-server": "^3.3.1"
   },
   "dependencies": {
     "@babel/traverse": "^7.4.3",
     "graphql": "^14.3.1",
     "graphql-yoga": "^1.17.4",
+    "module-alias": "^2.2.0",
     "recursive-readdir": "^2.2.2",
     "reflect-metadata": "^0.1.13",
     "tmp": "^0.1.0",
@@ -103,5 +104,8 @@
   },
   "resolutions": {
     "graphql": "^14.3.1"
+  },
+  "_moduleAliases": {
+    "common": "./out/common"
   }
 }

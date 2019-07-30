@@ -1,6 +1,6 @@
 import { Package, Code } from "react-feather";
-import { FlakeType } from "../../entities/Symbol";
 import React from "react";
+import { FlakeType } from "common/entities/Symbol";
 
 interface Props {
   type: FlakeType;

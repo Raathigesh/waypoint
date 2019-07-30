@@ -1,7 +1,8 @@
 import React from "react";
-import { Flake } from "../entities/Symbol";
+
 import { Flex } from "rebass";
 import ResultItem from "./ResultItem";
+import { Flake } from "common/entities/Symbol";
 
 interface Props {
   items: Flake[];

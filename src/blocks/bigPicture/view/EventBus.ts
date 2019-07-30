@@ -1,6 +1,6 @@
 import { sendMessageToExtension, messageHandler } from "common/MessageHandler";
 import { Events } from "../Events";
-import { Location } from "../entities/Location";
+import { Location } from "../../../common/entities/Location";
 
 export function createTempFile(
   fileContent: string,
