@@ -23,16 +23,26 @@ export default class UsagesResolver {
   ) {}
 
   @Query(returns => Usages)
-  usage(@Arg("name") name: string, @Arg("source") source: string) {
-    const usages = new Usages();
-    const uses = findAllUsage(this.indexer, source, name);
+  usage(
+    @Arg("line") line: number,
+    @Arg("column") column: number,
+    @Arg("path") path: string
+  ) {
+    const file = this.indexer.files[path];
+    const symbolInLocation = file.findSymbolInLocation(line, column);
 
-    uses.forEach(use => {
-      const usage = new Usage();
-      usage.fileName = basename(use.path);
-      usage.filePath = use.path;
-      usages.usages.push(usage);
-    });
+    const usages = new Usages();
+
+    if (symbolInLocation) {
+      const uses = findAllUsage(this.indexer, path, symbolInLocation.name);
+      uses.forEach(use => {
+        const usage = new Usage();
+        usage.fileName = basename(use.path);
+        usage.filePath = use.path;
+        usages.usages.push(usage);
+      });
+    }
+
     return usages;
   }
 }

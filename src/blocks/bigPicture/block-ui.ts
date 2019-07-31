@@ -1,10 +1,10 @@
 import { BlockUI } from "common/Block";
-import Search from "./view/Search";
+import View from "./view";
 
 const findMySymbol = {
   view: {
     path: "/bigPicture",
-    Component: Search
+    Component: View
   }
 } as BlockUI;
 

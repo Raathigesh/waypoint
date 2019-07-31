@@ -5404,6 +5404,14 @@ rc@^1.2.7:
     minimist "^1.2.0"
     strip-json-comments "~2.0.1"
 
+react-archer@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-archer/-/react-archer-1.1.0.tgz#3009b6c697647f75fb23421462a5cf5b0d50de98"
+  integrity sha512-il344A3QmvsTyFvGxTtX9WIUF7YUWkRG5GsJ8LxjFylpCySrxI/m+RPboTk62qe39qsCCj63Stqgvw44QPQSwg==
+  dependencies:
+    react-fast-compare "^2.0.4"
+    resize-observer-polyfill "1.5.0"
+
 react-color@^2.17.2:
   version "2.17.2"
   resolved "https://registry.yarnpkg.com/react-color/-/react-color-2.17.2.tgz#ef002cafd5ae8daf3d374b85bb44ac9d36785c0a"
@@ -5425,6 +5433,11 @@ react-dom@^16.8.6:
     object-assign "^4.1.1"
     prop-types "^15.6.2"
     scheduler "^0.13.6"
+
+react-fast-compare@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
+  integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
 
 react-feather@^1.1.6:
   version "1.1.6"
@@ -5732,6 +5745,11 @@ requires-port@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
+
+resize-observer-polyfill@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.0.tgz#660ff1d9712a2382baa2cad450a4716209f9ca69"
+  integrity sha512-M2AelyJDVR/oLnToJLtuDJRBBWUGUvvGigj1411hXhAdyFWqMaqHp7TixW3FpiLuVaikIcR1QL+zqoJoZlOgpg==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"

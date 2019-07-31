@@ -13,6 +13,7 @@ import ClassDefinition from "./classDefinition";
 import { getFileType } from "../../extension/utils/file";
 import VariableDeclaration from "./VariableDeclaration";
 import ImportStatement from "./ImportStatement";
+import { SymbolLocation } from "./ESModuleItem";
 
 export default class SourceFile {
   public path: string = "";
@@ -52,6 +53,53 @@ export default class SourceFile {
           )
         );
       });
+  }
+
+  public findSymbolInLocation(line: number, column: number) {
+    const functionInLocation = this.functions.find(fun => {
+      if (!fun.location) {
+        return false;
+      }
+      return this.isWithinLocation(line, column, fun.location);
+    });
+    if (functionInLocation) {
+      return functionInLocation;
+    }
+
+    const classInLocation = this.classes.find(cls => {
+      if (!cls.location) {
+        return false;
+      }
+      return this.isWithinLocation(line, column, cls.location);
+    });
+    if (classInLocation) {
+      return classInLocation;
+    }
+
+    const varInLocation = this.classes.find(v => {
+      if (!v.location) {
+        return false;
+      }
+      return this.isWithinLocation(line, column, v.location);
+    });
+    if (varInLocation) {
+      return varInLocation;
+    }
+
+    return null;
+  }
+
+  private isWithinLocation(
+    line: number,
+    column: number,
+    { start, end }: SymbolLocation
+  ) {
+    return (
+      start.line >= line &&
+      end.line <= line &&
+      start.column >= column &&
+      end.column <= column
+    );
   }
 
   private extractImportStatements(path: NodePath<ImportDeclaration>) {
