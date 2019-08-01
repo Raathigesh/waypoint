@@ -1,22 +1,20 @@
 import vscode from "vscode";
 import { Events } from "../Events";
-import { WebviewMessageEvent } from "common/types";
+import { Messenger } from "common/messaging/type";
 
 export class WorkspaceState {
   constructor(
     public webview: vscode.Webview,
-    public context: vscode.ExtensionContext
+    public context: vscode.ExtensionContext,
+    public messenger: Messenger
   ) {
-    webview.onDidReceiveMessage((event: WebviewMessageEvent) => {
-      if (event.type === Events.GetWorkspaceState) {
-        const state = context.workspaceState.get("InsightWorkspaceState");
-        webview.postMessage({
-          type: Events.GetWorkspaceState,
-          payload: state
-        });
-      } else if (event.type === Events.SaveWorkspaceState) {
-        context.workspaceState.update("InsightWorkspaceState", event.payload);
-      }
-    }, context.subscriptions);
+    messenger.addSubscriber(Events.GetWorkspaceState, () => {
+      const state = context.workspaceState.get("InsightWorkspaceState");
+      messenger.send(Events.GetWorkspaceState, state);
+    });
+
+    messenger.addSubscriber(Events.SaveWorkspaceState, (state: any) => {
+      context.workspaceState.update("InsightWorkspaceState", state);
+    });
   }
 }

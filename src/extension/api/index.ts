@@ -2,15 +2,15 @@ import { GraphQLServer } from "graphql-yoga";
 import { buildSchema } from "type-graphql";
 import { Container } from "typedi";
 import "reflect-metadata";
-import { pubSub } from "./pubSub";
+import { pubSub } from "common/api/pubSub";
 import blocks from "../../blocks/extension-backend";
+import MessageResolver from "common/resolvers/MessageResolver";
 
 export async function getSchema() {
   return await buildSchema({
-    resolvers: blocks.reduce(
-      (acc, block) => [...acc, ...block.resolvers],
-      [] as any
-    ),
+    resolvers: blocks.reduce((acc, block) => [...acc, ...block.resolvers], [
+      MessageResolver
+    ] as any),
     pubSub: pubSub as any,
     container: Container
   });

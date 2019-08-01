@@ -9,21 +9,21 @@ import vscode, {
 import * as tmp from "tmp";
 import { Events } from "../Events";
 import { WebviewMessageEvent } from "common/types";
+import { Messenger } from "common/messaging/type";
 
 export class TempFileHandler {
   constructor(
     public webview: vscode.Webview,
-    public context: vscode.ExtensionContext
+    public context: vscode.ExtensionContext,
+    public messenger: Messenger
   ) {
-    webview.onDidReceiveMessage((event: WebviewMessageEvent) => {
-      if (event.type === Events.TempFile.CreateTempFile) {
+    messenger.addSubscriber(
+      Events.TempFile.CreateTempFile,
+      (event: WebviewMessageEvent) => {
         const tmpObj = tmp.fileSync({ postfix: ".js" });
         const tempTextDocument = workspace.openTextDocument(tmpObj.name);
 
-        webview.postMessage({
-          type: Events.TempFile.CreatedTempFile,
-          payload: event.payload
-        });
+        messenger.send(Events.TempFile.CreatedTempFile, event.payload);
 
         tempTextDocument.then(doc => {
           window.showTextDocument(doc, ViewColumn.One);
@@ -33,14 +33,14 @@ export class TempFileHandler {
 
           workspace.onDidSaveTextDocument(savedDoc => {
             if (savedDoc.fileName === doc.fileName) {
-              webview.postMessage({
-                type: Events.TempFile.UpdatedTempFile,
-                payload: savedDoc.getText()
-              });
+              messenger.send(
+                Events.TempFile.UpdatedTempFile,
+                savedDoc.getText()
+              );
             }
           });
         });
       }
-    }, context.subscriptions);
+    );
   }
 }

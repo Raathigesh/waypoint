@@ -14,7 +14,7 @@ export default function App() {
       <GlobalStyles />
       <Provider value={client}>
         <ThemeProvider theme={theme}>
-          <Router initialEntries={["/bigPicture"]} initialIndex={0}>
+          <Router initialEntries={["/search"]} initialIndex={0}>
             {blocks.map(({ view }) => (
               <Route exact path={view.path} component={view.Component} />
             ))}

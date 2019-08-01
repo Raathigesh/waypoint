@@ -101,7 +101,9 @@
     "reflect-metadata": "^0.1.13",
     "tmp": "^0.1.0",
     "type-graphql": "^0.17.4",
-    "typedi": "^0.8.0"
+    "typedi": "^0.8.0",
+    "wonka": "^3.2.0",
+    "ws": "^7.1.1"
   },
   "resolutions": {
     "graphql": "^14.3.1"

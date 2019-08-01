@@ -1,9 +1,10 @@
+require("module-alias/register");
 import * as vscode from "vscode";
 import ContentProvider from "./ContentProvider";
 import { join } from "path";
 import blocks from "../blocks/extension-register";
 import { spawn, ChildProcess } from "child_process";
-require("module-alias/register");
+import { getUIMessenger } from "common/messaging/ui";
 
 let serverProcess: ChildProcess | null = null;
 
@@ -49,10 +50,12 @@ function initialize(context: vscode.ExtensionContext) {
     light: vscode.Uri.file(join(root, "icon-dark.png"))
   };
 
+  const uiMessenger = getUIMessenger();
+
   for (const block of blocks) {
     block.services.forEach(WorkspaceState => {
       if (currentPanel) {
-        new WorkspaceState(currentPanel.webview, context);
+        new WorkspaceState(currentPanel.webview, context, uiMessenger);
       }
     });
   }

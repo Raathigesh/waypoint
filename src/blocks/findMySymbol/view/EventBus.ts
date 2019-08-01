@@ -1,18 +1,20 @@
-import { sendMessageToExtension, messageHandler } from "common/MessageHandler";
 import { Location } from "common/entities/Location";
 import { Events } from "../Events";
+import { getExtensionMessenger } from "common/messaging/extension";
+
+const extensionMessenger = getExtensionMessenger();
 
 export function createTempFile(
   fileContent: string,
   onChangeCallback: (content: string) => void
 ) {
-  sendMessageToExtension(Events.TempFile.CreateTempFile, fileContent);
-  messageHandler.addSubscriber(
+  extensionMessenger.send(Events.TempFile.CreateTempFile, fileContent);
+  extensionMessenger.addSubscriber(
     Events.TempFile.CreatedTempFile,
     (content: string) => onChangeCallback(content)
   );
 
-  messageHandler.addSubscriber(
+  extensionMessenger.addSubscriber(
     Events.TempFile.UpdatedTempFile,
     (content: string) => onChangeCallback(content)
   );
@@ -20,20 +22,20 @@ export function createTempFile(
 
 export function getWorkspaceState() {
   return new Promise((resolve, reject) => {
-    messageHandler.addSubscriber(
+    extensionMessenger.addSubscriber(
       Events.GetWorkspaceState,
       (workspaceState: any) => {
         resolve(workspaceState || null);
       }
     );
-    sendMessageToExtension(Events.GetWorkspaceState);
+    extensionMessenger.send(Events.GetWorkspaceState, {});
   });
 }
 
 export function setWorkspaceState(state: any) {
-  sendMessageToExtension(Events.SaveWorkspaceState, state);
+  extensionMessenger.send(Events.SaveWorkspaceState, state);
 }
 
 export function openFile(path: string, location?: Location) {
-  sendMessageToExtension(Events.Window.ShowTextDocument, { path, location });
+  extensionMessenger.send(Events.Window.ShowTextDocument, { path, location });
 }

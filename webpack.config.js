@@ -57,7 +57,7 @@ module.exports = env => ({
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "PaintBox",
+      title: "Delight",
       template: require("html-webpack-template"),
       appMountId: "root",
       inject: false
