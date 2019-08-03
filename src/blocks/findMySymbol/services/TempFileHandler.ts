@@ -13,7 +13,6 @@ import { Messenger } from "common/messaging/type";
 
 export class TempFileHandler {
   constructor(
-    public webview: vscode.Webview,
     public context: vscode.ExtensionContext,
     public messenger: Messenger
   ) {

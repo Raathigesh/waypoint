@@ -4,7 +4,6 @@ import { Messenger } from "common/messaging/type";
 
 export class WorkspaceState {
   constructor(
-    public webview: vscode.Webview,
     public context: vscode.ExtensionContext,
     public messenger: Messenger
   ) {

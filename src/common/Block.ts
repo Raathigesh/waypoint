@@ -7,8 +7,7 @@ export interface BlockBackend {
 }
 
 export interface BlockUI {
-  view: {
-    path: string;
-    Component: any;
-  };
+  Component: any;
+  title: string;
+  Icon: any;
 }

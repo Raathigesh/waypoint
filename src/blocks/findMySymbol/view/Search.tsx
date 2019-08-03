@@ -116,6 +116,7 @@ export default function Search() {
           />
           <Button
             onClick={async () => {
+              debugger;
               const ruleFileContent = await getRunFileContent();
               setRuleContent(ruleFileContent);
               createTempFile(ruleFileContent, updatedContent => {

@@ -6,7 +6,7 @@ import { Provider } from "urql";
 import { GlobalStyles } from "./GlobalStyles";
 import { client } from "./GraphQLClient";
 import theme from "./theme";
-import blocks from "../blocks/ui-register";
+import Stage from "./stage";
 
 export default function App() {
   return (
@@ -14,10 +14,8 @@ export default function App() {
       <GlobalStyles />
       <Provider value={client}>
         <ThemeProvider theme={theme}>
-          <Router initialEntries={["/search"]} initialIndex={0}>
-            {blocks.map(({ view }) => (
-              <Route exact path={view.path} component={view.Component} />
-            ))}
+          <Router initialEntries={["/"]} initialIndex={0}>
+            <Route exact path="/" component={Stage} />
           </Router>
         </ThemeProvider>
       </Provider>

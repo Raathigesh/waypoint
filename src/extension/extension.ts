@@ -4,6 +4,10 @@ import ContentProvider from "./ContentProvider";
 import { join } from "path";
 import blocks from "../blocks/extension-register";
 import { spawn, ChildProcess } from "child_process";
+import { getClient } from "common/messaging/graphql-client";
+import gql from "graphql-tag";
+import { pipe, subscribe } from "wonka";
+import { createRequest } from "urql";
 import { getUIMessenger } from "common/messaging/ui";
 
 let serverProcess: ChildProcess | null = null;
@@ -32,32 +36,32 @@ function initialize(context: vscode.ExtensionContext) {
   const outputChannel = vscode.window.createOutputChannel("Insight");
   outputChannel.show();
 
-  currentPanel = vscode.window.createWebviewPanel(
-    "insight",
-    "Insight",
-    vscode.ViewColumn.Two,
-    {
-      enableScripts: true,
-      retainContextWhenHidden: true
-    }
-  );
-
-  currentPanel.webview.html = contentProvider.getContent(context);
-
-  const root = join(context.extensionPath, "icons");
-  currentPanel.iconPath = {
-    dark: vscode.Uri.file(join(root, "icon-light.png")),
-    light: vscode.Uri.file(join(root, "icon-dark.png"))
-  };
-
-  const uiMessenger = getUIMessenger();
-
-  for (const block of blocks) {
-    block.services.forEach(WorkspaceState => {
-      if (currentPanel) {
-        new WorkspaceState(currentPanel.webview, context, uiMessenger);
+  if (!process.env.HIDE_WEB_VIEW) {
+    currentPanel = vscode.window.createWebviewPanel(
+      "insight",
+      "Insight",
+      vscode.ViewColumn.Two,
+      {
+        enableScripts: true,
+        retainContextWhenHidden: true
       }
-    });
+    );
+
+    currentPanel.webview.html = contentProvider.getContent(context);
+
+    const root = join(context.extensionPath, "icons");
+    currentPanel.iconPath = {
+      dark: vscode.Uri.file(join(root, "icon-light.png")),
+      light: vscode.Uri.file(join(root, "icon-dark.png"))
+    };
+
+    currentPanel.onDidDispose(
+      () => {
+        currentPanel = undefined;
+      },
+      null,
+      context.subscriptions
+    );
   }
 
   if (vscode.workspace.rootPath) {
@@ -89,11 +93,10 @@ function initialize(context: vscode.ExtensionContext) {
       });
   }
 
-  currentPanel.onDidDispose(
-    () => {
-      currentPanel = undefined;
-    },
-    null,
-    context.subscriptions
-  );
+  const uiMessenger = getUIMessenger();
+  for (const block of blocks) {
+    block.services.forEach(Service => {
+      new Service(context, uiMessenger);
+    });
+  }
 }

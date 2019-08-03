@@ -7,6 +7,25 @@ export const getExtensionMessenger = () => {
   const client = getClient(undefined);
   const subs: { [id: string]: any[] } = {};
 
+  const subscription = gql`
+    subscription {
+      listenToClientMessages {
+        id
+        payload
+      }
+    }
+  `;
+
+  pipe(
+    client.executeSubscription(createRequest(subscription)) as any,
+    subscribe(({ data: { listenToClientMessages }, error }: any) => {
+      debugger;
+      (subs[listenToClientMessages.id] || []).forEach(sub =>
+        sub(JSON.parse(listenToClientMessages.payload))
+      );
+    })
+  );
+
   return {
     send(id: string, payload: any) {
       const query = gql`
@@ -21,8 +40,8 @@ export const getExtensionMessenger = () => {
             id,
             payload: JSON.stringify(payload)
           })
-        ),
-        subscribe(({ data, error }) => {
+        ) as any,
+        subscribe(({ data, error }: any) => {
           console.log(data, error);
         })
       );
@@ -33,24 +52,6 @@ export const getExtensionMessenger = () => {
       }
 
       subs[id].push(cb);
-
-      const subscription = gql`
-        subscription {
-          listenToClientMessages {
-            id
-            payload
-          }
-        }
-      `;
-
-      pipe(
-        client.executeSubscription(createRequest(subscription)),
-        subscribe(({ data: { listenToClientMessages }, error }) => {
-          (subs[listenToClientMessages.id] || []).forEach(sub =>
-            sub(JSON.parse(listenToClientMessages.payload))
-          );
-        })
-      );
     }
   };
 };

@@ -10,14 +10,16 @@ import vscode, {
 
 import { Events } from "../Events";
 import { WebviewMessageEvent } from "common/types";
+import { Messenger } from "common/messaging/type";
 
 export class WindowHandler {
   constructor(
-    public webview: vscode.Webview,
-    public context: vscode.ExtensionContext
+    public context: vscode.ExtensionContext,
+    public messenger: Messenger
   ) {
-    webview.onDidReceiveMessage((event: WebviewMessageEvent) => {
-      if (event.type === Events.Window.ShowTextDocument) {
+    messenger.addSubscriber(
+      Events.Window.ShowTextDocument,
+      (event: WebviewMessageEvent) => {
         const { path, location } = event.payload;
         window.showTextDocument(Uri.file(path), {
           viewColumn: ViewColumn.One,
@@ -27,6 +29,6 @@ export class WindowHandler {
           )
         });
       }
-    }, context.subscriptions);
+    );
   }
 }

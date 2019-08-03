@@ -1,11 +1,11 @@
 import { BlockUI } from "common/Block";
 import View from "./view";
+import { Play } from "react-feather";
 
-const findMySymbol = {
-  view: {
-    path: "/bigPicture",
-    Component: View
-  }
+const bigPicture = {
+  Component: View,
+  Icon: Play,
+  title: "Big picture"
 } as BlockUI;
 
-export default findMySymbol;
+export default bigPicture;
