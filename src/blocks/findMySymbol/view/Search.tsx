@@ -5,7 +5,6 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import ReIndex from "./gql/Reindex.gql";
 import SearchMutation from "./gql/SearchMutation.gql";
 import SubscribeForSearchResults from "./gql/SubscribeForSearchResults.gql";
-import BlockFrame from "common/components/BlockFrame/BlockFrame";
 import { SearchResult } from "../entities/SearchResult";
 import { Settings, Grid } from "react-feather";
 import Select from "react-select";
@@ -78,98 +77,94 @@ export default function Search() {
     [];
 
   return (
-    <BlockFrame options={[]}>
-      <Flex flexDirection="column">
-        <Flex flexDirection="column" mb={2} mt={2}>
-          <input
-            type="text"
-            onChange={e => {
-              setQuery(e.target.value);
-            }}
-          />
-        </Flex>
-        <Flex mb={2}>
-          <Select
-            defaultValue={null}
-            isClearable
-            styles={{
-              container: provided => ({
-                ...provided,
-                width: "250px"
-              })
-            }}
-            options={categories.map(category => ({
-              label: category,
-              value: category
-            }))}
-            onChange={(option: any) => {
-              if (option === undefined) {
-                return;
-              }
-
-              if (option === null) {
-                setCategory(option);
-              } else {
-                setCategory(option.value);
-              }
-            }}
-          />
-          <Button
-            onClick={async () => {
-              debugger;
-              const ruleFileContent = await getRunFileContent();
-              setRuleContent(ruleFileContent);
-              createTempFile(ruleFileContent, updatedContent => {
-                setWorkspaceState({ SearchRule: updatedContent });
-                search({
-                  query: "",
-                  selector: updatedContent
-                });
-              });
-            }}
-            Icon={Settings}
-            label="Open rule script"
-          />
-        </Flex>
-        <Flex
-          flexDirection="column"
-          css={{
-            height: "calc(100vh - 70px);",
-            width: "calc(100vw - 50px)"
+    <Flex flexDirection="column" flex={1} p={2}>
+      <Flex flexDirection="column" mb={2} mt={2}>
+        <input
+          type="text"
+          onChange={e => {
+            setQuery(e.target.value);
           }}
-        >
-          <AutoSizer>
-            {({ height, width }: any) => {
-              const columnWidth = 200;
-              const columnCount = Math.round(width / columnWidth);
-              return (
-                <FixedSizeGrid
-                  columnCount={columnCount}
-                  columnWidth={columnWidth}
-                  height={height}
-                  rowCount={items.length / columnCount}
-                  rowHeight={40}
-                  width={width}
-                >
-                  {({ columnIndex, rowIndex, style }: any) => {
-                    const itemIndex = rowIndex * columnCount + columnIndex;
-                    return items[itemIndex] ? (
-                      <Flex flexDirection="column" style={style}>
-                        <ResultItem
-                          flake={items[itemIndex]}
-                          onClick={path => {
-                            openFile(path, items[itemIndex].location);
-                          }}
-                        />
-                      </Flex>
-                    ) : null;
-                  }}
-                </FixedSizeGrid>
-              );
-            }}
-          </AutoSizer>
-        </Flex>
+        />
       </Flex>
-    </BlockFrame>
+      <Flex mb={2}>
+        <Select
+          defaultValue={null}
+          isClearable
+          styles={{
+            container: provided => ({
+              ...provided,
+              width: "250px"
+            })
+          }}
+          options={categories.map(category => ({
+            label: category,
+            value: category
+          }))}
+          onChange={(option: any) => {
+            if (option === undefined) {
+              return;
+            }
+
+            if (option === null) {
+              setCategory(option);
+            } else {
+              setCategory(option.value);
+            }
+          }}
+        />
+        <Button
+          onClick={async () => {
+            const ruleFileContent = await getRunFileContent();
+            setRuleContent(ruleFileContent);
+            createTempFile(ruleFileContent, updatedContent => {
+              setWorkspaceState({ SearchRule: updatedContent });
+              search({
+                query: "",
+                selector: updatedContent
+              });
+            });
+          }}
+          Icon={Settings}
+          label="Open rule script"
+        />
+      </Flex>
+      <Flex
+        flexDirection="column"
+        css={{
+          height: "calc(100vh - 70px);"
+        }}
+      >
+        <AutoSizer>
+          {({ height, width }: any) => {
+            const columnWidth = 200;
+            const columnCount = Math.round(width / columnWidth);
+            return (
+              <FixedSizeGrid
+                columnCount={columnCount}
+                columnWidth={columnWidth}
+                height={height}
+                rowCount={items.length / columnCount}
+                rowHeight={40}
+                width={width}
+              >
+                {({ columnIndex, rowIndex, style }: any) => {
+                  const itemIndex = rowIndex * columnCount + columnIndex;
+                  return items[itemIndex] ? (
+                    <Flex flexDirection="column" style={style}>
+                      <ResultItem
+                        flake={items[itemIndex]}
+                        onClick={path => {
+                          openFile(path, items[itemIndex].location);
+                        }}
+                      />
+                    </Flex>
+                  ) : null;
+                }}
+              </FixedSizeGrid>
+            );
+          }}
+        </AutoSizer>
+      </Flex>
+    </Flex>
   );
 }

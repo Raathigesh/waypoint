@@ -1,6 +1,8 @@
 import React from "react";
-import { Rnd } from "react-rnd";
+
 import styled from "styled-components";
+import Block from "../block";
+import ActiveSymbol from "../../../blocks/bigPicture/view";
 
 const Container = styled.div`
   display: flex;
@@ -12,16 +14,9 @@ const Container = styled.div`
 export default function Scratchpad() {
   return (
     <Container>
-      <Rnd
-        default={{
-          x: 0,
-          y: 0,
-          width: 320,
-          height: 200
-        }}
-      >
-        Rnd
-      </Rnd>
+      <Block>
+        <ActiveSymbol />
+      </Block>
     </Container>
   );
 }

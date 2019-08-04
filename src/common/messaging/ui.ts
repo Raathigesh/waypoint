@@ -64,6 +64,9 @@ export const getUIMessenger = () => {
         subs[id] = [];
       }
       subs[id].push(cb);
+    },
+    query(query: any, variables: any) {
+      return client.executeQuery(createRequest(query, variables)) as any;
     }
   };
 };

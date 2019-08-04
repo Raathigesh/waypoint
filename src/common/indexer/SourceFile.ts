@@ -76,7 +76,7 @@ export default class SourceFile {
       return classInLocation;
     }
 
-    const varInLocation = this.classes.find(v => {
+    const varInLocation = this.variables.find(v => {
       if (!v.location) {
         return false;
       }
@@ -97,8 +97,8 @@ export default class SourceFile {
     return (
       start.line >= line &&
       end.line <= line &&
-      start.column >= column &&
-      end.column <= column
+      column >= start.column &&
+      column <= end.column
     );
   }
 

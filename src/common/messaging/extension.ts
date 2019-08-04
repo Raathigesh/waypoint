@@ -19,7 +19,6 @@ export const getExtensionMessenger = () => {
   pipe(
     client.executeSubscription(createRequest(subscription)) as any,
     subscribe(({ data: { listenToClientMessages }, error }: any) => {
-      debugger;
       (subs[listenToClientMessages.id] || []).forEach(sub =>
         sub(JSON.parse(listenToClientMessages.payload))
       );

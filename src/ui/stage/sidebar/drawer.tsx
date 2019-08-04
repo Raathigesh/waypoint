@@ -21,6 +21,7 @@ export default function Drawer({ show, children }: Props) {
   const props = useSpring({
     width: show ? "50%" : "0%",
     opacity: show ? 1 : 0,
+    visibility: show ? "visible" : "hidden",
     from: {
       width: show ? "0%" : "50%"
     }

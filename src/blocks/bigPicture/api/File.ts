@@ -1,9 +1,9 @@
 import {
   Arg,
-  Mutation,
   Query,
   Resolver,
   Subscription,
+  Mutation,
   Root
 } from "type-graphql";
 import { ContainerInstance, Service } from "typedi";
@@ -12,17 +12,39 @@ import { Usages } from "../entities/Usages";
 import findAllUsage from "./queries/findAllUsage";
 import { Usage } from "../entities/Usage";
 import { basename } from "path";
-import { PathMap } from "../entities/PathMap";
+import { Events, ActiveSymbolChangeEvent } from "./Events";
+import { pubSub } from "common/api/pubSub";
+import { Flake } from "common/entities/Symbol";
 
 @Service()
 @Resolver(Usages)
 export default class UsagesResolver {
-  constructor(
-    private readonly container: ContainerInstance,
-    private readonly indexer: Indexer
-  ) {}
+  constructor(private readonly indexer: Indexer) {}
 
-  @Query(returns => Usages)
+  @Subscription(() => Flake, {
+    topics: [Events.SUB_ACTIVE_SYMBOL_CHANGE]
+  })
+  activeSymbol(@Root() { path, line, column }: ActiveSymbolChangeEvent) {
+    const file = this.indexer.files[path];
+    const symbolInLocation = file.findSymbolInLocation(line, column);
+    return symbolInLocation;
+  }
+
+  @Mutation(() => Number)
+  resolveActiveSymbol(
+    @Arg("line") line: number,
+    @Arg("column") column: number,
+    @Arg("path") path: string
+  ) {
+    pubSub.publish(Events.SUB_ACTIVE_SYMBOL_CHANGE, {
+      path,
+      line,
+      column
+    });
+    return 0;
+  }
+
+  @Query(() => Usages)
   usage(
     @Arg("line") line: number,
     @Arg("column") column: number,

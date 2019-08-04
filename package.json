@@ -61,6 +61,7 @@
     "@types/rebass": "^3.0.3",
     "@types/styled-components": "4.1.10",
     "@types/styled-system": "^4.1.1",
+    "@urql/devtools": "^0.0.2",
     "babel-loader": "^8.0.5",
     "babel-plugin-styled-components": "^1.10.0",
     "cross-env": "^5.2.0",
