@@ -13,22 +13,23 @@ import theme from "./theme";
 import Search from "./Search";
 import { store } from "./store";
 
+const persistor = getPersistor();
+
 export default function App() {
   return (
     <Fragment>
       <GlobalStyles />
       <StoreProvider store={store}>
-        <PersistGate persistor={getPersistor()}>
-          <Provider value={client}>
-            <ThemeProvider theme={theme}>
-              <ChakraProvider>
-                <CSSReset />
-                hello
+        <Provider value={client}>
+          <ThemeProvider theme={theme}>
+            <ChakraProvider>
+              <CSSReset />
+              <PersistGate loading={"Loading"} persistor={persistor}>
                 <Search />
-              </ChakraProvider>
-            </ThemeProvider>
-          </Provider>
-        </PersistGate>
+              </PersistGate>
+            </ChakraProvider>
+          </ThemeProvider>
+        </Provider>
       </StoreProvider>
     </Fragment>
   );

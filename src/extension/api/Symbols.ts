@@ -10,7 +10,6 @@ import { ContainerInstance, Service } from "typedi";
 
 import Indexer from "indexer/Indexer";
 import Project from "indexer/Project";
-import { Events, SearchQueryChangeEvent } from "./Events";
 import { pubSub } from "common/pubSub";
 import { Status } from "./Status";
 import { SearchResult } from "../../entities/SearchResult";
@@ -38,36 +37,22 @@ export default class SymbolsResolver {
     return Status.OK;
   }
 
-  @Mutation(returns => String)
+  @Mutation(returns => SearchResult)
   public search(
     @Arg("query") query: string,
     @Arg("selector") selector: string
   ) {
-    const event: SearchQueryChangeEvent = {
-      query,
-      selector
-    };
-    pubSub.publish(Events.SEARCH_QUERY_CHANGE, event);
-    return Status.OK;
-  }
-
-  @Subscription(returns => SearchResult, {
-    topics: [Events.SEARCH_QUERY_CHANGE]
-  })
-  public searchResults(@Root() event: SearchQueryChangeEvent) {
     const symbols: Flake[] = [];
     const categories: Set<String> = new Set();
 
-    const selector = eval(`(${event.selector})`);
+    const selectorFn = eval(`(${selector})`);
 
     Object.entries(this.indexer.files).forEach(([path, file]) => {
-      const selectorResult = selector(path);
+      const selectorResult = selectorFn(path);
       categories.add(selectorResult.category);
 
       file.classes
-        .filter(item =>
-          item.name.toLowerCase().includes(event.query.toLowerCase())
-        )
+        .filter(item => item.name.toLowerCase().includes(query.toLowerCase()))
         .forEach(classSymbol => {
           if (selectorResult.include) {
             symbols.push({
@@ -83,9 +68,7 @@ export default class SymbolsResolver {
         });
 
       file.functions
-        .filter(item =>
-          item.name.toLowerCase().includes(event.query.toLowerCase())
-        )
+        .filter(item => item.name.toLowerCase().includes(query.toLowerCase()))
         .forEach(functionSymbol => {
           if (selectorResult.include) {
             symbols.push({
@@ -101,9 +84,7 @@ export default class SymbolsResolver {
         });
 
       file.variables
-        .filter(item =>
-          item.name.toLowerCase().includes(event.query.toLowerCase())
-        )
+        .filter(item => item.name.toLowerCase().includes(query.toLowerCase()))
         .forEach(variableSymbol => {
           if (selectorResult.include) {
             symbols.push({

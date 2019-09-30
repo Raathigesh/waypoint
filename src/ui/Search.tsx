@@ -13,7 +13,6 @@ import {
   openFile
 } from "./EventBus";
 import { InitialFileContent } from "./Const";
-import { Flex } from "rebass";
 import ResultItem from "./ResultItem";
 import {
   Button,
@@ -24,7 +23,11 @@ import {
   Menu,
   MenuButton,
   MenuList,
-  MenuItem
+  MenuItem,
+  Flex,
+  Editable,
+  EditablePreview,
+  EditableInput
 } from "@chakra-ui/core";
 
 interface SearchResults {
@@ -33,44 +36,28 @@ interface SearchResults {
 
 export default function Search() {
   const [, search] = useMutation(SearchMutation);
+  const [data, setResults] = useState([]);
   const [query, setQuery] = useState("");
-  const [category, setCategory] = useState(null);
 
-  const [ruleContent, setRuleContent] = useState("");
-
-  async function getRunFileContent() {
-    const workspaceState: any = await getWorkspaceState();
-    const ruleFileContent =
-      InitialFileContent ||
-      (workspaceState && workspaceState["SearchRule"]) ||
-      InitialFileContent;
-    return ruleFileContent;
+  function getRunFileContent() {
+    return InitialFileContent;
   }
 
   useEffect(() => {
     async function doSearch() {
-      const ruleFileContent = await getRunFileContent();
-      setRuleContent(ruleFileContent);
-      await search({
+      const ruleFileContent = getRunFileContent();
+      const { data } = await search({
         query: "",
         selector: ruleFileContent
       });
+      setResults(data);
     }
 
     doSearch();
   }, []);
 
-  const [{ data }] = useSubscription({ query: SubscribeForSearchResults });
-
   let items =
-    (data &&
-      (data as any).searchResults &&
-      (data as SearchResults).searchResults.items) ||
-    [];
-
-  if (category) {
-    items = items.filter(item => item.category === category);
-  }
+    (data && (data as any).search && (data as any).search.items) || [];
 
   if (query.trim() !== "") {
     items = items.filter(item =>
@@ -78,63 +65,20 @@ export default function Search() {
     );
   }
 
-  const categories =
-    (data &&
-      (data as any).searchResults &&
-      (data as SearchResults).searchResults.categories) ||
-    [];
-  debugger;
+  console.log(items);
   return (
-    <Flex flexDirection="column" flex={1} p={2}>
-      <InputGroup>
-        <InputLeftElement children={<Icon name="search" color="gray.300" />} />
-        <Input
-          type="phone"
-          placeholder="Search..."
-          onChange={(e: any) => setQuery(e.target.value)}
-        />
-      </InputGroup>
-      <Menu>
-        <MenuButton as={Button} rightIcon="chevron-down">
-          Actions
-        </MenuButton>
-        <MenuList>
-          <MenuItem>Download</MenuItem>
-          <MenuItem>Create a Copy</MenuItem>
-          <MenuItem>Mark as Draft</MenuItem>
-          <MenuItem>Delete</MenuItem>
-        </MenuList>
-      </Menu>
-      <Flex mb={2}>
-        <Select
-          defaultValue={null}
-          isClearable
-          styles={{
-            container: provided => ({
-              ...provided,
-              width: "250px"
-            })
-          }}
-          options={categories.map(category => ({
-            label: category,
-            value: category
-          }))}
-          onChange={(option: any) => {
-            if (option === undefined) {
-              return;
-            }
+    <Flex flexDirection="column" p={2} width="100%">
+      <Flex>
+        <Editable defaultValue="Take some chakra">
+          <EditablePreview />
+          <EditableInput />
+        </Editable>
 
-            if (option === null) {
-              setCategory(option);
-            } else {
-              setCategory(option.value);
-            }
-          }}
-        />
         <Button
+          size="xs"
+          rightIcon="settings"
           onClick={async () => {
-            const ruleFileContent = await getRunFileContent();
-            setRuleContent(ruleFileContent);
+            const ruleFileContent = getRunFileContent();
             createTempFile(ruleFileContent, updatedContent => {
               setWorkspaceState({ SearchRule: updatedContent });
               search({
@@ -144,30 +88,54 @@ export default function Search() {
             });
           }}
         >
-          Update
+          Edit rule
         </Button>
+        <Button size="xs" rightIcon="delete">
+          Delete view
+        </Button>
+        <Menu>
+          <MenuButton
+            size="xs"
+            as={Button}
+            rightIcon="chevron-down"
+            leftIcon="view"
+          >
+            Switch view
+          </MenuButton>
+          <MenuList>
+            <MenuItem>Download</MenuItem>
+            <MenuItem>Create a Copy</MenuItem>
+            <MenuItem>Mark as Draft</MenuItem>
+            <MenuItem>Delete</MenuItem>
+          </MenuList>
+        </Menu>
       </Flex>
-      <Flex
-        flexDirection="column"
-        css={{
-          height: "calc(100vh - 70px);"
-        }}
-      >
+      <Flex>
+        <InputGroup size="sm">
+          <InputLeftElement
+            children={<Icon name="search" color="gray.300" />}
+          />
+          <Input
+            placeholder="Search..."
+            onChange={(e: any) => setQuery(e.target.value)}
+          />
+        </InputGroup>
+      </Flex>
+      <Flex flexDirection="column" height="400px">
         <AutoSizer>
           {({ height, width }: any) => {
             const columnWidth = 200;
-            const columnCount = Math.round(width / columnWidth);
             return (
               <FixedSizeGrid
-                columnCount={columnCount}
+                columnCount={1}
                 columnWidth={columnWidth}
                 height={height}
-                rowCount={items.length / columnCount}
+                rowCount={items.length}
                 rowHeight={40}
                 width={width}
               >
-                {({ columnIndex, rowIndex, style }: any) => {
-                  const itemIndex = rowIndex * columnCount + columnIndex;
+                {({ rowIndex, style }: any) => {
+                  const itemIndex = rowIndex;
                   return items[itemIndex] ? (
                     <Flex flexDirection="column" style={style}>
                       <ResultItem

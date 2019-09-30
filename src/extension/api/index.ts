@@ -7,11 +7,15 @@ import SymbolsResolver from "./Symbols";
 import MessageResolver from "common/messaging/resolvers/MessageResolver";
 
 export async function getSchema() {
-  return await buildSchema({
-    resolvers: [SymbolsResolver, MessageResolver],
-    pubSub: pubSub as any,
-    container: Container
-  });
+  try {
+    return await buildSchema({
+      resolvers: [SymbolsResolver, MessageResolver],
+      pubSub: pubSub as any,
+      container: Container
+    });
+  } catch (e) {
+    debugger;
+  }
 }
 
 const port = 4545;
