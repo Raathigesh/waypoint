@@ -13,7 +13,8 @@ module.exports = env => ({
   resolve: {
     extensions: [".mjs", ".ts", ".tsx", ".js", ".jsx"],
     alias: {
-      common: path.resolve(__dirname, "src/common")
+      common: path.resolve(__dirname, "src/common"),
+      ui: path.resolve(__dirname, "src/ui")
     }
   },
   devServer: {

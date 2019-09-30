@@ -13,8 +13,7 @@
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
       "env": {
-        "dev": "true",
-        "HIDE_WEB_VIEW": "true"
+        "dev": "true"
       }
     },
     {

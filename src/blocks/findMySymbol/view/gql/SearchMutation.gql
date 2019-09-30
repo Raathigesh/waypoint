@@ -1,3 +1,0 @@
-mutation Search($query: String!, $selector: String!) {
-  search(query: $query, selector: $selector)
-}

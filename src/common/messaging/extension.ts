@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 import { pipe, subscribe } from "wonka";
 import { createRequest } from "urql";
-import { getClient } from "./graphql-client";
+import { getClient } from "./graphql";
 
 export const getExtensionMessenger = () => {
   const client = getClient(undefined);

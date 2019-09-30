@@ -8,4 +8,9 @@ body {
   padding: 0;
   margin: 0;
 }
+
+#root {
+ display: flex;
+ height: 100%;
+}
 `;

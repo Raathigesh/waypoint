@@ -4,7 +4,7 @@ import { createRequest } from "urql";
 import * as ws from "ws";
 const fetch = require("node-fetch");
 (global as any).fetch = fetch;
-import { getClient } from "./graphql-client";
+import { getClient } from "./graphql";
 
 export const getUIMessenger = () => {
   const client = getClient(ws);

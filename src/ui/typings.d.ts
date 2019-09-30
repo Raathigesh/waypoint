@@ -6,3 +6,5 @@ declare module "*.gql" {
   const content: any;
   export default content;
 }
+declare module "nanoid";
+declare module "redux-persist/lib/integration/react";
