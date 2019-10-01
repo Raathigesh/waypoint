@@ -9,8 +9,8 @@ export const Rules = createModel({
     rules: {}
   } as State,
   reducers: {
-    setRule(state: State, rule: string): State {
-      state.rules[rule] = rule;
+    setRule(state: State, ruleName: string, ruleContent: string): State {
+      state.rules[ruleName] = ruleContent;
       return state;
     }
   },

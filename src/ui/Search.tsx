@@ -30,6 +30,8 @@ import {
   EditableInput,
   MenuDivider
 } from "@chakra-ui/core";
+import { useDispatch, useSelector } from "react-redux";
+import { Dispatch, RootState } from "./store";
 
 interface SearchResults {
   searchResults: SearchResult;
@@ -66,7 +68,13 @@ export default function Search() {
     );
   }
 
-  console.log(items);
+  const dispatch: Dispatch = useDispatch();
+  const createView = () => {
+    dispatch.Rules.setRule("untitled", "");
+  };
+
+  const rules = useSelector((state: RootState) => state.Rules.rules);
+
   return (
     <Flex flexDirection="column" p={2} width="100%">
       <Flex>
@@ -104,12 +112,11 @@ export default function Search() {
             Switch view
           </MenuButton>
           <MenuList>
-            <MenuItem>Download</MenuItem>
-            <MenuItem>Create a Copy</MenuItem>
-            <MenuItem>Mark as Draft</MenuItem>
-            <MenuItem>Delete</MenuItem>
+            {Object.keys(rules).map(rule => (
+              <MenuItem>{rule}</MenuItem>
+            ))}
             <MenuDivider />
-            <MenuItem>Create view</MenuItem>
+            <MenuItem onClick={createView}>Create view</MenuItem>
           </MenuList>
         </Menu>
       </Flex>
