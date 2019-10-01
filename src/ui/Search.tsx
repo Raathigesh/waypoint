@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useMutation, useSubscription } from "urql";
-import { FixedSizeGrid } from "react-window";
+import { FixedSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import SearchMutation from "./gql/SearchMutation.gql";
 import SubscribeForSearchResults from "./gql/SubscribeForSearchResults.gql";
@@ -27,7 +27,8 @@ import {
   Flex,
   Editable,
   EditablePreview,
-  EditableInput
+  EditableInput,
+  MenuDivider
 } from "@chakra-ui/core";
 
 interface SearchResults {
@@ -107,6 +108,8 @@ export default function Search() {
             <MenuItem>Create a Copy</MenuItem>
             <MenuItem>Mark as Draft</MenuItem>
             <MenuItem>Delete</MenuItem>
+            <MenuDivider />
+            <MenuItem>Create view</MenuItem>
           </MenuList>
         </Menu>
       </Flex>
@@ -121,33 +124,30 @@ export default function Search() {
           />
         </InputGroup>
       </Flex>
-      <Flex flexDirection="column" height="400px">
+      <Flex flexDirection="column" flexGrow={1} height="300px">
         <AutoSizer>
           {({ height, width }: any) => {
-            const columnWidth = 200;
+            console.log(height, width);
             return (
-              <FixedSizeGrid
-                columnCount={1}
-                columnWidth={columnWidth}
+              <FixedSizeList
                 height={height}
-                rowCount={items.length}
-                rowHeight={40}
+                itemCount={items.length}
+                itemSize={30}
                 width={width}
               >
-                {({ rowIndex, style }: any) => {
-                  const itemIndex = rowIndex;
-                  return items[itemIndex] ? (
+                {({ index, style }: any) => {
+                  return items[index] ? (
                     <Flex flexDirection="column" style={style}>
                       <ResultItem
-                        flake={items[itemIndex]}
+                        flake={items[index]}
                         onClick={path => {
-                          openFile(path, items[itemIndex].location);
+                          openFile(path, items[index].location);
                         }}
                       />
                     </Flex>
                   ) : null;
                 }}
-              </FixedSizeGrid>
+              </FixedSizeList>
             );
           }}
         </AutoSizer>

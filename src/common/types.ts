@@ -1,4 +1,4 @@
 export interface WebviewMessageEvent {
-  type: string;
-  payload: any;
+  path: string;
+  location: any;
 }

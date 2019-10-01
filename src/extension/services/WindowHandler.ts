@@ -20,7 +20,7 @@ export class WindowHandler {
     messenger.addSubscriber(
       Events.Window.ShowTextDocument,
       (event: WebviewMessageEvent) => {
-        const { path, location } = event.payload;
+        const { path, location } = event;
         window.showTextDocument(Uri.file(path), {
           viewColumn: ViewColumn.One,
           selection: new Selection(

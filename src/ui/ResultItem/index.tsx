@@ -1,9 +1,8 @@
 import React from "react";
-import { Flex, Text, Box } from "rebass";
-import { Tooltip } from "react-tippy";
 
 import FlakeIcon from "./Icon";
 import { Flake } from "entities/Symbol";
+import { Flex, Box, Text, Link } from "@chakra-ui/core";
 
 interface Props {
   flake: Flake;
@@ -15,38 +14,27 @@ export default function ResultItem({
   onClick
 }: Props) {
   return (
-    <Flex
-      pr={2}
-      css={{ cursor: "pointer" }}
-      width="200px"
-      marginRight="5px"
-      marginBottom="10px"
-      onClick={() => onClick(filePath)}
-    >
-      <Tooltip
-        title={type}
-        size="small"
-        animate="fade"
-        style={{ width: "100%" }}
-      >
-        <Flex
-          alignItems="center"
-          bg="backgroundLight"
-          p={2}
-          css={{ borderRadius: "5px" }}
-        >
-          <Box pr={1} pt={0.5}>
-            <FlakeIcon type={type} />
-          </Box>
-          <Text
-            fontSize={12}
-            fontWeight={500}
-            css={{ textOverflow: "ellipsis", overflow: "hidden" }}
-          >
+    <Flex borderBottom="1px solid whitesmoke">
+      <Flex alignItems="center" flex={1}>
+        <Box pr={1} pt={0.5}>
+          <FlakeIcon type={type} />
+        </Box>
+        <Link onClick={() => onClick(filePath)}>
+          <Text fontSize="sm" isTruncated>
             {name}
           </Text>
-        </Flex>
-      </Tooltip>
+        </Link>
+      </Flex>
+      <Flex alignItems="center" flex={1}>
+        <Text fontSize="sm" isTruncated>
+          {type}
+        </Text>
+      </Flex>
+      <Flex alignItems="center" flex={1}>
+        <Text fontSize="sm" isTruncated>
+          {filePath}
+        </Text>
+      </Flex>
     </Flex>
   );
 }
