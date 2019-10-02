@@ -15,25 +15,27 @@ const persistPlugin = createRematchPersist({
   whitelist: ["Rules"],
   throttle: 5000,
   version: 1,
-  storage: storage /* {
+  storage: {
     async setItem(key: string, value: string) {
-      debugger;
       const workplaceState: any = await getWorkspaceState();
+
       workplaceState[key] = value;
       await setWorkspaceState(workplaceState);
     },
-    async getItem(key: string) {
-      debugger;
-      const workplaceState: any = await getWorkspaceState();
-      return workplaceState[key];
+    getItem(key: string) {
+      return new Promise(resolve => {
+        return getWorkspaceState();
+      }).then((workplace: any) => {
+        console.log(workplace);
+        return workplace[key];
+      });
     },
     async removeItem(key: string) {
-      debugger;
       const workplaceState: any = await getWorkspaceState();
       delete workplaceState[key];
       await setWorkspaceState(workplaceState);
     }
-  } */
+  }
 });
 
 export const store = init({

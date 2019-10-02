@@ -9,11 +9,13 @@ export class WorkspaceState {
   ) {
     messenger.addSubscriber(Events.GetWorkspaceState, () => {
       const state = context.workspaceState.get("InsightWorkspaceState");
+      console.log("Sending ", state);
       messenger.send(Events.GetWorkspaceState, state);
     });
 
     messenger.addSubscriber(Events.SaveWorkspaceState, (state: any) => {
       context.workspaceState.update("InsightWorkspaceState", state);
+      console.log("Updating ", state);
     });
   }
 }

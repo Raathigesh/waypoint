@@ -73,12 +73,26 @@ export default function Search() {
     dispatch.Rules.setRule("untitled", "");
   };
 
-  const rules = useSelector((state: RootState) => state.Rules.rules);
+  const activeRule = useSelector((state: RootState) => state.Rules.activeRule);
+  const deleteView = () => {
+    dispatch.Rules.deleteRule(activeRule);
+  };
+
+  const switchRule = (ruleId: string) => {
+    dispatch.Rules.setActiveRule(ruleId);
+  };
+
+  const rules = useSelector((state: RootState) => state.Rules.rules) || {};
 
   return (
     <Flex flexDirection="column" p={2} width="100%">
       <Flex>
-        <Editable defaultValue="Take some chakra">
+        <Editable
+          value={(rules[activeRule] && rules[activeRule].name) || ""}
+          onChange={(e: any) => {
+            dispatch.Rules.renameRule(activeRule, e);
+          }}
+        >
           <EditablePreview />
           <EditableInput />
         </Editable>
@@ -89,7 +103,6 @@ export default function Search() {
           onClick={async () => {
             const ruleFileContent = getRunFileContent();
             createTempFile(ruleFileContent, updatedContent => {
-              setWorkspaceState({ SearchRule: updatedContent });
               search({
                 query: "",
                 selector: updatedContent
@@ -99,7 +112,7 @@ export default function Search() {
         >
           Edit rule
         </Button>
-        <Button size="xs" rightIcon="delete">
+        <Button size="xs" rightIcon="delete" onClick={deleteView}>
           Delete view
         </Button>
         <Menu>
@@ -112,8 +125,10 @@ export default function Search() {
             Switch view
           </MenuButton>
           <MenuList>
-            {Object.keys(rules).map(rule => (
-              <MenuItem>{rule}</MenuItem>
+            {Object.entries(rules).map(([ruleId, rule]) => (
+              <MenuItem onClick={() => switchRule(ruleId)}>
+                {rule.name}
+              </MenuItem>
             ))}
             <MenuDivider />
             <MenuItem onClick={createView}>Create view</MenuItem>
@@ -134,7 +149,6 @@ export default function Search() {
       <Flex flexDirection="column" flexGrow={1} height="300px">
         <AutoSizer>
           {({ height, width }: any) => {
-            console.log(height, width);
             return (
               <FixedSizeList
                 height={height}

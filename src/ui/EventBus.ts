@@ -25,6 +25,7 @@ export function getWorkspaceState() {
     extensionMessenger.addSubscriber(
       Events.GetWorkspaceState,
       (workspaceState: any) => {
+        debugger;
         resolve(workspaceState || null);
       }
     );
