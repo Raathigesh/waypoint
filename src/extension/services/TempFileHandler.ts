@@ -16,30 +16,24 @@ export class TempFileHandler {
     public context: vscode.ExtensionContext,
     public messenger: Messenger
   ) {
-    messenger.addSubscriber(
-      Events.TempFile.CreateTempFile,
-      (event: WebviewMessageEvent) => {
-        const tmpObj = tmp.fileSync({ postfix: ".js" });
-        const tempTextDocument = workspace.openTextDocument(tmpObj.name);
+    messenger.addSubscriber(Events.TempFile.CreateTempFile, (event: string) => {
+      const tmpObj = tmp.fileSync({ postfix: ".js" });
+      const tempTextDocument = workspace.openTextDocument(tmpObj.name);
 
-        messenger.send(Events.TempFile.CreatedTempFile, event.payload);
+      messenger.send(Events.TempFile.CreatedTempFile, event);
 
-        tempTextDocument.then(doc => {
-          window.showTextDocument(doc, ViewColumn.One);
-          const edit = new WorkspaceEdit();
-          edit.insert(Uri.file(tmpObj.name), new Position(0, 0), event.payload);
-          workspace.applyEdit(edit);
+      tempTextDocument.then(doc => {
+        window.showTextDocument(doc, ViewColumn.One);
+        const edit = new WorkspaceEdit();
+        edit.insert(Uri.file(tmpObj.name), new Position(0, 0), event);
+        workspace.applyEdit(edit);
 
-          workspace.onDidSaveTextDocument(savedDoc => {
-            if (savedDoc.fileName === doc.fileName) {
-              messenger.send(
-                Events.TempFile.UpdatedTempFile,
-                savedDoc.getText()
-              );
-            }
-          });
+        workspace.onDidSaveTextDocument(savedDoc => {
+          if (savedDoc.fileName === doc.fileName) {
+            messenger.send(Events.TempFile.UpdatedTempFile, savedDoc.getText());
+          }
         });
-      }
-    );
+      });
+    });
   }
 }

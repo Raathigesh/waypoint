@@ -8,6 +8,7 @@ import gql from "graphql-tag";
 import { getUIMessenger } from "common/messaging/ui";
 import Services from "./services";
 import { startApiServer } from "./api";
+import { Container } from "typedi";
 
 let serverProcess: ChildProcess | null = null;
 
@@ -70,6 +71,7 @@ async function initialize(context: vscode.ExtensionContext) {
   await startApiServer();
   const uiMessenger = getUIMessenger();
   Services.forEach(Service => new Service(context, uiMessenger));
+  Container.set("extension-context", context);
 
   const query = gql`
     mutation {

@@ -5,11 +5,12 @@ import "reflect-metadata";
 import { pubSub } from "common/pubSub";
 import SymbolsResolver from "./Symbols";
 import MessageResolver from "common/messaging/resolvers/MessageResolver";
+import WorkplaceResolver from "./WorkplaceResolver";
 
 export async function getSchema() {
   try {
     return await buildSchema({
-      resolvers: [SymbolsResolver, MessageResolver],
+      resolvers: [SymbolsResolver, MessageResolver, WorkplaceResolver],
       pubSub: pubSub as any,
       container: Container
     });

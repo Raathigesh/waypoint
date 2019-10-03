@@ -53,6 +53,18 @@ export const Rules = createModel({
         }
       };
     },
+    setContent(state, id: string, content: string) {
+      return {
+        ...state,
+        rules: {
+          ...state.rules,
+          [id]: {
+            name: state.rules[id].name,
+            content
+          }
+        }
+      };
+    },
     deleteRule(state, id: string) {
       return {
         ...state,

@@ -4,7 +4,7 @@ import createRematchPersist from "@rematch/persist";
 import storage from "redux-persist/lib/storage";
 import { Rules } from "./rules";
 import { Results } from "./results";
-import { getWorkspaceState, setWorkspaceState } from "ui/EventBus";
+import { saveValue, getValue } from "ui/services/workplace-state";
 
 const models = {
   Rules,
@@ -17,30 +17,18 @@ const persistPlugin = createRematchPersist({
   version: 1,
   storage: {
     async setItem(key: string, value: string) {
-      const workplaceState: any = await getWorkspaceState();
-
-      workplaceState[key] = value;
-      await setWorkspaceState(workplaceState);
+      return await saveValue(key, value);
     },
-    getItem(key: string) {
-      return new Promise(resolve => {
-        return getWorkspaceState();
-      }).then((workplace: any) => {
-        console.log(workplace);
-        return workplace[key];
-      });
+    async getItem(key: string) {
+      return await getValue(key);
     },
-    async removeItem(key: string) {
-      const workplaceState: any = await getWorkspaceState();
-      delete workplaceState[key];
-      await setWorkspaceState(workplaceState);
-    }
+    async removeItem(key: string) {}
   }
 });
 
 export const store = init({
   models,
-  plugins: [persistPlugin, immerPlugin()]
+  plugins: [persistPlugin]
 });
 
 export type Store = typeof store;

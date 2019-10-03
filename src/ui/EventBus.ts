@@ -20,23 +20,6 @@ export function createTempFile(
   );
 }
 
-export function getWorkspaceState() {
-  return new Promise((resolve, reject) => {
-    extensionMessenger.addSubscriber(
-      Events.GetWorkspaceState,
-      (workspaceState: any) => {
-        debugger;
-        resolve(workspaceState || null);
-      }
-    );
-    extensionMessenger.send(Events.GetWorkspaceState, {});
-  });
-}
-
-export function setWorkspaceState(state: any) {
-  extensionMessenger.send(Events.SaveWorkspaceState, state);
-}
-
 export function openFile(path: string, location?: Location) {
   extensionMessenger.send(Events.Window.ShowTextDocument, { path, location });
 }

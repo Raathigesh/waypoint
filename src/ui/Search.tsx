@@ -6,12 +6,7 @@ import SearchMutation from "./gql/SearchMutation.gql";
 import SubscribeForSearchResults from "./gql/SubscribeForSearchResults.gql";
 import { SearchResult } from "../entities/SearchResult";
 import Select from "react-select";
-import {
-  createTempFile,
-  getWorkspaceState,
-  setWorkspaceState,
-  openFile
-} from "./EventBus";
+import { createTempFile, openFile } from "./EventBus";
 import { InitialFileContent } from "./Const";
 import ResultItem from "./ResultItem";
 import {
@@ -41,6 +36,9 @@ export default function Search() {
   const [, search] = useMutation(SearchMutation);
   const [data, setResults] = useState([]);
   const [query, setQuery] = useState("");
+
+  const activeRule = useSelector((state: RootState) => state.Rules.activeRule);
+  const rules = useSelector((state: RootState) => state.Rules.rules) || {};
 
   function getRunFileContent() {
     return InitialFileContent;
@@ -73,16 +71,12 @@ export default function Search() {
     dispatch.Rules.setRule("untitled", "");
   };
 
-  const activeRule = useSelector((state: RootState) => state.Rules.activeRule);
   const deleteView = () => {
     dispatch.Rules.deleteRule(activeRule);
   };
-
   const switchRule = (ruleId: string) => {
     dispatch.Rules.setActiveRule(ruleId);
   };
-
-  const rules = useSelector((state: RootState) => state.Rules.rules) || {};
 
   return (
     <Flex flexDirection="column" p={2} width="100%">
