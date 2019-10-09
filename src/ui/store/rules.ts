@@ -1,86 +1,103 @@
-import { createModel } from "@rematch/core";
+import { observable, IObservableArray, computed } from "mobx";
 import * as nanoid from "nanoid";
+import { deepObserve } from "mobx-utils";
+import Rule from "./rule";
+import { saveValue, getValue } from "ui/services/workplace-state";
 
-export type State = {
-  activeRule: string;
-  rules: {
-    [ruleId: string]: {
-      name: string;
-      content: string;
-    };
-  };
-};
+export class Rules {
+  @observable
+  public activeRule: string = "";
+  @observable
+  public rules: IObservableArray<Rule> = observable([]);
 
-export const Rules = createModel({
-  state: {
-    activeRule: "initialRule",
-    rules: {
-      initialRule: {
-        name: "Untitled rule",
-        content: ""
-      }
+  constructor() {
+    this.initialize();
+  }
+
+  private async initialize() {
+    let rulesString: any = await getValue("insight-rules");
+    if (rulesString === "") {
+      rulesString = "[]";
     }
-  } as State,
-  reducers: {
-    setActiveRule(state, ruleId: string) {
-      return {
-        ...state,
-        activeRule: ruleId
-      };
-    },
-    setRule(state, name: string, content: string): State {
-      const id = nanoid();
-      return {
-        ...state,
-        rules: {
-          ...state.rules,
-          [id]: {
-            name,
-            content
-          }
-        }
-      };
-    },
-    renameRule(state, id: string, name: string) {
-      return {
-        ...state,
-        rules: {
-          ...state.rules,
-          [id]: {
-            name,
-            content: state.rules[id].content
-          }
-        }
-      };
-    },
-    setContent(state, id: string, content: string) {
-      return {
-        ...state,
-        rules: {
-          ...state.rules,
-          [id]: {
-            name: state.rules[id].name,
-            content
-          }
-        }
-      };
-    },
-    deleteRule(state, id: string) {
-      return {
-        ...state,
-        rules: Object.entries(state.rules).reduce(
-          (acc, [key, value]) => {
-            if (key !== id) {
-              return {
-                ...acc,
-                [key]: value
-              };
-            }
-          },
-          {} as any
-        )
-      };
+
+    const ruleObj = JSON.parse(rulesString);
+    if (ruleObj.length === 0) {
+      const rule = this.createRule("Untitled", "");
+      this.setActiveRule(rule.id);
+    } else {
+      ruleObj.map((rule: Rule) => {
+        const observableRule = new Rule();
+        observableRule.id = rule.id;
+        observableRule.name = rule.name;
+        observableRule.content = rule.content;
+        this.rules.push(observableRule);
+      });
+      this.setActiveRule(this.rules[0].id);
     }
-  },
-  effects: {}
-});
+    this.observeRuleChanges();
+  }
+
+  private observeRuleChanges() {
+    deepObserve(this.rules, () => {
+      const rules = JSON.stringify(this.rules.toJSON());
+      saveValue("insight-rules", rules);
+    });
+  }
+
+  public createRule(name: string, content: string) {
+    const rule = new Rule();
+    rule.id = nanoid();
+    rule.name = name;
+    rule.content = content;
+    this.rules.push(rule);
+
+    return rule;
+  }
+
+  public deleteRule(id: string) {
+    const rule = this.getRuleById(id);
+    if (rule) {
+      this.rules.remove(rule);
+    }
+  }
+
+  public setActiveRule(ruleId: string) {
+    this.activeRule = ruleId;
+  }
+
+  public renameRule(ruleId: string, name: string) {
+    const rule = this.getRuleById(ruleId);
+    if (rule) {
+      rule.name = name;
+    }
+  }
+
+  public setRuleContent(ruleId: string, content: string) {
+    const rule = this.getRuleById(ruleId);
+    if (rule) {
+      rule.content = content;
+    }
+  }
+
+  private getRuleById(ruleId: string) {
+    return this.rules.find(rule => (rule.id = ruleId));
+  }
+
+  @computed
+  public get getActiveFileName() {
+    const activeRule = this.rules.find(rule => rule.id === this.activeRule);
+    if (activeRule) {
+      return activeRule.name;
+    }
+    return "";
+  }
+
+  @computed
+  public get getActiveFileContent() {
+    const activeRule = this.rules.find(rule => rule.id === this.activeRule);
+    if (activeRule) {
+      return activeRule.content;
+    }
+    return "";
+  }
+}

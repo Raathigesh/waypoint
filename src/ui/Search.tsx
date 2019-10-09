@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { useMutation, useSubscription } from "urql";
+import React, { useEffect, useState, useContext } from "react";
+import { useMutation } from "urql";
 import { FixedSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
+import { observer } from "mobx-react-lite";
 import SearchMutation from "./gql/SearchMutation.gql";
-import SubscribeForSearchResults from "./gql/SubscribeForSearchResults.gql";
 import { SearchResult } from "../entities/SearchResult";
-import Select from "react-select";
 import { createTempFile, openFile } from "./EventBus";
 import { InitialFileContent } from "./Const";
 import ResultItem from "./ResultItem";
@@ -25,35 +24,27 @@ import {
   EditableInput,
   MenuDivider
 } from "@chakra-ui/core";
-import { useDispatch, useSelector } from "react-redux";
-import { Dispatch, RootState } from "./store";
+import { rules } from "./store";
 
 interface SearchResults {
   searchResults: SearchResult;
 }
 
-export default function Search() {
+function Search() {
+  const rulesStore = useContext(rules);
   const [, search] = useMutation(SearchMutation);
   const [data, setResults] = useState([]);
   const [query, setQuery] = useState("");
 
-  const activeRule = useSelector((state: RootState) => state.Rules.activeRule);
-  const rules = useSelector((state: RootState) => state.Rules.rules) || {};
-
-  function getRunFileContent() {
-    return InitialFileContent;
+  async function doSearch(ruleFileContent = InitialFileContent) {
+    const { data } = await search({
+      query: "",
+      selector: ruleFileContent
+    });
+    setResults(data);
   }
 
   useEffect(() => {
-    async function doSearch() {
-      const ruleFileContent = getRunFileContent();
-      const { data } = await search({
-        query: "",
-        selector: ruleFileContent
-      });
-      setResults(data);
-    }
-
     doSearch();
   }, []);
 
@@ -66,25 +57,24 @@ export default function Search() {
     );
   }
 
-  const dispatch: Dispatch = useDispatch();
   const createView = () => {
-    dispatch.Rules.setRule("untitled", "");
+    rulesStore.createRule("Untitled", "");
   };
 
   const deleteView = () => {
-    dispatch.Rules.deleteRule(activeRule);
+    rulesStore.deleteRule(rulesStore.activeRule);
   };
   const switchRule = (ruleId: string) => {
-    dispatch.Rules.setActiveRule(ruleId);
+    rulesStore.setActiveRule(ruleId);
   };
 
   return (
     <Flex flexDirection="column" p={2} width="100%">
       <Flex>
         <Editable
-          value={(rules[activeRule] && rules[activeRule].name) || ""}
+          value={rulesStore.getActiveFileName}
           onChange={(e: any) => {
-            dispatch.Rules.renameRule(activeRule, e);
+            rulesStore.renameRule(rulesStore.activeRule, e);
           }}
         >
           <EditablePreview />
@@ -95,12 +85,9 @@ export default function Search() {
           size="xs"
           rightIcon="settings"
           onClick={async () => {
-            const ruleFileContent = getRunFileContent();
-            createTempFile(ruleFileContent, updatedContent => {
-              search({
-                query: "",
-                selector: updatedContent
-              });
+            createTempFile(rulesStore.getActiveFileContent, updatedContent => {
+              rulesStore.setRuleContent(rulesStore.activeRule, updatedContent);
+              doSearch(updatedContent);
             });
           }}
         >
@@ -119,8 +106,8 @@ export default function Search() {
             Switch view
           </MenuButton>
           <MenuList>
-            {Object.entries(rules).map(([ruleId, rule]) => (
-              <MenuItem onClick={() => switchRule(ruleId)}>
+            {rulesStore.rules.map(rule => (
+              <MenuItem onClick={() => switchRule(rule.id)}>
                 {rule.name}
               </MenuItem>
             ))}
@@ -170,3 +157,5 @@ export default function Search() {
     </Flex>
   );
 }
+
+export default observer(Search);

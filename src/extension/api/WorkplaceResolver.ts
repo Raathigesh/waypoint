@@ -26,7 +26,7 @@ export default class WorkplaceResolver {
       const state: any = this.context.workspaceState.get(
         "InsightWorkspaceState"
       );
-      return state[key];
+      return state[key] || "";
     }
   }
 }
