@@ -69,55 +69,73 @@ function Search() {
   };
 
   return (
-    <Flex flexDirection="column" p={2} width="100%">
-      <Flex>
-        <Editable
-          value={rulesStore.getActiveFileName}
-          onChange={(e: any) => {
-            rulesStore.renameRule(rulesStore.activeRule, e);
-          }}
-        >
-          <EditablePreview />
-          <EditableInput />
-        </Editable>
-
-        <Button
-          size="xs"
-          rightIcon="settings"
-          onClick={async () => {
-            createTempFile(rulesStore.getActiveFileContent, updatedContent => {
-              rulesStore.setRuleContent(rulesStore.activeRule, updatedContent);
-              doSearch(updatedContent);
-            });
-          }}
-        >
-          Edit rule
-        </Button>
-        <Button size="xs" rightIcon="delete" onClick={deleteView}>
-          Delete view
-        </Button>
-        <Menu>
-          <MenuButton
-            size="xs"
-            as={Button}
-            rightIcon="chevron-down"
-            leftIcon="view"
+    <Flex flexDirection="column" p={3} width="100%">
+      <Flex mb={3}>
+        <Flex flexGrow={1}>
+          <Editable
+            value={rulesStore.getActiveFileName}
+            fontSize={18}
+            p={0.5}
+            onChange={(e: any) => {
+              rulesStore.renameRule(rulesStore.activeRule, e);
+            }}
           >
-            Switch view
-          </MenuButton>
-          <MenuList>
-            {rulesStore.rules.map(rule => (
-              <MenuItem onClick={() => switchRule(rule.id)}>
-                {rule.name}
-              </MenuItem>
-            ))}
-            <MenuDivider />
-            <MenuItem onClick={createView}>Create view</MenuItem>
-          </MenuList>
-        </Menu>
+            <EditablePreview />
+            <EditableInput />
+          </Editable>
+        </Flex>
+        <Flex>
+          <Button
+            size="sm"
+            rightIcon="settings"
+            variant="ghost"
+            onClick={async () => {
+              createTempFile(
+                rulesStore.getActiveFileContent,
+                updatedContent => {
+                  rulesStore.setRuleContent(
+                    rulesStore.activeRule,
+                    updatedContent
+                  );
+                  doSearch(updatedContent);
+                }
+              );
+            }}
+          >
+            Edit rule
+          </Button>
+          <Button
+            size="sm"
+            rightIcon="delete"
+            variant="ghost"
+            onClick={deleteView}
+          >
+            Delete view
+          </Button>
+          <Menu>
+            <MenuButton
+              size="sm"
+              as={Button}
+              rightIcon="chevron-down"
+              leftIcon="view"
+              variant="ghost"
+            >
+              Switch view
+            </MenuButton>
+            <MenuList>
+              {rulesStore.rules.map(rule => (
+                <MenuItem onClick={() => switchRule(rule.id)}>
+                  {rule.name}
+                </MenuItem>
+              ))}
+              <MenuDivider />
+              <MenuItem onClick={createView}>Create view</MenuItem>
+            </MenuList>
+          </Menu>
+        </Flex>
       </Flex>
-      <Flex>
-        <InputGroup size="sm">
+      <Flex mb={3}>
+        <InputGroup size="sm" width="100%">
           <InputLeftElement
             children={<Icon name="search" color="gray.300" />}
           />
