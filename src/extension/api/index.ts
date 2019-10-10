@@ -31,7 +31,7 @@ export async function startApiServer() {
           port,
           playground: "/debug"
         },
-        async () => {
+        () => {
           const url = `http://localhost:${port}`;
           console.log(`⚡  Insight is running at ${url} `);
           resolve();
@@ -41,9 +41,4 @@ export async function startApiServer() {
         reject(err);
       });
   });
-}
-
-if (!process.env.dev) {
-  console.log("executing startApiServer");
-  startApiServer();
 }

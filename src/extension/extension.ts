@@ -30,40 +30,7 @@ export function deactivate() {
 }
 
 async function initialize(context: vscode.ExtensionContext) {
-  const contentProvider = new ContentProvider();
-  let currentPanel: vscode.WebviewPanel | undefined = undefined;
-
-  const outputChannel = vscode.window.createOutputChannel("Insight");
-  outputChannel.show();
-
-  if (false) {
-    currentPanel = vscode.window.createWebviewPanel(
-      "insight",
-      "Insight",
-      vscode.ViewColumn.Two,
-      {
-        enableScripts: true,
-        retainContextWhenHidden: true
-      }
-    );
-
-    currentPanel.webview.html = contentProvider.getContent(context);
-
-    const root = join(context.extensionPath, "icons");
-    currentPanel.iconPath = {
-      dark: vscode.Uri.file(join(root, "icon-light.png")),
-      light: vscode.Uri.file(join(root, "icon-dark.png"))
-    };
-
-    currentPanel.onDidDispose(
-      () => {
-        currentPanel = undefined;
-      },
-      null,
-      context.subscriptions
-    );
-  }
-
+  Container.set("extension-context", context);
   if (vscode.workspace.rootPath) {
     process.env.projectRoot = vscode.workspace.rootPath;
   }
@@ -71,7 +38,6 @@ async function initialize(context: vscode.ExtensionContext) {
   await startApiServer();
   const uiMessenger = getUIMessenger();
   Services.forEach(Service => new Service(context, uiMessenger));
-  Container.set("extension-context", context);
 
   const query = gql`
     mutation {
@@ -79,4 +45,36 @@ async function initialize(context: vscode.ExtensionContext) {
     }
   `;
   executeQuery(query, undefined);
+
+  const contentProvider = new ContentProvider();
+  let currentPanel: vscode.WebviewPanel | undefined = undefined;
+
+  const outputChannel = vscode.window.createOutputChannel("Insight");
+  outputChannel.show();
+
+  currentPanel = vscode.window.createWebviewPanel(
+    "insight",
+    "Insight",
+    vscode.ViewColumn.Two,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true
+    }
+  );
+
+  currentPanel.webview.html = contentProvider.getContent(context);
+
+  const root = join(context.extensionPath, "icons");
+  currentPanel.iconPath = {
+    dark: vscode.Uri.file(join(root, "icon-light.png")),
+    light: vscode.Uri.file(join(root, "icon-dark.png"))
+  };
+
+  currentPanel.onDidDispose(
+    () => {
+      currentPanel = undefined;
+    },
+    null,
+    context.subscriptions
+  );
 }

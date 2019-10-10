@@ -26,6 +26,8 @@ import {
 } from "@chakra-ui/core";
 import { rules } from "./store";
 
+const MenuButtonComponent: any = MenuButton;
+
 interface SearchResults {
   searchResults: SearchResult;
 }
@@ -52,7 +54,7 @@ function Search() {
     (data && (data as any).search && (data as any).search.items) || [];
 
   if (query.trim() !== "") {
-    items = items.filter(item =>
+    items = items.filter((item: any) =>
       item.name.toLowerCase().includes(query.toLowerCase())
     );
   }
@@ -113,7 +115,7 @@ function Search() {
             Delete view
           </Button>
           <Menu>
-            <MenuButton
+            <MenuButtonComponent
               size="sm"
               as={Button}
               rightIcon="chevron-down"
@@ -121,7 +123,7 @@ function Search() {
               variant="ghost"
             >
               Switch view
-            </MenuButton>
+            </MenuButtonComponent>
             <MenuList>
               {rulesStore.rules.map(rule => (
                 <MenuItem onClick={() => switchRule(rule.id)}>

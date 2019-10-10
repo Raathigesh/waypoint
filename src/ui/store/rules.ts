@@ -3,6 +3,7 @@ import * as nanoid from "nanoid";
 import { deepObserve } from "mobx-utils";
 import Rule from "./rule";
 import { saveValue, getValue } from "ui/services/workplace-state";
+import { InitialFileContent } from "ui/Const";
 
 export class Rules {
   @observable
@@ -22,7 +23,7 @@ export class Rules {
 
     const ruleObj = JSON.parse(rulesString);
     if (ruleObj.length === 0) {
-      const rule = this.createRule("Untitled", "");
+      const rule = this.createRule("Untitled", InitialFileContent);
       this.setActiveRule(rule.id);
     } else {
       ruleObj.map((rule: Rule) => {

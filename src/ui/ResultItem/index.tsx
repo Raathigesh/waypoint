@@ -4,6 +4,8 @@ import FlakeIcon from "./Icon";
 import { Flake } from "entities/Symbol";
 import { Flex, Box, Text, Link } from "@chakra-ui/core";
 
+const TextComponent: any = Text;
+
 interface Props {
   flake: Flake;
   onClick: (path: string) => void;
@@ -15,25 +17,25 @@ export default function ResultItem({
 }: Props) {
   return (
     <Flex borderBottom="1px solid whitesmoke">
-      <Flex alignItems="center" flex={1}>
+      <Flex alignItems="center" flex={1} width="40%">
         <Box pr={1} pt={0.5}>
           <FlakeIcon type={type} />
         </Box>
         <Link onClick={() => onClick(filePath)}>
-          <Text fontSize="sm" isTruncated>
+          <TextComponent fontSize="sm" isTruncated>
             {name}
-          </Text>
+          </TextComponent>
         </Link>
       </Flex>
-      <Flex alignItems="center" flex={1}>
-        <Text fontSize="sm" isTruncated>
+      <Flex alignItems="center" flex={1} width="30%">
+        <TextComponent fontSize="sm" isTruncated>
           {type}
-        </Text>
+        </TextComponent>
       </Flex>
-      <Flex alignItems="center" flex={1}>
-        <Text fontSize="sm" isTruncated>
+      <Flex alignItems="center" flex={1} width="30%">
+        <TextComponent fontSize="sm" isTruncated>
           {filePath}
-        </Text>
+        </TextComponent>
       </Flex>
     </Flex>
   );
