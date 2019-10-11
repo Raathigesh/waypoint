@@ -22,7 +22,7 @@ export default function ResultItem({
           <FlakeIcon type={type} />
         </Box>
         <Link onClick={() => onClick(filePath)}>
-          <TextComponent fontSize="sm" isTruncated>
+          <TextComponent fontSize="sm" isTruncated pl={2}>
             {name}
           </TextComponent>
         </Link>
