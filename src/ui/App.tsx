@@ -1,4 +1,5 @@
 import React, { Fragment } from "react";
+import { observer } from "mobx-react-lite";
 import "react-tippy/dist/tippy.css";
 import { ThemeProvider } from "styled-components";
 import { Provider } from "urql";
@@ -8,7 +9,7 @@ import { client } from "./GraphQLClient";
 import theme from "./theme";
 import Search from "./Search";
 
-export default function App() {
+function App() {
   return (
     <Fragment>
       <GlobalStyles />
@@ -23,3 +24,5 @@ export default function App() {
     </Fragment>
   );
 }
+
+export default observer(App);

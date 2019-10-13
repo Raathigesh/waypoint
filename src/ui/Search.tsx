@@ -1,12 +1,9 @@
-import React, { useEffect, useState, useContext } from "react";
-import { useMutation } from "urql";
+import React, { useContext } from "react";
 import { FixedSizeList } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
 import { observer } from "mobx-react-lite";
-import SearchMutation from "./gql/SearchMutation.gql";
 import { SearchResult } from "../entities/SearchResult";
-import { createTempFile, openFile } from "./EventBus";
-import { InitialFileContent } from "./Const";
+import { openFile } from "./EventBus";
 import ResultItem from "./ResultItem";
 import {
   Button,
@@ -24,50 +21,36 @@ import {
   EditableInput,
   MenuDivider
 } from "@chakra-ui/core";
-import { rules } from "./store";
+import { RulesServiceStore, ResultsServiceStore } from "./store";
 
 const MenuButtonComponent: any = MenuButton;
 
-interface SearchResults {
-  searchResults: SearchResult;
-}
-
 function Search() {
-  const rulesStore = useContext(rules);
-  const [, search] = useMutation(SearchMutation);
-  const [data, setResults] = useState([]);
-  const [query, setQuery] = useState("");
-
-  async function doSearch(ruleFileContent = InitialFileContent) {
-    const { data } = await search({
-      query: "",
-      selector: ruleFileContent
-    });
-    setResults(data);
-  }
-
-  useEffect(() => {
-    doSearch();
-  }, []);
-
-  let items =
-    (data && (data as any).search && (data as any).search.items) || [];
-
-  if (query.trim() !== "") {
-    items = items.filter((item: any) =>
-      item.name.toLowerCase().includes(query.toLowerCase())
-    );
-  }
+  const {
+    rules: {
+      activeRuleId,
+      activeRule,
+      items,
+      createRule,
+      deleteRule,
+      setActiveRule,
+      renameRule
+    }
+  } = useContext(RulesServiceStore);
+  const { searchResults, searchQuery, setSearchQuery, editRule } = useContext(
+    ResultsServiceStore
+  );
 
   const createView = () => {
-    rulesStore.createRule("Untitled", "");
+    const rule = createRule("Untitled", "");
+    setActiveRule(rule.id);
   };
 
   const deleteView = () => {
-    rulesStore.deleteRule(rulesStore.activeRule);
+    deleteRule(activeRuleId);
   };
   const switchRule = (ruleId: string) => {
-    rulesStore.setActiveRule(ruleId);
+    setActiveRule(ruleId);
   };
 
   return (
@@ -75,11 +58,11 @@ function Search() {
       <Flex mb={3}>
         <Flex flexGrow={1}>
           <Editable
-            value={rulesStore.getActiveFileName}
+            value={activeRule ? activeRule.name : ""}
             fontSize={18}
             p={0.5}
             onChange={(e: any) => {
-              rulesStore.renameRule(rulesStore.activeRule, e);
+              renameRule(activeRuleId, e);
             }}
           >
             <EditablePreview />
@@ -92,16 +75,7 @@ function Search() {
             rightIcon="settings"
             variant="ghost"
             onClick={async () => {
-              createTempFile(
-                rulesStore.getActiveFileContent,
-                updatedContent => {
-                  rulesStore.setRuleContent(
-                    rulesStore.activeRule,
-                    updatedContent
-                  );
-                  doSearch(updatedContent);
-                }
-              );
+              editRule();
             }}
           >
             Edit rule
@@ -125,9 +99,10 @@ function Search() {
               Switch view
             </MenuButtonComponent>
             <MenuList>
-              {rulesStore.rules.map(rule => (
+              {items.map(rule => (
                 <MenuItem onClick={() => switchRule(rule.id)}>
                   {rule.name}
+                  {rule.id}
                 </MenuItem>
               ))}
               <MenuDivider />
@@ -142,8 +117,9 @@ function Search() {
             children={<Icon name="search" color="gray.300" />}
           />
           <Input
+            value={searchQuery}
             placeholder="Search..."
-            onChange={(e: any) => setQuery(e.target.value)}
+            onChange={(e: any) => setSearchQuery(e.target.value)}
           />
         </InputGroup>
       </Flex>
@@ -153,17 +129,17 @@ function Search() {
             return (
               <FixedSizeList
                 height={height}
-                itemCount={items.length}
+                itemCount={searchResults.length}
                 itemSize={30}
                 width={width}
               >
                 {({ index, style }: any) => {
-                  return items[index] ? (
+                  return searchResults[index] ? (
                     <Flex flexDirection="column" style={style}>
                       <ResultItem
-                        flake={items[index]}
+                        flake={searchResults[index]}
                         onClick={path => {
-                          openFile(path, items[index].location);
+                          openFile(path, searchResults[index].location);
                         }}
                       />
                     </Flex>
