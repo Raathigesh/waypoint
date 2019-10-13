@@ -3,7 +3,7 @@
   "displayName": "Insight",
   "description": "Know your app better",
   "publisher": "raathigeshan",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "engines": {
     "vscode": "^1.33.0"
   },
