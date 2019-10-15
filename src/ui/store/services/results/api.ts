@@ -11,7 +11,6 @@ export async function search(query: string, selector: string) {
           exportStatus
           filePath
           type
-          category
           location {
             start {
               line
@@ -22,8 +21,11 @@ export async function search(query: string, selector: string) {
               column
             }
           }
+          columnValues {
+            key
+            properties
+          }
         }
-        categories
       }
     }
   `;

@@ -12,7 +12,9 @@
       "runtimeExecutable": "${execPath}",
       "args": ["--extensionDevelopmentPath=${workspaceFolder}"],
       "outFiles": ["${workspaceFolder}/out/**/*.js"],
-      "env": {}
+      "env": {
+        "dev": "true"
+      }
     },
     {
       "name": "Extension Tests",

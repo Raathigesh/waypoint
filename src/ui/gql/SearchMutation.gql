@@ -16,7 +16,10 @@ mutation Search($query: String!, $selector: String!) {
           column
         }
       }
+      columnValues {
+        key
+        properties
+      }
     }
-    categories
   }
 }

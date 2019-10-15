@@ -102,7 +102,6 @@ function Search() {
               {items.map(rule => (
                 <MenuItem onClick={() => switchRule(rule.id)}>
                   {rule.name}
-                  {rule.id}
                 </MenuItem>
               ))}
               <MenuDivider />
@@ -137,6 +136,9 @@ function Search() {
                   return searchResults[index] ? (
                     <Flex flexDirection="column" style={style}>
                       <ResultItem
+                        columnDefinitions={
+                          (activeRule && activeRule.columnDefinitions) || []
+                        }
                         flake={searchResults[index]}
                         onClick={path => {
                           openFile(path, searchResults[index].location);
