@@ -42,7 +42,7 @@
     "build": "rimraf out && yarn compile && yarn build-ui",
     "package-ext": "vsce package --yarn",
     "publish-ext": "vsce publish --yarn",
-    "pretty": "prettier --single-quote --trailing-comma es5 --write '{app,__{tests,mocks}__}/**/*.js'"
+    "pretty": "prettier --write  \"src/**/*.{ts,tsx}\""
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
