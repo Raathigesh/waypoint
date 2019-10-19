@@ -1,4 +1,4 @@
-name: Production Build - Ubuntu Latest
+name: Production Build
 
 on: [push]
 
