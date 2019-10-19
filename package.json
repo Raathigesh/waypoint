@@ -3,7 +3,7 @@
   "displayName": "Insight",
   "description": "Know your app better",
   "publisher": "raathigeshan",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "engines": {
     "vscode": "^1.33.0"
   },
@@ -64,7 +64,7 @@
     "@types/rebass": "^3.0.3",
     "@types/styled-components": "4.1.10",
     "@types/styled-system": "^5.0.1",
-    "@urql/devtools": "^0.0.2",
+    "@urql/devtools": "^0.1.0",
     "babel-loader": "^8.0.5",
     "babel-plugin-styled-components": "^1.10.0",
     "cross-env": "^5.2.0",
@@ -106,15 +106,15 @@
     "module-alias": "^2.2.0",
     "nanoid": "^2.0.3",
     "node-fetch": "^2.6.0",
+    "react": "^16.8.6",
     "recursive-readdir": "^2.2.2",
     "reflect-metadata": "^0.1.13",
     "tmp": "^0.1.0",
     "type-graphql": "^0.17.4",
     "typedi": "^0.8.0",
-    "wonka": "^3.2.0",
-    "ws": "^7.1.1",
     "urql": "^1.0.5",
-    "react": "^16.8.6"
+    "wonka": "^3.2.0",
+    "ws": "^7.1.1"
   },
   "resolutions": {
     "graphql": "^14.3.1"

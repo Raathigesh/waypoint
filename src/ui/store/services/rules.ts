@@ -6,6 +6,7 @@ import { Rules } from "../models/rules";
 import { observable } from "mobx";
 import { performSearch } from "./results/utils";
 import { Results } from "../models/results";
+import { UIState } from "./ui";
 
 export class RulesService {
   @observable
@@ -14,9 +15,13 @@ export class RulesService {
   @observable
   public results: Results;
 
-  constructor(rules: Rules, results: Results) {
+  @observable
+  public uiState: UIState;
+
+  constructor(rules: Rules, results: Results, uiState: UIState) {
     this.rules = rules;
     this.results = results;
+    this.uiState = uiState;
     this.initialize();
   }
 
@@ -43,7 +48,10 @@ export class RulesService {
     }
 
     if (this.rules.activeRule) {
-      const initialResults = await performSearch(this.rules.activeRule.content);
+      const initialResults = await performSearch(
+        this.rules.activeRule.content,
+        this.uiState
+      );
       this.results.setResult(this.rules.activeRule.id, initialResults);
     }
 

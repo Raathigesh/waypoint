@@ -1,5 +1,14 @@
 import { search } from "./api";
+import { UIState } from "../ui";
 
-export async function performSearch(selector: string) {
-  return await search("", selector);
+export async function performSearch(selector: string, uiState: UIState) {
+  try {
+    uiState.setLoading(true);
+    const results = await search("", selector);
+    return results;
+  } catch (e) {
+  } finally {
+    uiState.setLoading(false);
+  }
+  return [];
 }

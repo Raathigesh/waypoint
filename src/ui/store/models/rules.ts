@@ -1,6 +1,7 @@
 import { observable, IObservableArray, computed, action } from "mobx";
 import * as nanoid from "nanoid";
 import Rule from "./rule";
+import { InitialFileContent } from "ui/Const";
 
 export class Rules {
   @observable
@@ -9,11 +10,11 @@ export class Rules {
   public items: IObservableArray<Rule> = observable([]);
 
   @action.bound
-  public createRule(name: string, content: string) {
+  public createRule(name: string, content?: string) {
     const rule = new Rule();
     rule.id = nanoid();
     rule.name = name;
-    rule.content = content;
+    rule.content = content || InitialFileContent;
     this.items.push(rule);
     return rule;
   }

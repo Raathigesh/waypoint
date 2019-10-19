@@ -19,9 +19,11 @@ import {
   Editable,
   EditablePreview,
   EditableInput,
-  MenuDivider
+  MenuDivider,
+  CircularProgress
 } from "@chakra-ui/core";
-import { RulesServiceStore, ResultsServiceStore } from "./store";
+import { RulesServiceStore, ResultsServiceStore, UIStore } from "./store";
+import Loading from "./Loading";
 
 const MenuButtonComponent: any = MenuButton;
 
@@ -41,8 +43,10 @@ function Search() {
     ResultsServiceStore
   );
 
+  const { isResultLoading } = useContext(UIStore);
+
   const createView = () => {
-    const rule = createRule("Untitled", "");
+    const rule = createRule("Untitled");
     setActiveRule(rule.id);
   };
 
@@ -122,7 +126,8 @@ function Search() {
           />
         </InputGroup>
       </Flex>
-      <Flex flexDirection="column" flexGrow={1} height="300px">
+      <Loading isLoading={isResultLoading} />
+      <Flex flexDirection="column" flexGrow={1}>
         <AutoSizer>
           {({ height, width }: any) => {
             return (

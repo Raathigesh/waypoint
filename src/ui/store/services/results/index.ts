@@ -5,6 +5,7 @@ import { Flake } from "entities/Symbol";
 import { search } from "./api";
 import { createTempFile } from "ui/EventBus";
 import { performSearch } from "./utils";
+import { UIState } from "../ui";
 
 export class ResultsService {
   @observable
@@ -16,9 +17,13 @@ export class ResultsService {
   @observable
   public searchQuery: string = "";
 
-  constructor(results: Results, rules: Rules) {
+  @observable
+  public uiState: UIState;
+
+  constructor(results: Results, rules: Rules, uiState: UIState) {
     this.results = results;
     this.rules = rules;
+    this.uiState = uiState;
   }
 
   @action.bound
@@ -35,7 +40,10 @@ export class ResultsService {
           this.rules.activeRule.content !== updatedContent
         ) {
           this.rules.activeRule.content = updatedContent;
-          const results = await performSearch(this.rules.activeRule.content);
+          const results = await performSearch(
+            this.rules.activeRule.content,
+            this.uiState
+          );
           this.results.setResult(this.rules.activeRule.id, results);
         }
       });
