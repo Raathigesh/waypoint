@@ -41,7 +41,8 @@
     "build-ui": "webpack --env.production --config ./webpack.config.js",
     "build": "rimraf out && yarn compile && yarn build-ui",
     "package-ext": "vsce package --yarn",
-    "publish-ext": "vsce publish --yarn"
+    "publish-ext": "vsce publish --yarn",
+    "pretty": "prettier --single-quote --trailing-comma es5 --write '{app,__{tests,mocks}__}/**/*.js'"
   },
   "devDependencies": {
     "@babel/core": "^7.4.3",
@@ -74,9 +75,12 @@
     "graphql-tag": "^2.10.1",
     "html-webpack-plugin": "^3.2.0",
     "html-webpack-template": "^6.2.0",
+    "husky": "^3.0.9",
     "mobx": "^5.14.0",
     "mobx-react-lite": "^1.4.1",
     "mobx-utils": "^5.4.1",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^2.0.0",
     "react": "^16.8.6",
     "react-color": "^2.17.2",
     "react-dom": "^16.8.6",
@@ -123,5 +127,10 @@
     "common": "./out/common",
     "entities": "./out/entities",
     "indexer": "./out/indexer"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   }
 }
