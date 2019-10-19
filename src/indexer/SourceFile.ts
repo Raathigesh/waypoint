@@ -10,7 +10,7 @@ import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import { NodePath } from "babel-traverse";
 import FunctionDefinition from "./FunctionDefinition";
-import ClassDefinition from "./classDefinition";
+import ClassDefinition from "./ClassDefinition";
 import { getFileType } from "../extension/utils/file";
 import VariableDeclaration from "./VariableDeclaration";
 import ImportStatement from "./ImportStatement";
