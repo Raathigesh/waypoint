@@ -1,6 +1,6 @@
-name: Release
+name: Production Build
 
-on: [release]
+on: [push]
 
 jobs:
   build:
@@ -8,7 +8,8 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [10.x]
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        node-version: [8.x, 10.x, 12.x]
 
     steps:
       - uses: actions/checkout@v1
@@ -16,14 +17,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - name: yarn install
+      - name: yarn install, build, and test
         run: |
           yarn install
+          yarn build
         env:
           CI: true
-      - name: Vscode release plugin
-        uses: JCofman/vscodeaction@master
-        env:
-          PUBLISHER_TOKEN: ${{ secrets.PUBLISHER_TOKEN }}
-        with:
-          args: publish --yarn -p $PUBLISHER_TOKEN
