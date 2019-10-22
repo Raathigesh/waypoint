@@ -26,6 +26,7 @@ export async function search(query: string, selector: string) {
             properties
           }
         }
+        errorMessage
       }
     }
   `;
@@ -34,5 +35,8 @@ export async function search(query: string, selector: string) {
     query,
     selector
   });
-  return results.search.items;
+  return {
+    items: results.search.items,
+    errorMessage: results.search.errorMessage
+  };
 }

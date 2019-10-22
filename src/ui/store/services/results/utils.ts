@@ -10,5 +10,8 @@ export async function performSearch(selector: string, uiState: UIState) {
   } finally {
     uiState.setLoading(false);
   }
-  return [];
+  return {
+    items: [],
+    errorMessage: undefined
+  };
 }

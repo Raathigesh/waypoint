@@ -52,7 +52,8 @@ export class RulesService {
         this.rules.activeRule.content,
         this.uiState
       );
-      this.results.setResult(this.rules.activeRule.id, initialResults);
+      this.results.setResult(this.rules.activeRule.id, initialResults.items);
+      this.results.setErrorMessage(initialResults.errorMessage);
     }
 
     this.observeRuleChanges();

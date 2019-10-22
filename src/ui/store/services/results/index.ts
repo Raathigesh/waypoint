@@ -44,7 +44,8 @@ export class ResultsService {
             this.rules.activeRule.content,
             this.uiState
           );
-          this.results.setResult(this.rules.activeRule.id, results);
+          this.results.setResult(this.rules.activeRule.id, results.items);
+          this.results.setErrorMessage(results.errorMessage);
         }
       });
     }
@@ -62,5 +63,10 @@ export class ResultsService {
         .toLocaleLowerCase()
         .includes(this.searchQuery.toLocaleLowerCase())
     );
+  }
+
+  @computed
+  public get errorMessage() {
+    return this.results.errorMessage;
   }
 }

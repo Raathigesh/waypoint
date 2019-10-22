@@ -39,9 +39,13 @@ function Search() {
       renameRule
     }
   } = useContext(RulesServiceStore);
-  const { searchResults, searchQuery, setSearchQuery, editRule } = useContext(
-    ResultsServiceStore
-  );
+  const {
+    searchResults,
+    searchQuery,
+    setSearchQuery,
+    editRule,
+    errorMessage
+  } = useContext(ResultsServiceStore);
 
   const { isResultLoading } = useContext(UIStore);
 
@@ -127,6 +131,7 @@ function Search() {
         </InputGroup>
       </Flex>
       <Loading isLoading={isResultLoading} />
+      <pre>{errorMessage}</pre>
       <Flex flexDirection="column" flexGrow={1}>
         <AutoSizer>
           {({ height, width }: any) => {
