@@ -1,3 +1,4 @@
+import * as fuzzysort from "fuzzysort";
 import { Results } from "../../models/results";
 import { computed, observable, action } from "mobx";
 import { Rules } from "../../models/rules";
@@ -58,11 +59,13 @@ export class ResultsService {
 
   @computed
   public get searchResults() {
-    return this.activeResults.filter(result =>
-      result.name
-        .toLocaleLowerCase()
-        .includes(this.searchQuery.toLocaleLowerCase())
-    );
+    if (this.searchQuery.trim() === "") {
+      return this.activeResults;
+    }
+
+    return fuzzysort
+      .go(this.searchQuery, this.activeResults, { key: "name" })
+      .map(result => result.obj);
   }
 
   @computed
