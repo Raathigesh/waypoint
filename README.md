@@ -37,3 +37,14 @@ function View() {
   };
 }
 ```
+
+#### Column properties
+
+**lozenge**
+
+- value - Text to display in the lozenge
+- color - Color of the lozenge. Supported colors are "red", "blue", "green" and "white"
+
+**text**
+
+- value - Text to display

@@ -36,17 +36,29 @@ export default function ResultItem({
         </Link>
       </Flex>
       {columnDefinitions.map(columnDefinition => {
-        return (
-          <Flex
-            alignItems="center"
-            flex={1}
-            width={columnDefinition.initialWidth}
-          >
-            <Badge variantColor={columnValuesMap[columnDefinition.key].color}>
+        if (columnDefinition.type === "lozenge") {
+          return (
+            <Flex
+              alignItems="center"
+              flex={1}
+              width={columnDefinition.initialWidth}
+            >
+              <Badge variantColor={columnValuesMap[columnDefinition.key].color}>
+                {columnValuesMap[columnDefinition.key].value}
+              </Badge>
+            </Flex>
+          );
+        } else if (columnDefinition.type === "text") {
+          return (
+            <Flex
+              alignItems="center"
+              flex={1}
+              width={columnDefinition.initialWidth}
+            >
               {columnValuesMap[columnDefinition.key].value}
-            </Badge>
-          </Flex>
-        );
+            </Flex>
+          );
+        }
       })}
     </Flex>
   );
