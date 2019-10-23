@@ -1,26 +1,17 @@
-import {
-  ExportDefaultDeclaration,
-  ExportNamedDeclaration,
-  ImportDeclaration
-} from "babel-types";
+import { ExportDefaultDeclaration, ExportNamedDeclaration } from "babel-types";
 import { readFile } from "fs";
 import { promisify } from "util";
 import * as nanoid from "nanoid";
 import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import { NodePath } from "babel-traverse";
-import FunctionDefinition from "./FunctionDefinition";
-import ClassDefinition from "./ClassDefinition";
 import { getFileType } from "../extension/utils/file";
-import VariableDeclaration from "./VariableDeclaration";
 import ImportStatement from "./ImportStatement";
-import { SymbolLocation } from "./ESModuleItem";
+import ESModuleItem from "./ESModuleItem";
 
 export default class SourceFile {
   public path: string = "";
-  public functions: FunctionDefinition[] = [];
-  public classes: ClassDefinition[] = [];
-  public variables: VariableDeclaration[] = [];
+  public symbols: ESModuleItem[] = [];
   public importStatements: ImportStatement[] = [];
 
   public async parse(filePath: string) {
@@ -31,161 +22,42 @@ export default class SourceFile {
 
     traverse(ast, {
       ExportNamedDeclaration: (path: NodePath<ExportNamedDeclaration>) => {
-        this.extractNamedExport(path);
+        this.extractExport(path, "named");
       },
       ExportDefaultDeclaration: (path: NodePath<ExportDefaultDeclaration>) => {
-        this.extractDefaultExport(path);
-      },
-      ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
-        this.extractImportStatements(path);
+        this.extractExport(path, "default");
       }
     });
   }
 
-  public isImportingSymbol(name: string, source: string) {
-    return this.importStatements
-      .filter(item => item.path === source)
-      .some(statement => {
-        return (
-          statement.defaultImportName == name ||
-          statement.namedImports.some(
-            namedImport =>
-              namedImport.name === name || namedImport.aliasName === name
-          )
-        );
-      });
-  }
-
-  public findSymbolInLocation(line: number, column: number) {
-    const functionInLocation = this.functions.find(fun => {
-      if (!fun.location) {
-        return false;
-      }
-      return this.isWithinLocation(line, column, fun.location);
-    });
-    if (functionInLocation) {
-      return functionInLocation;
-    }
-
-    const classInLocation = this.classes.find(cls => {
-      if (!cls.location) {
-        return false;
-      }
-      return this.isWithinLocation(line, column, cls.location);
-    });
-    if (classInLocation) {
-      return classInLocation;
-    }
-
-    const varInLocation = this.variables.find(v => {
-      if (!v.location) {
-        return false;
-      }
-      return this.isWithinLocation(line, column, v.location);
-    });
-    if (varInLocation) {
-      return varInLocation;
-    }
-
-    return null;
-  }
-
-  private isWithinLocation(
-    line: number,
-    column: number,
-    { start, end }: SymbolLocation
+  private extractExport(
+    path: NodePath<ExportDefaultDeclaration | ExportNamedDeclaration>,
+    mode: "default" | "named"
   ) {
-    return (
-      start.line >= line &&
-      end.line <= line &&
-      column >= start.column &&
-      column <= end.column
-    );
-  }
-
-  private extractImportStatements(path: NodePath<ImportDeclaration>) {
-    const resolveMap = {
-      "app-simple-plans": "./src/app-simple-plans"
-    };
-
-    const source = path.node.source.value;
-    const importStatement = new ImportStatement();
-
-    let fullSourcePath = source;
-    for (const [alias, relativePath] of Object.entries(resolveMap)) {
-      if (fullSourcePath.startsWith(alias)) {
-        fullSourcePath = fullSourcePath.replace(alias, relativePath);
-      }
-    }
-    importStatement.path = fullSourcePath;
-
-    path.node.specifiers.map(specifier => {
-      if (specifier.type === "ImportDefaultSpecifier") {
-        importStatement.defaultImportName = specifier.local.name;
-      } else if (specifier.type === "ImportSpecifier") {
-        importStatement.namedImports.push({
-          name: specifier.local.name
-        });
-      }
-    });
-
-    this.importStatements.push(importStatement);
-  }
-
-  private extractDefaultExport(path: NodePath<ExportDefaultDeclaration>) {
     const declaration = path.node.declaration;
-    if (declaration && declaration.type === "FunctionDeclaration") {
-      const functionDefinition = new FunctionDefinition();
-      functionDefinition.id = nanoid();
-      functionDefinition.name = (declaration.id && declaration.id.name) || "";
-      functionDefinition.exportStatus = "default";
-      functionDefinition.location = path.node.loc;
-      this.functions.push(functionDefinition);
-    } else if (declaration && declaration.type === "ClassDeclaration") {
-      const classDefinition = new ClassDefinition();
-      classDefinition.id = nanoid();
-      classDefinition.name = (declaration.id && declaration.id.name) || "";
-      classDefinition.exportStatus = "default";
-      classDefinition.location = path.node.loc;
-      this.classes.push(classDefinition);
-    } else if (declaration && declaration.type === "VariableDeclaration") {
-      const variableDeclaration = new VariableDeclaration();
-      variableDeclaration.id = nanoid();
-      variableDeclaration.name =
-        (declaration.declarations[0] &&
-          declaration.declarations[0].id &&
-          (declaration.declarations[0].id as any).name) ||
-        "";
-      variableDeclaration.exportStatus = "default";
-      variableDeclaration.location = path.node.loc;
-      this.variables.push(variableDeclaration);
-    }
-  }
+    if (declaration) {
+      let name = "none";
 
-  private extractNamedExport(path: NodePath<ExportNamedDeclaration>) {
-    const declaration = path.node.declaration;
-    if (declaration && declaration.type === "FunctionDeclaration") {
-      const functionDefinition = new FunctionDefinition();
-      functionDefinition.name = (declaration.id && declaration.id.name) || "";
-      functionDefinition.exportStatus = "named";
-      functionDefinition.location = path.node.loc;
-      this.functions.push(functionDefinition);
-    } else if (declaration && declaration.type === "ClassDeclaration") {
-      const classDefinition = new ClassDefinition();
-      classDefinition.name = (declaration.id && declaration.id.name) || "";
-      classDefinition.exportStatus = "named";
-      classDefinition.location = path.node.loc;
-      this.classes.push(classDefinition);
-    } else if (declaration && declaration.type === "VariableDeclaration") {
-      const variableDeclaration = new VariableDeclaration();
-      variableDeclaration.name =
-        (declaration.declarations[0] &&
+      if (
+        declaration.type === "FunctionDeclaration" ||
+        declaration.type === "ClassDeclaration" ||
+        declaration.type === "TypeAlias"
+      ) {
+        name = declaration.id && declaration.id.name;
+      } else if (declaration.type === "VariableDeclaration") {
+        name =
+          declaration.declarations[0] &&
           declaration.declarations[0].id &&
-          (declaration.declarations[0].id as any).name) ||
-        "";
-      variableDeclaration.exportStatus = "named";
-      variableDeclaration.location = path.node.loc;
-      this.variables.push(variableDeclaration);
+          (declaration.declarations[0].id as any).name;
+      }
+
+      const symbol = new ESModuleItem();
+      symbol.id = nanoid();
+      symbol.name = name;
+      symbol.exportStatus = mode;
+      symbol.type = declaration.type as any;
+      symbol.location = path.node.loc;
+      this.symbols.push(symbol);
     }
   }
 

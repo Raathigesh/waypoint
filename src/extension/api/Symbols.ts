@@ -49,75 +49,30 @@ export default class SymbolsResolver {
       const selectorFn = viewFn().filter;
 
       Object.entries(this.indexer.files).forEach(([path, file]) => {
-        const selectorResult = selectorFn({
-          path
+        file.symbols.forEach(symbol => {
+          const selectorResult = selectorFn({
+            path,
+            ...symbol
+          });
+          if (selectorResult.include) {
+            const columnValues = selectorResult.columns.map((column: any) => {
+              const columnValue = new ColumnValue();
+              columnValue.key = column.key;
+              columnValue.properties = JSON.stringify(column.properties);
+              return columnValue;
+            });
+
+            symbols.push({
+              id: symbol.id,
+              exportStatus: symbol.exportStatus,
+              filePath: path,
+              name: symbol.name,
+              type: symbol.type,
+              location: symbol.location,
+              columnValues
+            });
+          }
         });
-        file.classes
-          .filter(item => item.name.toLowerCase().includes(query.toLowerCase()))
-          .forEach(classSymbol => {
-            if (selectorResult.include) {
-              const columnValues = selectorResult.columns.map((column: any) => {
-                const columnValue = new ColumnValue();
-                columnValue.key = column.key;
-                columnValue.properties = JSON.stringify(column.properties);
-                return columnValue;
-              });
-
-              symbols.push({
-                id: classSymbol.id,
-                exportStatus: classSymbol.exportStatus,
-                filePath: path,
-                name: classSymbol.name,
-                type: "class",
-                location: classSymbol.location,
-                columnValues
-              });
-            }
-          });
-
-        file.functions
-          .filter(item => item.name.toLowerCase().includes(query.toLowerCase()))
-          .forEach(functionSymbol => {
-            if (selectorResult.include) {
-              const columnValues = selectorResult.columns.map((column: any) => {
-                const columnValue = new ColumnValue();
-                columnValue.key = column.key;
-                columnValue.properties = JSON.stringify(column.properties);
-                return columnValue;
-              });
-              symbols.push({
-                id: functionSymbol.id,
-                exportStatus: functionSymbol.exportStatus,
-                filePath: path,
-                name: functionSymbol.name,
-                type: "function",
-                location: functionSymbol.location,
-                columnValues
-              });
-            }
-          });
-
-        file.variables
-          .filter(item => item.name.toLowerCase().includes(query.toLowerCase()))
-          .forEach(variableSymbol => {
-            if (selectorResult.include) {
-              const columnValues = selectorResult.columns.map((column: any) => {
-                const columnValue = new ColumnValue();
-                columnValue.key = column.key;
-                columnValue.properties = JSON.stringify(column.properties);
-                return columnValue;
-              });
-              symbols.push({
-                id: variableSymbol.id,
-                exportStatus: variableSymbol.exportStatus,
-                filePath: path,
-                name: variableSymbol.name,
-                type: "variable",
-                location: variableSymbol.location,
-                columnValues
-              });
-            }
-          });
       });
 
       const result = new SearchResult();

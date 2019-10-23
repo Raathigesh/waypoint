@@ -16,4 +16,10 @@ export default class ESModuleItem {
   public name: string = "";
   public exportStatus: ExportStatus = "none";
   public location?: SymbolLocation;
+  public type:
+    | "FunctionDeclaration"
+    | "ClassDeclaration"
+    | "VariableDeclaration"
+    | "TypeAlias"
+    | "unknown" = "unknown";
 }

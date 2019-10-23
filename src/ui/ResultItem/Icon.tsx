@@ -1,4 +1,4 @@
-import { Package, Code } from "react-feather";
+import { Package, Code, Type } from "react-feather";
 import React from "react";
 import { FlakeType } from "entities/Symbol";
 
@@ -8,8 +8,10 @@ interface Props {
 
 export default function FlakeIcon({ type }: Props) {
   let Icon = Code;
-  if (type === "class") {
+  if (type === "ClassDeclaration") {
     Icon = Package;
+  } else if (type === "TypeAlias") {
+    Icon = Type;
   }
   return <Icon size={11} />;
 }

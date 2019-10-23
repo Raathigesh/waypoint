@@ -2,7 +2,12 @@ import { ObjectType, Field } from "type-graphql";
 import { Location } from "./Location";
 import { ColumnValue } from "./ColumnValue";
 
-export type FlakeType = "function" | "variable" | "class" | "unknown";
+export type FlakeType =
+  | "FunctionDeclaration"
+  | "ClassDeclaration"
+  | "VariableDeclaration"
+  | "TypeAlias"
+  | "unknown";
 
 @ObjectType()
 export class Flake {
