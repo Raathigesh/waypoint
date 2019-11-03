@@ -1,5 +1,4 @@
 import { useContext } from "react";
-import { ThemeContext } from "styled-components";
 
 export interface ThemeColors {
   backgroundLight: string;
@@ -15,13 +14,3 @@ const DefaultTheme: Theme = {
 };
 
 export default DefaultTheme;
-
-export const useTheme = () => {
-  const theme = useContext(ThemeContext);
-  return theme as Theme;
-};
-
-export const getThemeColors = () => {
-  const theme = useTheme();
-  return theme.colors;
-};

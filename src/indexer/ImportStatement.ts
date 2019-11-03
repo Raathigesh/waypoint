@@ -1,3 +1,5 @@
+import ESModuleItem from "./ESModuleItem";
+
 export default class ImportStatement {
   public path: string = "";
   public defaultImportName: string | null = null;
@@ -5,4 +7,5 @@ export default class ImportStatement {
     name: string;
     aliasName?: string;
   }[] = [];
+  public usages: ESModuleItem[] = [];
 }

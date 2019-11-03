@@ -4,7 +4,6 @@ import {
   defaultExchanges,
   subscriptionExchange
 } from "urql";
-import { devtoolsExchange } from "@urql/devtools";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 
 declare var PRODUCTION: boolean;
@@ -22,7 +21,6 @@ export const client = createClient({
   url: HTTP_URL,
   exchanges: [
     ...defaultExchanges,
-    devtoolsExchange,
     subscriptionExchange({
       forwardSubscription: operation => subscriptionClient.request(operation)
     })

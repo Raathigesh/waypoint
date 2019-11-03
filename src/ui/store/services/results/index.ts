@@ -1,19 +1,15 @@
-import * as fuzzysort from "fuzzysort";
-import { Results } from "../../models/results";
-import { computed, observable, action } from "mobx";
-import { Rules } from "../../models/rules";
-import { Flake } from "entities/Symbol";
+import { computed, observable, action, reaction } from "mobx";
+
+import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { search } from "./api";
 import { createTempFile } from "ui/EventBus";
 import { performSearch } from "./utils";
 import { UIState } from "../ui";
+import { SearchResults } from "ui/store/models/SearchResults";
 
 export class ResultsService {
   @observable
-  public results: Results;
-
-  @observable
-  public rules: Rules;
+  public searchResults: SearchResults;
 
   @observable
   public searchQuery: string = "";
@@ -21,10 +17,17 @@ export class ResultsService {
   @observable
   public uiState: UIState;
 
-  constructor(results: Results, rules: Rules, uiState: UIState) {
-    this.results = results;
-    this.rules = rules;
+  constructor(searchResults: SearchResults, uiState: UIState) {
+    this.searchResults = searchResults;
     this.uiState = uiState;
+
+    reaction(
+      () => this.searchQuery,
+      async query => {
+        const results = await performSearch(query, this.uiState);
+        this.searchResults.setResults(results.items);
+      }
+    );
   }
 
   @action.bound
@@ -33,43 +36,12 @@ export class ResultsService {
   }
 
   @action.bound
-  public async editRule() {
-    if (this.rules.activeRule) {
-      createTempFile(this.rules.activeRule.content, async updatedContent => {
-        if (
-          this.rules.activeRule &&
-          this.rules.activeRule.content !== updatedContent
-        ) {
-          this.rules.activeRule.content = updatedContent;
-          const results = await performSearch(
-            this.rules.activeRule.content,
-            this.uiState
-          );
-          this.results.setResult(this.rules.activeRule.id, results.items);
-          this.results.setErrorMessage(results.errorMessage);
-        }
-      });
-    }
-  }
-
-  @computed
-  public get activeResults(): Flake[] {
-    return this.results.items.get(this.rules.activeRuleId) || [];
-  }
-
-  @computed
-  public get searchResults() {
-    if (this.searchQuery.trim() === "") {
-      return this.activeResults;
-    }
-
-    return fuzzysort
-      .go(this.searchQuery, this.activeResults, { key: "name" })
-      .map(result => result.obj);
-  }
-
-  @computed
-  public get errorMessage() {
-    return this.results.errorMessage;
+  public async search(query: string) {
+    const results = await performSearch(query, this.uiState);
+    return results.items.map(item => ({
+      value: item.name,
+      label: `${item.name} : ${item.filePath}`,
+      symbol: item
+    }));
   }
 }

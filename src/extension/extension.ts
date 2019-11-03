@@ -1,8 +1,8 @@
 require("module-alias/register");
 import * as vscode from "vscode";
 import ContentProvider from "./ContentProvider";
-import { join } from "path";
-import { ChildProcess } from "child_process";
+import { join, resolve } from "path";
+import { ChildProcess, spawn } from "child_process";
 import { executeQuery } from "common/messaging/graphql";
 import gql from "graphql-tag";
 import { getUIMessenger } from "common/messaging/ui";
@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
     initialize(context);
   });
-
+  initialize(context);
   if (process.env.dev) {
     initialize(context);
   }
@@ -44,7 +44,7 @@ async function initialize(context: vscode.ExtensionContext) {
       reindex
     }
   `;
-  executeQuery(query, undefined);
+  //executeQuery(query, undefined);
 
   const contentProvider = new ContentProvider();
   let currentPanel: vscode.WebviewPanel | undefined = undefined;

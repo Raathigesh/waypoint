@@ -1,4 +1,8 @@
-import { ExportDefaultDeclaration, ExportNamedDeclaration } from "babel-types";
+import {
+  ExportDefaultDeclaration,
+  ExportNamedDeclaration,
+  Identifier
+} from "babel-types";
 import { readFile } from "fs";
 import { promisify } from "util";
 import * as nanoid from "nanoid";
@@ -8,6 +12,7 @@ import { NodePath } from "babel-traverse";
 import { getFileType } from "../extension/utils/file";
 import ImportStatement from "./ImportStatement";
 import ESModuleItem from "./ESModuleItem";
+import { ImportDeclaration } from "@babel/types";
 
 export default class SourceFile {
   public path: string = "";
@@ -26,6 +31,9 @@ export default class SourceFile {
       },
       ExportDefaultDeclaration: (path: NodePath<ExportDefaultDeclaration>) => {
         this.extractExport(path, "default");
+      },
+      ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
+        this.extractImport(path);
       }
     });
   }
@@ -52,13 +60,30 @@ export default class SourceFile {
       }
 
       const symbol = new ESModuleItem();
-      symbol.id = nanoid();
+      symbol.id = "";
       symbol.name = name;
       symbol.exportStatus = mode;
       symbol.type = declaration.type as any;
       symbol.location = path.node.loc;
       this.symbols.push(symbol);
     }
+  }
+
+  private extractImport(path: NodePath<ImportDeclaration>) {
+    const defaultSpecifier = path.node.specifiers.find(
+      specifier => specifier.type === "ImportDefaultSpecifier"
+    );
+
+    const importDeclaration: ImportStatement = {
+      path: path.node.source.value,
+      defaultImportName:
+        (defaultSpecifier && defaultSpecifier.local.name) || null,
+      namedImports: path.node.specifiers
+        .filter(specifier => specifier.type === "ImportSpecifier")
+        .map(specifier => ({ name: specifier.local.name })),
+      usages: []
+    };
+    this.importStatements.push(importDeclaration);
   }
 
   private getAST(content: string, path: string) {

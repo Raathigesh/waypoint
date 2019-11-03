@@ -1,21 +1,17 @@
 import { createContext } from "react";
-import { Rules } from "./models/rules";
-import { Results } from "./models/results";
-import { RulesService } from "./services/rules";
+import { SearchResults } from "./models/SearchResults";
 import { ResultsService } from "./services/results";
 import { UIState } from "./services/ui";
+import { ReferenceService } from "./services/references";
 
 const ui = new UIState();
 export const UIStore = createContext(ui);
 
-const rules = new Rules();
-export const RulesStore = createContext(rules);
+const searchResults = new SearchResults();
+export const SearchResultStore = createContext(searchResults);
 
-const results = new Results();
-export const ResultsStore = createContext(results);
-
-export const rulesService = new RulesService(rules, results, ui);
-export const RulesServiceStore = createContext(rulesService);
-
-export const resultsService = new ResultsService(results, rules, ui);
+export const resultsService = new ResultsService(searchResults, ui);
 export const ResultsServiceStore = createContext(resultsService);
+
+export const referenceService = new ReferenceService();
+export const ReferenceServiceStore = createContext(referenceService);

@@ -4,17 +4,18 @@ import {
   Query,
   Resolver,
   Subscription,
-  Root
+  Root,
+  Args
 } from "type-graphql";
-import { ContainerInstance, Service } from "typedi";
-
+import { ContainerInstance, Service, Inject } from "typedi";
 import Indexer from "indexer/Indexer";
 import Project from "indexer/Project";
 import { pubSub } from "common/pubSub";
 import { Status } from "./Status";
 import { SearchResult } from "../../entities/SearchResult";
-import { Flake } from "entities/Symbol";
-import { ColumnValue } from "entities/ColumnValue";
+import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
+import { WorkspaceSymbolResponse } from "./types";
+import { GetReferencesArgs } from "./GetReferenceArgs";
 
 @Service()
 @Resolver(SearchResult)
@@ -39,50 +40,24 @@ export default class SymbolsResolver {
   }
 
   @Mutation(returns => SearchResult)
-  public search(
-    @Arg("query") query: string,
-    @Arg("selector") selector: string
-  ) {
-    const symbols: Flake[] = [];
+  public async search(@Arg("query") query: string) {
+    const symbols: GqlSymbolInformation[] = [];
     try {
-      const viewFn = eval(`(${selector})`);
-      const selectorFn = viewFn().filter;
-
-      Object.entries(this.indexer.files).forEach(([path, file]) => {
-        file.symbols.forEach(symbol => {
-          const selectorResult = selectorFn({
-            path,
-            ...symbol
-          });
-          if (selectorResult.include) {
-            const columnValues = selectorResult.columns.map((column: any) => {
-              const columnValue = new ColumnValue();
-              columnValue.key = column.key;
-              columnValue.properties = JSON.stringify(column.properties);
-              return columnValue;
-            });
-
-            symbols.push({
-              id: symbol.id,
-              exportStatus: symbol.exportStatus,
-              filePath: path,
-              name: symbol.name,
-              type: symbol.type,
-              location: symbol.location,
-              columnValues
-            });
-          }
-        });
-      });
-
       const result = new SearchResult();
       result.items = symbols;
-
       return result;
     } catch (e) {
       const result = new SearchResult();
       result.errorMessage = e.stack;
       return result;
     }
+  }
+
+  @Query(returns => String)
+  public async findReferences(@Args()
+  {
+    symbol
+  }: GetReferencesArgs) {
+    return "";
   }
 }

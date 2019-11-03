@@ -6,7 +6,7 @@ export class Position {
   line: number = 0;
 
   @Field({ nullable: true })
-  column: number = 0;
+  character: number = 0;
 }
 
 @ObjectType()

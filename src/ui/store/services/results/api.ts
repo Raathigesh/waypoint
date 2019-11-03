@@ -2,28 +2,23 @@ import gql from "graphql-tag";
 import { sendMutation } from "ui/util/graphql";
 import { SearchResult } from "entities/SearchResult";
 
-export async function search(query: string, selector: string) {
+export async function search(query: string) {
   const mutation = gql`
-    mutation Search($query: String!, $selector: String!) {
-      search(query: $query, selector: $selector) {
+    mutation Search($query: String!) {
+      search(query: $query) {
         items {
           name
-          exportStatus
           filePath
-          type
+          kind
           location {
             start {
               line
-              column
+              character
             }
             end {
               line
-              column
+              character
             }
-          }
-          columnValues {
-            key
-            properties
           }
         }
         errorMessage
@@ -32,8 +27,7 @@ export async function search(query: string, selector: string) {
   `;
 
   const results = await sendMutation<{ search: SearchResult }>(mutation, {
-    query,
-    selector
+    query
   });
   return {
     items: results.search.items,
