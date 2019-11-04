@@ -1,11 +1,15 @@
 import ESModuleItem from "./ESModuleItem";
 
-export default class ImportStatement {
-  public path: string = "";
-  public defaultImportName: string | null = null;
-  public namedImports: {
-    name: string;
-    aliasName?: string;
-  }[] = [];
-  public usages: ESModuleItem[] = [];
+export interface ImportSpecifier {
+  name: string;
+  isDefault: boolean;
+  references: {
+    containerName: string;
+    containerType: string;
+  }[];
+}
+
+export default interface ImportStatement {
+  path: string;
+  specifiers: ImportSpecifier[];
 }

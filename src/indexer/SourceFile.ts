@@ -10,7 +10,7 @@ import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import { NodePath } from "babel-traverse";
 import { getFileType } from "../extension/utils/file";
-import ImportStatement from "./ImportStatement";
+import ImportStatement, { ImportSpecifier } from "./ImportStatement";
 import ESModuleItem from "./ESModuleItem";
 import { ImportDeclaration } from "@babel/types";
 
@@ -70,19 +70,41 @@ export default class SourceFile {
   }
 
   private extractImport(path: NodePath<ImportDeclaration>) {
-    const defaultSpecifier = path.node.specifiers.find(
+    const defaultSpecifierNode = path.node.specifiers.find(
       specifier => specifier.type === "ImportDefaultSpecifier"
     );
 
     const importDeclaration: ImportStatement = {
       path: path.node.source.value,
-      defaultImportName:
-        (defaultSpecifier && defaultSpecifier.local.name) || null,
-      namedImports: path.node.specifiers
-        .filter(specifier => specifier.type === "ImportSpecifier")
-        .map(specifier => ({ name: specifier.local.name })),
-      usages: []
+      specifiers: []
     };
+
+    if (defaultSpecifierNode) {
+      const referencePaths =
+        path.scope.bindings[defaultSpecifierNode.local.name].referencePaths;
+
+      const defaultSpecifier: ImportSpecifier = {
+        isDefault: true,
+        name: defaultSpecifierNode.local.name,
+        references: referencePaths.map(referencePath => {
+
+          const functionParent = referencePath.getFunctionParent();
+
+          let containerName = '';
+          if (functionParent.type === "ArrowFunctionExpression") {
+            containerName = functionParent.
+          } else if (functionParent.type === "") {
+            containerName = functionParent.node.id.name
+          }
+
+          return {
+            containerName,
+            containerType: "FunctionDeclaration"
+          }
+        })
+      };
+      importDeclaration.specifiers.push(defaultSpecifier);
+    }
     this.importStatements.push(importDeclaration);
   }
 
