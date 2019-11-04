@@ -87,20 +87,19 @@ export default class SourceFile {
         isDefault: true,
         name: defaultSpecifierNode.local.name,
         references: referencePaths.map(referencePath => {
-
           const functionParent = referencePath.getFunctionParent();
 
-          let containerName = '';
+          let containerName = "";
           if (functionParent.type === "ArrowFunctionExpression") {
-            containerName = functionParent.
+            containerName = functionParent;
           } else if (functionParent.type === "") {
-            containerName = functionParent.node.id.name
+            containerName = functionParent.node.id.name;
           }
 
           return {
             containerName,
             containerType: "FunctionDeclaration"
-          }
+          };
         })
       };
       importDeclaration.specifiers.push(defaultSpecifier);
