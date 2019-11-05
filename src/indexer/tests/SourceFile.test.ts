@@ -24,20 +24,65 @@ describe("SourceFile", () => {
           "name": "Hello",
           "type": "FunctionDeclaration",
         },
+        ESModuleItem {
+          "exportStatus": "named",
+          "id": "",
+          "location": SourceLocation {
+            "end": Position {
+              "column": 1,
+              "line": 9,
+            },
+            "start": Position {
+              "column": 0,
+              "line": 7,
+            },
+          },
+          "name": "AnotherFunction",
+          "type": "FunctionDeclaration",
+        },
+        ESModuleItem {
+          "exportStatus": "named",
+          "id": "",
+          "location": SourceLocation {
+            "end": Position {
+              "column": 2,
+              "line": 13,
+            },
+            "start": Position {
+              "column": 0,
+              "line": 11,
+            },
+          },
+          "name": "AnotherUtil",
+          "type": "VariableDeclaration",
+        },
       ]
     `);
 
     expect(sourceFile.importStatements).toMatchInlineSnapshot(`
       Array [
         Object {
-          "defaultImportName": "getDate",
-          "namedImports": Array [
+          "path": "./date",
+          "specifiers": Array [
             Object {
-              "name": "templates",
+              "isDefault": true,
+              "name": "getDate",
+              "references": Array [
+                Object {
+                  "containerName": "Hello",
+                  "containerType": "FunctionDeclaration",
+                },
+                Object {
+                  "containerName": "AnotherFunction",
+                  "containerType": "FunctionDeclaration",
+                },
+                Object {
+                  "containerName": "AnotherUtil",
+                  "containerType": "FunctionDeclaration",
+                },
+              ],
             },
           ],
-          "path": "./date",
-          "usages": Array [],
         },
       ]
     `);

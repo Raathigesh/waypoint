@@ -91,8 +91,8 @@ export default class SourceFile {
 
           let containerName = "";
           if (functionParent.type === "ArrowFunctionExpression") {
-            containerName = functionParent;
-          } else if (functionParent.type === "") {
+            containerName = (functionParent.parent as any).id.name;
+          } else if (functionParent.type === "FunctionDeclaration") {
             containerName = functionParent.node.id.name;
           }
 
