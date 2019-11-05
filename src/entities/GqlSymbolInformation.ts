@@ -6,9 +6,6 @@ export class GqlSymbolInformation {
   @Field({ nullable: true })
   name: string = "";
 
-  @Field(returns => String, { nullable: true })
-  containerName: string | undefined = "";
-
   @Field({ nullable: true })
   filePath: string = "";
 

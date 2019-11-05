@@ -39,7 +39,6 @@ function Search() {
         loadOptions={promiseOptions}
         onChange={({ symbol }: { symbol: GqlSymbolInformation }) => {
           getReferences({
-            containerName: symbol.containerName,
             filePath: undefined,
             kind: undefined,
             name: symbol.name,

@@ -13,6 +13,7 @@ import { getFileType } from "../extension/utils/file";
 import ImportStatement, { ImportSpecifier } from "./ImportStatement";
 import ESModuleItem from "./ESModuleItem";
 import { ImportDeclaration } from "@babel/types";
+import { resolve, isAbsolute, dirname } from "path";
 
 export default class SourceFile {
   public path: string = "";
@@ -73,6 +74,13 @@ export default class SourceFile {
     const defaultSpecifierNode = path.node.specifiers.find(
       specifier => specifier.type === "ImportDefaultSpecifier"
     );
+
+    let absoluteImportPath = path.node.source.value;
+    if (!isAbsolute(absoluteImportPath)) {
+      absoluteImportPath = resolve(dirname(this.path), absoluteImportPath);
+    }
+
+    resolve(path.node.source.value);
 
     const importDeclaration: ImportStatement = {
       path: path.node.source.value,

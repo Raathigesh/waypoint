@@ -25,6 +25,8 @@ export default class Indexer {
     await Promise.all(promises);
   }
 
+  public findReferences(path: string, symbolName: string) {}
+
   private async readProjectFiles(root: string) {
     return new Promise<string[]>((resolve, reject) => {
       recursiveReadDir(

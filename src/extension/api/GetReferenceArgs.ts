@@ -19,13 +19,6 @@ export class FindReferenceSymbol {
   containerKind: string | undefined = undefined;
 
   /**
-   * The name of the symbol the symbol is contained in, as returned from TS.
-   * Is an empty string if the symbol has no container.
-   */
-  @Field(returns => String, { nullable: true })
-  containerName: string | undefined = undefined;
-
-  /**
    * The file path of the file where the symbol is defined in, relative to the workspace rootPath.
    */
   @Field(returns => String, { nullable: true })
