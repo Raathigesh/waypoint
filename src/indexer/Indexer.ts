@@ -1,8 +1,9 @@
-import * as recursiveReadDir from "recursive-readdir";
+import recursiveReadDir from "recursive-readdir";
 import { Service } from "typedi";
 import Project from "./Project";
 import SourceFile from "./SourceFile";
-import { getFileType } from "../extension/utils/file";
+import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
+import { getFileType } from "common/utils/file";
 
 @Service()
 export default class Indexer {
@@ -25,7 +26,30 @@ export default class Indexer {
     await Promise.all(promises);
   }
 
-  public findReferences(path: string, symbolName: string) {}
+  public findReferences(path: string, symbolName: string) {
+    const references: GqlSymbolInformation[] = [];
+
+    Object.entries(this.files).forEach(([, file]) => {
+      file.importStatements.forEach(importStatement => {
+        const specifier =
+          importStatement.path === path &&
+          importStatement.specifiers.find(
+            specifier => specifier.name === symbolName
+          );
+
+        if (specifier) {
+          specifier.references.forEach(reference => {
+            references.push({
+              filePath: file.path,
+              kind: reference.containerType,
+              name: reference.containerName
+            });
+          });
+        }
+      });
+    });
+    return references;
+  }
 
   private async readProjectFiles(root: string) {
     return new Promise<string[]>((resolve, reject) => {

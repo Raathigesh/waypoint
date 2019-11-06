@@ -4,7 +4,7 @@ import { resolve } from "path";
 describe("SourceFile", () => {
   it("should have named exports", async () => {
     const sourceFile = new SourceFile();
-    await sourceFile.parse(resolve(__dirname, "./javascript.js"));
+    await sourceFile.parse(resolve(__dirname, "./project/module-a.js"));
 
     expect(sourceFile.symbols).toMatchInlineSnapshot(`
       Array [
@@ -62,7 +62,7 @@ describe("SourceFile", () => {
     expect(sourceFile.importStatements).toMatchInlineSnapshot(`
       Array [
         Object {
-          "path": "./date",
+          "path": "D:\\\\projects\\\\insight\\\\src\\\\indexer\\\\tests\\\\project\\\\module-b",
           "specifiers": Array [
             Object {
               "isDefault": true,

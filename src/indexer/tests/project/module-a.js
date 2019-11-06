@@ -1,4 +1,4 @@
-import getDate, { templates } from "./date";
+import getDate from "./module-b";
 
 export function Hello() {
   const dates = getDate();

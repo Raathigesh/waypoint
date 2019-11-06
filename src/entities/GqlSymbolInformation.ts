@@ -9,7 +9,7 @@ export class GqlSymbolInformation {
   @Field({ nullable: true })
   filePath: string = "";
 
-  @Field(returns => Number, { nullable: true })
+  @Field(returns => String, { nullable: true })
   kind: any | null = null;
 
   @Field(returns => Location, { nullable: true })

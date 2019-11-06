@@ -9,7 +9,7 @@ import * as nanoid from "nanoid";
 import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import { NodePath } from "babel-traverse";
-import { getFileType } from "../extension/utils/file";
+import { getFileType } from "common/utils/file";
 import ImportStatement, { ImportSpecifier } from "./ImportStatement";
 import ESModuleItem from "./ESModuleItem";
 import { ImportDeclaration } from "@babel/types";
@@ -80,10 +80,8 @@ export default class SourceFile {
       absoluteImportPath = resolve(dirname(this.path), absoluteImportPath);
     }
 
-    resolve(path.node.source.value);
-
     const importDeclaration: ImportStatement = {
-      path: path.node.source.value,
+      path: absoluteImportPath,
       specifiers: []
     };
 

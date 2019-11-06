@@ -125,5 +125,16 @@
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
+  },
+  "jest": {
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/out/"
+    ],
+    "moduleNameMapper": {
+      "^common(.*)$": "<rootDir>/src/common$1",
+      "^entities(.*)$": "<rootDir>/src/entities$1",
+      "^indexer(.*)$": "<rootDir>/src/indexer$1"
+    }
   }
 }
