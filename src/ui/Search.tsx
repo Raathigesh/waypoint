@@ -21,25 +21,28 @@ import {
   MenuDivider,
   CircularProgress
 } from "@chakra-ui/core";
-import { ResultsServiceStore, UIStore, ReferenceServiceStore } from "./store";
 import Loading from "./Loading";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import Graph from "./view/graph";
-
-const MenuButtonComponent: any = MenuButton;
+import { search } from "./store/services/results/api";
+import { findReferences } from "./store/services/references/api";
 
 function Search() {
-  const { search } = useContext(ResultsServiceStore);
-  const { getReferences } = useContext(ReferenceServiceStore);
-
-  const promiseOptions = async (inputValue: string) => await search(inputValue);
+  const promiseOptions = async (inputValue: string) => {
+    const results = await search(inputValue);
+    return results.items.map(item => ({
+      value: item.name,
+      label: `${item.name} : ${item.filePath}`,
+      symbol: item
+    }));
+  };
 
   return (
     <Flex flexDirection="column" flexGrow={1} height="100vh">
       <Select
         loadOptions={promiseOptions}
         onChange={({ symbol }: { symbol: GqlSymbolInformation }) => {
-          getReferences({
+          findReferences({
             filePath: symbol.filePath,
             kind: symbol.kind,
             name: symbol.name,
