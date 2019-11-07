@@ -1,4 +1,4 @@
-import recursiveReadDir from "recursive-readdir";
+const recursiveReadDir = require("recursive-readdir");
 import { Service } from "typedi";
 import Project from "./Project";
 import SourceFile from "./SourceFile";
@@ -26,13 +26,37 @@ export default class Indexer {
     await Promise.all(promises);
   }
 
+  public search(query: string) {
+    try {
+      const references: GqlSymbolInformation[] = [];
+      Object.entries(this.files).forEach(([, file]) => {
+        file.symbols.forEach(symbol => {
+          if ((symbol.name || "").toLowerCase().includes(query)) {
+            const item = new GqlSymbolInformation();
+            item.filePath = file.path;
+            item.kind = symbol.type;
+            item.name = symbol.name;
+            references.push(item);
+          }
+        });
+      });
+      return references;
+    } catch (e) {
+      return [];
+    }
+  }
+
   public findReferences(path: string, symbolName: string) {
     const references: GqlSymbolInformation[] = [];
+
+    const pathTokens = path.split(".");
+    pathTokens.pop();
+    const pathWithExtension = pathTokens.join(".");
 
     Object.entries(this.files).forEach(([, file]) => {
       file.importStatements.forEach(importStatement => {
         const specifier =
-          importStatement.path === path &&
+          importStatement.path === pathWithExtension &&
           importStatement.specifiers.find(
             specifier => specifier.name === symbolName
           );

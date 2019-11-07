@@ -71,10 +71,6 @@ export default class SourceFile {
   }
 
   private extractImport(path: NodePath<ImportDeclaration>) {
-    const defaultSpecifierNode = path.node.specifiers.find(
-      specifier => specifier.type === "ImportDefaultSpecifier"
-    );
-
     let absoluteImportPath = path.node.source.value;
     if (!isAbsolute(absoluteImportPath)) {
       absoluteImportPath = resolve(dirname(this.path), absoluteImportPath);
@@ -85,21 +81,30 @@ export default class SourceFile {
       specifiers: []
     };
 
-    if (defaultSpecifierNode) {
+    path.node.specifiers.forEach(specifierPath => {
       const referencePaths =
-        path.scope.bindings[defaultSpecifierNode.local.name].referencePaths;
+        path.scope.bindings[specifierPath.local.name].referencePaths;
 
       const defaultSpecifier: ImportSpecifier = {
         isDefault: true,
-        name: defaultSpecifierNode.local.name,
+        name: specifierPath.local.name,
         references: referencePaths.map(referencePath => {
-          const functionParent = referencePath.getFunctionParent();
-
           let containerName = "";
+          const functionParent = referencePath.getFunctionParent();
+          if (!functionParent) {
+            return {
+              containerName,
+              containerType: "Not Found"
+            };
+          }
+
           if (functionParent.type === "ArrowFunctionExpression") {
-            containerName = (functionParent.parent as any).id.name;
+            containerName =
+              (functionParent.parent as any).id &&
+              (functionParent.parent as any).id.name;
           } else if (functionParent.type === "FunctionDeclaration") {
-            containerName = functionParent.node.id.name;
+            containerName =
+              (functionParent.node.id && functionParent.node.id.name) || "";
           }
 
           return {
@@ -109,7 +114,7 @@ export default class SourceFile {
         })
       };
       importDeclaration.specifiers.push(defaultSpecifier);
-    }
+    });
     this.importStatements.push(importDeclaration);
   }
 

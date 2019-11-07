@@ -44,7 +44,7 @@ export default class SymbolsResolver {
     const symbols: GqlSymbolInformation[] = [];
     try {
       const result = new SearchResult();
-      result.items = symbols;
+      result.items = this.indexer.search(query);
       return result;
     } catch (e) {
       const result = new SearchResult();
@@ -53,11 +53,15 @@ export default class SymbolsResolver {
     }
   }
 
-  @Query(returns => String)
+  @Query(returns => [GqlSymbolInformation])
   public async findReferences(@Args()
   {
     symbol
   }: GetReferencesArgs) {
-    return "";
+    const results = this.indexer.findReferences(
+      symbol.filePath || "",
+      symbol.name || ""
+    );
+    return results;
   }
 }

@@ -9,7 +9,7 @@ describe("Indexer", () => {
     });
 
     const references = indexer.findReferences(
-      resolve(__dirname, "./project/module-b"),
+      resolve(__dirname, "./project/module-b.js"),
       "getDate"
     );
     expect(references).toMatchInlineSnapshot(`

@@ -44,7 +44,7 @@ async function initialize(context: vscode.ExtensionContext) {
       reindex
     }
   `;
-  //executeQuery(query, undefined);
+  executeQuery(query, undefined);
 
   const contentProvider = new ContentProvider();
   let currentPanel: vscode.WebviewPanel | undefined = undefined;

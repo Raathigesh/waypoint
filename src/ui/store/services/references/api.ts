@@ -6,7 +6,10 @@ import { FindReferenceSymbol } from "extension/api/GetReferenceArgs";
 export async function findReferences(symbol: FindReferenceSymbol) {
   const query = gql`
     query FindReferences($symbol: FindReferenceSymbol!) {
-      findReferences(symbol: $symbol)
+      findReferences(symbol: $symbol) {
+        name
+        filePath
+      }
     }
   `;
 
