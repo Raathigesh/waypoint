@@ -6,12 +6,13 @@ import { ThemeProvider as ChakraProvider, CSSReset } from "@chakra-ui/core";
 import { client } from "./GraphQLClient";
 import theme from "./theme";
 import Search from "./Search";
+import lightTheme from "./theme";
 
 function App() {
   return (
     <Fragment>
       <Provider value={client}>
-        <ChakraProvider>
+        <ChakraProvider theme={lightTheme}>
           <CSSReset />
           <Search />
         </ChakraProvider>

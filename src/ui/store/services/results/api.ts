@@ -7,6 +7,7 @@ export async function search(query: string) {
     mutation Search($query: String!) {
       search(query: $query) {
         items {
+          id
           name
           filePath
           kind

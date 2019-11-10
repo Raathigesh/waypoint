@@ -61,7 +61,7 @@ export default class SourceFile {
       }
 
       const symbol = new ESModuleItem();
-      symbol.id = "";
+      symbol.id = nanoid();
       symbol.name = name;
       symbol.exportStatus = mode;
       symbol.type = declaration.type as any;

@@ -4,6 +4,9 @@ import { Location } from "./Location";
 @ObjectType()
 export class GqlSymbolInformation {
   @Field({ nullable: true })
+  id: string = "";
+
+  @Field({ nullable: true })
   name: string = "";
 
   @Field({ nullable: true })

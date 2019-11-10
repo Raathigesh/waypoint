@@ -1,24 +1,32 @@
 import React from "react";
-import { Flex, Box } from "@chakra-ui/core";
+import { Text, Box, Flex } from "@chakra-ui/core";
 
 interface Props {
   width: number;
   height: number;
   x: number;
   y: number;
+  name: string;
 }
 
-export default function Node({ width, height, x, y }: Props) {
+export default function Node({ name, width, height, x, y }: Props) {
   return (
-    <Box
+    <Flex
       width={`${width}px`}
       height={`${height}px`}
       left={`${x - width / 2}px`}
       top={`${y - height / 2}px`}
       position="absolute"
-      border="1px solid wheat"
+      padding="5px"
+      borderRadius="3px"
+      color="gray.50"
+      bg="gray.600"
+      alignItems="center"
+      justifyContent="center"
     >
-      Hello
-    </Box>
+      <Text fontSize="xs" fontWeight={600}>
+        {name}
+      </Text>
+    </Flex>
   );
 }

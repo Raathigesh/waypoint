@@ -1,6 +1,7 @@
 // @flow
 import React, { Fragment } from "react";
 import { curveBasis as d3CurveBasis, line as d3Line } from "d3-shape";
+import { useTheme } from "@chakra-ui/core";
 
 interface Position {
   x: number;
@@ -29,6 +30,8 @@ interface Props {
 }
 
 export default function Connections({ connections, size }: Props) {
+  const theme = useTheme();
+  const fill = theme.colors && theme.colors.blue["700"];
   const paths = connections.map(({ points, label }) => {
     const line = d3Line()
       .x(d => d.x)
@@ -41,7 +44,11 @@ export default function Connections({ connections, size }: Props) {
       <Fragment>
         <path
           d={line}
-          style={{ fill: "transparent", stroke: "wheat", strokeWidth: "1px" }}
+          style={{
+            fill: "transparent",
+            stroke: fill,
+            strokeWidth: "1px"
+          }}
           markerEnd="url(#markerArrow)"
         />
         <foreignObject
@@ -59,7 +66,7 @@ export default function Connections({ connections, size }: Props) {
               alignItems: "center",
               justifyContent: "center",
               fontSize: "12px",
-              color: "wheat"
+              color: fill
             }}
           >
             <div style={{ marginBottom: "20px" }}>{label}</div>
@@ -75,7 +82,7 @@ export default function Connections({ connections, size }: Props) {
         height: size.height + 30,
         width: size.width,
         position: "absolute",
-        zIndex: "99"
+        zIndex: 1
       }}
     >
       <defs>
@@ -87,7 +94,10 @@ export default function Connections({ connections, size }: Props) {
           refY="6"
           orient="auto"
         >
-          <path d="M2,2 L2,11 L10,6 L2,2" style={{ fill: "wheat" }} />
+          <path
+            d="M2,2 L2,11 L10,6 L2,2"
+            style={{ fill: theme.colors.blue["400"] }}
+          />
         </marker>
       </defs>
       <g>{paths}</g>

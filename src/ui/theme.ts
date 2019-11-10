@@ -1,16 +1,10 @@
-import { useContext } from "react";
+import { theme, DefaultTheme } from "@chakra-ui/core";
 
-export interface ThemeColors {
-  backgroundLight: string;
-}
-export interface Theme {
-  colors: ThemeColors;
-}
-
-const DefaultTheme: Theme = {
+const lightTheme = {
+  ...theme,
   colors: {
-    backgroundLight: "#ECF2F7"
+    ...theme.colors
   }
 };
 
-export default DefaultTheme;
+export default lightTheme;

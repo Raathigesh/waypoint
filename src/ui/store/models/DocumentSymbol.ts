@@ -1,6 +1,7 @@
 import { types } from "mobx-state-tree";
 
-const DocumentSymbol = types.model("DocumentSymbol", {
+export const DocumentSymbol = types.model("DocumentSymbol", {
+  id: types.string,
   name: types.string,
   filePath: types.string,
   kind: types.string

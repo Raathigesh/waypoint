@@ -1,9 +1,12 @@
 const recursiveReadDir = require("recursive-readdir");
+const fuzzysort = require("fuzzysort");
+const nanoid = require("nanoid");
 import { Service } from "typedi";
 import Project from "./Project";
 import SourceFile from "./SourceFile";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { getFileType } from "common/utils/file";
+import ESModuleItem from "./ESModuleItem";
 
 @Service()
 export default class Indexer {
@@ -28,19 +31,30 @@ export default class Indexer {
 
   public search(query: string) {
     try {
-      const references: GqlSymbolInformation[] = [];
+      const results: ESModuleItem[] = [];
       Object.entries(this.files).forEach(([, file]) => {
         file.symbols.forEach(symbol => {
-          if ((symbol.name || "").toLowerCase().includes(query)) {
-            const item = new GqlSymbolInformation();
-            item.filePath = file.path;
-            item.kind = symbol.type;
-            item.name = symbol.name;
-            references.push(item);
-          }
+          results.push({
+            ...symbol,
+            path: file.path
+          });
         });
       });
-      return references;
+
+      const filteredResults = fuzzysort.go(query, results, {
+        key: "name",
+        limit: 100
+      });
+
+      return filteredResults.map(({ obj }: { obj: ESModuleItem }) => {
+        const item = new GqlSymbolInformation();
+        item.filePath = obj.path;
+        item.kind = obj.type;
+        item.name = obj.name;
+        item.id = obj.id;
+
+        return item;
+      });
     } catch (e) {
       return [];
     }
@@ -66,7 +80,8 @@ export default class Indexer {
             references.push({
               filePath: file.path,
               kind: reference.containerType,
-              name: reference.containerName
+              name: reference.containerName,
+              id: nanoid()
             });
           });
         }
