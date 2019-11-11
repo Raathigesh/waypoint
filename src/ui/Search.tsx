@@ -9,13 +9,7 @@ function App() {
   const dependencyGraph = useContext(dependencyGraphStore);
 
   return (
-    <Flex
-      bg="gray.200"
-      flexDirection="column"
-      flexGrow={1}
-      p={3}
-      height="100vh"
-    >
+    <Flex bg="gray.200" flexDirection="column" p={3} minHeight="100vh">
       <Search />
       <Graph
         references={dependencyGraph.references}

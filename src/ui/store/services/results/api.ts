@@ -14,11 +14,11 @@ export async function search(query: string) {
           location {
             start {
               line
-              character
+              column
             }
             end {
               line
-              character
+              column
             }
           }
         }

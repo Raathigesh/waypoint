@@ -1,5 +1,6 @@
 import React from "react";
 import { Text, Box, Tooltip } from "@chakra-ui/core";
+import { observer } from "mobx-react-lite";
 
 interface Props {
   width: number;
@@ -9,7 +10,7 @@ interface Props {
   name: string;
 }
 
-export default function File({ name, width, height, x, y }: Props) {
+function File({ name, width, height, x, y }: Props) {
   return (
     <Box
       width={`${width}px`}
@@ -22,15 +23,14 @@ export default function File({ name, width, height, x, y }: Props) {
       color="gray.50"
       border="1px solid gray"
     >
-      <Tooltip label={name} zIndex={100}>
+      <Tooltip label={name} zIndex={100} aria-label="">
         <Text
           fontSize="xs"
           fontWeight={600}
           overflow="hidden"
           whiteSpace="nowrap"
-          textOverflow="ellipsis"
           color="purple.600"
-          style={{ direction: "rtl" }}
+          style={{ direction: "rtl", textOverflow: "ellipsis" }}
         >
           {name}
         </Text>
@@ -38,3 +38,5 @@ export default function File({ name, width, height, x, y }: Props) {
     </Box>
   );
 }
+
+export default observer(File);

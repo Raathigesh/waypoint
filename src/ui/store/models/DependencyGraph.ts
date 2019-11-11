@@ -2,6 +2,7 @@ import { types, flow, Instance, IArrayType } from "mobx-state-tree";
 import { DocumentSymbol } from "./DocumentSymbol";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { findReferences } from "../services/references/api";
+import { DocumentLocation, DocumentPosition } from "./DocumentLocation";
 
 export const DependencyGraph = types
   .model("DependencyGraph", {
@@ -25,13 +26,23 @@ export const DependencyGraph = types
         name: symbol.name,
         containerKind: undefined
       });
-
+      self.references.clear();
       references.forEach(reference => {
         const documentSymbol = DocumentSymbol.create({
           id: reference.id,
           name: reference.name || "None",
           filePath: reference.filePath,
-          kind: ""
+          kind: "",
+          location: {
+            start: {
+              column: reference?.location?.start?.column || 0,
+              line: reference?.location?.start?.line || 0
+            },
+            end: {
+              column: reference?.location?.end?.column || 0,
+              line: reference?.location?.end?.line || 0
+            }
+          }
         });
         self.references.push(documentSymbol);
       });

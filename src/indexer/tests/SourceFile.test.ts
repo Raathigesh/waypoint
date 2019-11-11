@@ -4,87 +4,50 @@ import { resolve } from "path";
 describe("SourceFile", () => {
   it("should have named exports", async () => {
     const sourceFile = new SourceFile();
-    await sourceFile.parse(resolve(__dirname, "./project/module-a.js"));
+    await sourceFile.parse(
+      resolve(__dirname, "./project/query/items.js"),
+      {},
+      ""
+    );
 
-    expect(sourceFile.symbols).toMatchInlineSnapshot(`
-      Array [
-        ESModuleItem {
-          "exportStatus": "named",
-          "id": "",
-          "location": SourceLocation {
-            "end": Position {
-              "column": 1,
-              "line": 5,
-            },
-            "start": Position {
-              "column": 0,
-              "line": 3,
-            },
-          },
-          "name": "Hello",
-          "type": "FunctionDeclaration",
-        },
-        ESModuleItem {
-          "exportStatus": "named",
-          "id": "",
-          "location": SourceLocation {
-            "end": Position {
-              "column": 1,
-              "line": 9,
-            },
-            "start": Position {
-              "column": 0,
-              "line": 7,
-            },
-          },
-          "name": "AnotherFunction",
-          "type": "FunctionDeclaration",
-        },
-        ESModuleItem {
-          "exportStatus": "named",
-          "id": "",
-          "location": SourceLocation {
-            "end": Position {
-              "column": 2,
-              "line": 13,
-            },
-            "start": Position {
-              "column": 0,
-              "line": 11,
-            },
-          },
-          "name": "AnotherUtil",
-          "type": "VariableDeclaration",
-        },
-      ]
-    `);
-
-    expect(sourceFile.importStatements).toMatchInlineSnapshot(`
+    expect(sourceFile.symbols.map(symbol => ({ ...symbol, id: "" })))
+      .toMatchInlineSnapshot(`
       Array [
         Object {
-          "path": "D:\\\\projects\\\\insight\\\\src\\\\indexer\\\\tests\\\\project\\\\module-b",
-          "specifiers": Array [
-            Object {
-              "isDefault": true,
-              "name": "getDate",
-              "references": Array [
-                Object {
-                  "containerName": "Hello",
-                  "containerType": "FunctionDeclaration",
-                },
-                Object {
-                  "containerName": "AnotherFunction",
-                  "containerType": "FunctionDeclaration",
-                },
-                Object {
-                  "containerName": "AnotherUtil",
-                  "containerType": "FunctionDeclaration",
-                },
-              ],
+          "id": "",
+          "kind": "FunctionDeclaration",
+          "location": SourceLocation {
+            "end": Position {
+              "column": 29,
+              "line": 1,
             },
-          ],
+            "start": Position {
+              "column": 0,
+              "line": 1,
+            },
+          },
+          "name": "getItems",
+          "path": "",
+        },
+        Object {
+          "id": "",
+          "kind": "FunctionDeclaration",
+          "location": SourceLocation {
+            "end": Position {
+              "column": 36,
+              "line": 2,
+            },
+            "start": Position {
+              "column": 0,
+              "line": 2,
+            },
+          },
+          "name": "getInStockCount",
+          "path": "",
         },
       ]
     `);
+
+    expect(sourceFile.importStatements).toMatchInlineSnapshot(`Array []`);
   });
 });

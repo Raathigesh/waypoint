@@ -5,7 +5,7 @@ import {
 } from "babel-types";
 import { readFile } from "fs";
 import { promisify } from "util";
-import * as nanoid from "nanoid";
+const nanoid = require("nanoid");
 import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import { NodePath } from "babel-traverse";
@@ -14,13 +14,18 @@ import ImportStatement, { ImportSpecifier } from "./ImportStatement";
 import ESModuleItem from "./ESModuleItem";
 import { ImportDeclaration } from "@babel/types";
 import { resolve, isAbsolute, dirname } from "path";
+import { findAbsoluteFilePathWhichExists } from "./fileResolver";
 
 export default class SourceFile {
   public path: string = "";
   public symbols: ESModuleItem[] = [];
   public importStatements: ImportStatement[] = [];
 
-  public async parse(filePath: string) {
+  public async parse(
+    filePath: string,
+    pathAliasMap: { [alias: string]: string },
+    root: string
+  ) {
     this.path = filePath;
 
     const content = await promisify(readFile)(filePath);
@@ -34,7 +39,7 @@ export default class SourceFile {
         this.extractExport(path, "default");
       },
       ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
-        this.extractImport(path);
+        this.extractImport(path, pathAliasMap, root);
       }
     });
   }
@@ -63,17 +68,29 @@ export default class SourceFile {
       const symbol = new ESModuleItem();
       symbol.id = nanoid();
       symbol.name = name;
-      symbol.exportStatus = mode;
-      symbol.type = declaration.type as any;
+      symbol.kind = declaration.type as any;
       symbol.location = path.node.loc;
       this.symbols.push(symbol);
     }
   }
 
-  private extractImport(path: NodePath<ImportDeclaration>) {
-    let absoluteImportPath = path.node.source.value;
-    if (!isAbsolute(absoluteImportPath)) {
-      absoluteImportPath = resolve(dirname(this.path), absoluteImportPath);
+  private extractImport(
+    path: NodePath<ImportDeclaration>,
+    pathAliasMap: { [alias: string]: string },
+    root: string
+  ) {
+    const importPath = path.node.source.value;
+    let absoluteImportPath = importPath;
+    try {
+      absoluteImportPath = findAbsoluteFilePathWhichExists(
+        root,
+        dirname(this.path),
+        importPath,
+        pathAliasMap
+      );
+      console.log("found path ", absoluteImportPath);
+    } catch (e) {
+      console.log("Path not resolved ", importPath);
     }
 
     const importDeclaration: ImportStatement = {
@@ -109,7 +126,8 @@ export default class SourceFile {
 
           return {
             containerName,
-            containerType: "FunctionDeclaration"
+            containerType: "FunctionDeclaration",
+            location: referencePath.node.loc
           };
         })
       };

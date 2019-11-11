@@ -31,11 +31,12 @@ interface Props {
 
 export default function Connections({ connections, size }: Props) {
   const theme = useTheme();
-  const fill = theme.colors && theme.colors.blue["700"];
+  const colors: any = theme?.colors;
+  const fill = colors?.blue["700"];
   const paths = connections.map(({ points, label }) => {
     const line = d3Line()
-      .x(d => d.x)
-      .y(d => d.y)
+      .x((d: any) => d.x)
+      .y((d: any) => d.y)
       .curve(d3CurveBasis)(points);
 
     const { x, y, w, h } = rectangleFromDiagonal(points[0], points[2]);
@@ -49,6 +50,7 @@ export default function Connections({ connections, size }: Props) {
             stroke: fill,
             strokeWidth: "1px"
           }}
+          markerStart="url(#markerStart)"
           markerEnd="url(#markerArrow)"
         />
         <foreignObject
@@ -96,7 +98,24 @@ export default function Connections({ connections, size }: Props) {
         >
           <path
             d="M2,2 L2,11 L10,6 L2,2"
-            style={{ fill: theme.colors.blue["400"] }}
+            style={{ fill: colors.blue["400"] }}
+          />
+        </marker>
+        <marker
+          id="markerStart"
+          markerWidth="33"
+          markerHeight="33"
+          refX="15"
+          refY="10"
+          orient="auto"
+        >
+          <circle
+            cx="10"
+            cy="10"
+            r="5"
+            stroke="black"
+            stroke-width="1"
+            fill="red"
           />
         </marker>
       </defs>

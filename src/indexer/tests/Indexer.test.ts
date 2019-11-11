@@ -1,34 +1,34 @@
+import "reflect-metadata";
 import Indexer from "../Indexer";
-import { resolve } from "path";
+import { resolve, sep } from "path";
 
 describe("Indexer", () => {
   it("should index files", async () => {
     const indexer = new Indexer();
+    const root = resolve(__dirname, "./project");
     await indexer.parse({
-      root: resolve(__dirname, "./project")
+      root,
+      pathAlias: {
+        project: "."
+      }
     });
 
     const references = indexer.findReferences(
-      resolve(__dirname, "./project/module-b.js"),
-      "getDate"
+      resolve(__dirname, "./project/query/items.js"),
+      "getInStockCount"
     );
-    expect(references).toMatchInlineSnapshot(`
+
+    const normalized = references.map(reference =>
+      reference.path.replace(root, "").split(sep)
+    );
+
+    expect(normalized).toMatchInlineSnapshot(`
       Array [
-        Object {
-          "filePath": "D:\\\\projects\\\\insight\\\\src\\\\indexer\\\\tests\\\\project\\\\module-a.js",
-          "kind": "FunctionDeclaration",
-          "name": "Hello",
-        },
-        Object {
-          "filePath": "D:\\\\projects\\\\insight\\\\src\\\\indexer\\\\tests\\\\project\\\\module-a.js",
-          "kind": "FunctionDeclaration",
-          "name": "AnotherFunction",
-        },
-        Object {
-          "filePath": "D:\\\\projects\\\\insight\\\\src\\\\indexer\\\\tests\\\\project\\\\module-a.js",
-          "kind": "FunctionDeclaration",
-          "name": "AnotherUtil",
-        },
+        Array [
+          "",
+          "store",
+          "Root.js",
+        ],
       ]
     `);
   });

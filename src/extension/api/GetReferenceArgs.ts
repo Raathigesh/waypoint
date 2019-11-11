@@ -27,6 +27,6 @@ export class FindReferenceSymbol {
 
 @ArgsType()
 export class GetReferencesArgs {
-  @Field(type => FindReferenceSymbol)
-  symbol: FindReferenceSymbol;
+  @Field(type => FindReferenceSymbol, { nullable: true })
+  symbol?: FindReferenceSymbol;
 }

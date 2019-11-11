@@ -11,6 +11,16 @@ export async function findReferences(symbol: FindReferenceSymbol) {
         id
         name
         filePath
+        location {
+          start {
+            line
+            column
+          }
+          end {
+            line
+            column
+          }
+        }
       }
     }
   `;

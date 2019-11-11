@@ -16,6 +16,7 @@ import { SearchResult } from "../../entities/SearchResult";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { WorkspaceSymbolResponse } from "./types";
 import { GetReferencesArgs } from "./GetReferenceArgs";
+import ESModuleItem from "indexer/ESModuleItem";
 
 @Service()
 @Resolver(SearchResult)
@@ -33,7 +34,8 @@ export default class SymbolsResolver {
   @Mutation(returns => String)
   public async reindex() {
     const project: Project = {
-      root: process.env.projectRoot || ""
+      root: process.env.projectRoot || "",
+      pathAlias: { "app-simple-plans": "./app-simple-plans" }
     };
     await this.indexer.parse(project);
     return Status.OK;
@@ -44,7 +46,16 @@ export default class SymbolsResolver {
     const symbols: GqlSymbolInformation[] = [];
     try {
       const result = new SearchResult();
-      result.items = this.indexer.search(query);
+      const items = this.indexer.search(query);
+      result.items = items.map(({ obj }: { obj: ESModuleItem }) => {
+        const item = new GqlSymbolInformation();
+        item.filePath = obj.path;
+        item.kind = obj.kind;
+        item.name = obj.name;
+        item.id = obj.id;
+
+        return item;
+      });
       return result;
     } catch (e) {
       const result = new SearchResult();
@@ -54,14 +65,16 @@ export default class SymbolsResolver {
   }
 
   @Query(returns => [GqlSymbolInformation])
-  public async findReferences(@Args()
-  {
-    symbol
-  }: GetReferencesArgs) {
-    const results = this.indexer.findReferences(
-      symbol.filePath || "",
-      symbol.name || ""
-    );
-    return results;
+  public async findReferences(
+    @Args()
+    { symbol }: GetReferencesArgs
+  ) {
+    if (!symbol) {
+      return [];
+    }
+
+    return this.indexer
+      .findReferences(symbol.filePath || "", symbol.name || "")
+      .map(reference => ({ ...reference, filePath: reference.path }));
   }
 }

@@ -6,13 +6,14 @@ import Node from "./node";
 import { DocumentSymbol } from "../../store/models/DocumentSymbol";
 import { Instance } from "mobx-state-tree";
 import File from "./node/file";
+import { observer } from "mobx-react-lite";
 
 interface Props {
   documentSymbol: Instance<typeof DocumentSymbol> | null;
   references: Instance<typeof DocumentSymbol>[];
 }
 
-export default function Graph({ documentSymbol, references }: Props) {
+function Graph({ documentSymbol, references }: Props) {
   if (!documentSymbol) {
     return null;
   }
@@ -20,19 +21,24 @@ export default function Graph({ documentSymbol, references }: Props) {
   const filePathNodes = new Set();
 
   const g = new dagre.graphlib.Graph({ compound: true });
+
   g.setGraph({
     rankdir: "LR",
-    edgesep: 30,
-    nodesep: 70
+    edgesep: 25,
+    nodesep: 10
   });
+  console.log(g);
   g.setDefaultEdgeLabel(function() {
     return {};
   });
 
+  const NodeHeight = 40;
+  const NodeWidth = 200;
+
   g.setNode(documentSymbol.id, {
     label: documentSymbol.name,
-    width: 200,
-    height: 30
+    width: NodeWidth,
+    height: NodeHeight
   });
   g.setNode(documentSymbol.filePath, {
     width: 0,
@@ -44,7 +50,13 @@ export default function Graph({ documentSymbol, references }: Props) {
   filePathNodes.add(documentSymbol.filePath);
 
   references.forEach(reference => {
-    g.setNode(reference.id, { label: reference.name, width: 200, height: 30 });
+    g.setNode(reference.id, {
+      label: reference.name,
+      width: NodeWidth,
+      height: NodeHeight,
+      path: reference.filePath,
+      location: reference.location
+    });
     g.setEdge(reference.id, documentSymbol.id);
 
     if (!filePathNodes.has(reference.filePath)) {
@@ -60,37 +72,37 @@ export default function Graph({ documentSymbol, references }: Props) {
 
   dagre.layout(g);
 
-  console.log(g.nodes().map(node => g.node(node)));
-
   return (
-    <Flex flexGrow={1} pt="4">
+    <Flex flexGrow={1} pt="4" overflow="auto" position="relative">
       <Connections
         connections={g
           .edges()
-          .map(edge => ({ points: g.edge(edge).points, label: "" }))}
+          .map((edge: any) => ({ points: g.edge(edge).points, label: "" }))}
         size={g.graph()}
       />
       <Box position="relative" zIndex={2}>
         {g
           .nodes()
-          .filter(node => g.node(node))
-          .filter(node => g.node(node).type !== "file")
-          .map(node => g.node(node))
-          .map(node => (
+          .filter((node: any) => g.node(node))
+          .filter((node: any) => g.node(node).type !== "file")
+          .map((node: any) => g.node(node))
+          .map((node: any) => (
             <Node
               height={node.height}
               width={node.width}
               x={node.x}
               y={node.y}
               name={node.label}
+              path={node.path}
+              location={node.location}
             />
           ))}
         {g
           .nodes()
-          .filter(node => g.node(node))
-          .filter(node => g.node(node).type === "file")
-          .map(node => g.node(node))
-          .map(node => (
+          .filter((node: any) => g.node(node))
+          .filter((node: any) => g.node(node).type === "file")
+          .map((node: any) => g.node(node))
+          .map((node: any) => (
             <File
               height={node.height}
               width={node.width}
@@ -103,3 +115,5 @@ export default function Graph({ documentSymbol, references }: Props) {
     </Flex>
   );
 }
+
+export default observer(Graph);

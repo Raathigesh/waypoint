@@ -14,12 +14,7 @@ export interface SymbolLocation {
 export default class ESModuleItem {
   public id: string = "";
   public name: string = "";
-  public exportStatus: ExportStatus = "none";
   public location?: SymbolLocation;
-  public type:
-    | "FunctionDeclaration"
-    | "ClassDeclaration"
-    | "VariableDeclaration"
-    | "TypeAlias"
-    | "unknown" = "unknown";
+  public path: string = "";
+  public kind: string = "";
 }

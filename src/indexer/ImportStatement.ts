@@ -6,6 +6,16 @@ export interface ImportSpecifier {
   references: {
     containerName: string;
     containerType: string;
+    location?: {
+      start: {
+        line: number;
+        column: number;
+      };
+      end: {
+        line: number;
+        column: number;
+      };
+    };
   }[];
 }
 
