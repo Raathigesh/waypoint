@@ -41,6 +41,11 @@ export default class SymbolsResolver {
     return Status.OK;
   }
 
+  @Query(returns => String)
+  public indexingStatus() {
+    return this.indexer.status;
+  }
+
   @Mutation(returns => SearchResult)
   public async search(@Arg("query") query: string) {
     const symbols: GqlSymbolInformation[] = [];

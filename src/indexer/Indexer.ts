@@ -10,8 +10,11 @@ import ESModuleItem from "./ESModuleItem";
 @Service()
 export default class Indexer {
   public files: { [path: string]: SourceFile } = {};
+  public status: "none" | "indexed" | "indexing" = "none";
 
   public async parse(project: Project) {
+    this.status = "indexing";
+
     const files = await this.readProjectFiles(project.root);
 
     const promises: any = [];
@@ -30,6 +33,7 @@ export default class Indexer {
       });
 
     await Promise.all(promises);
+    this.status = "indexed";
   }
 
   public search(query: string) {

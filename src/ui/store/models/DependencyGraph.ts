@@ -1,8 +1,7 @@
-import { types, flow, Instance, IArrayType } from "mobx-state-tree";
+import { types, flow } from "mobx-state-tree";
 import { DocumentSymbol } from "./DocumentSymbol";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
-import { findReferences } from "../services/references/api";
-import { DocumentLocation, DocumentPosition } from "./DocumentLocation";
+import { findReferences } from "../services/references";
 
 export const DependencyGraph = types
   .model("DependencyGraph", {

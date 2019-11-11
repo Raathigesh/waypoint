@@ -32,7 +32,7 @@ interface Props {
 export default function Connections({ connections, size }: Props) {
   const theme = useTheme();
   const colors: any = theme?.colors;
-  const fill = colors?.blue["700"];
+  const fill = colors?.gray["400"];
   const paths = connections.map(({ points, label }) => {
     const line = d3Line()
       .x((d: any) => d.x)
@@ -98,7 +98,7 @@ export default function Connections({ connections, size }: Props) {
         >
           <path
             d="M2,2 L2,11 L10,6 L2,2"
-            style={{ fill: colors.blue["400"] }}
+            style={{ fill: colors.gray["500"] }}
           />
         </marker>
         <marker
@@ -109,14 +109,7 @@ export default function Connections({ connections, size }: Props) {
           refY="10"
           orient="auto"
         >
-          <circle
-            cx="10"
-            cy="10"
-            r="5"
-            stroke="black"
-            stroke-width="1"
-            fill="red"
-          />
+          <circle cx="10" cy="10" r="5" stroke={fill} fill={fill} />
         </marker>
       </defs>
       <g>{paths}</g>

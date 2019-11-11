@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import Select from "react-select/async";
-import { search } from "ui/store/services/results/api";
+import { search } from "ui/store/services/search";
 import { dependencyGraphStore } from "ui/store";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { observer } from "mobx-react-lite";

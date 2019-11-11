@@ -22,6 +22,7 @@ function File({ name, width, height, x, y }: Props) {
       borderRadius="3px"
       color="gray.50"
       border="1px solid gray"
+      borderColor="gray.300"
     >
       <Tooltip label={name} zIndex={100} aria-label="">
         <Text

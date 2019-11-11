@@ -1,6 +1,5 @@
 import gql from "graphql-tag";
-import { sendMutation, sendQuery } from "ui/util/graphql";
-import { SearchResult } from "entities/SearchResult";
+import { sendQuery } from "ui/util/graphql";
 import { FindReferenceSymbol } from "extension/api/GetReferenceArgs";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 
