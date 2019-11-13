@@ -25,7 +25,7 @@ function Graph({ documentSymbol, references }: Props) {
   g.setGraph({
     rankdir: "LR",
     edgesep: 25,
-    nodesep: 10
+    nodesep: 0
   });
   console.log(g);
   g.setDefaultEdgeLabel(function() {
@@ -73,7 +73,13 @@ function Graph({ documentSymbol, references }: Props) {
   dagre.layout(g);
 
   return (
-    <Flex flexGrow={1} pt="4" overflow="auto" position="relative">
+    <Flex
+      flexGrow={1}
+      pt="4"
+      overflow="auto"
+      position="relative"
+      marginTop="10px"
+    >
       <Connections
         connections={g
           .edges()

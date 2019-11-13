@@ -1,9 +1,11 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, Fragment } from "react";
 import { observer } from "mobx-react-lite";
 import { Flex } from "@chakra-ui/core";
 import Graph from "./view/graph";
 import Search from "./view/search";
 import { dependencyGraphStore, indexerStatusStore } from "./store";
+import Welcome from "./view/welcome";
+import { VSCodeStyleOverride } from "./view/VSCodeStyleOverride";
 
 function App() {
   const dependencyGraph = useContext(dependencyGraphStore);
@@ -14,12 +16,16 @@ function App() {
 
   return (
     <Flex bg="gray.50" flexDirection="column" p={3} minHeight="100vh">
-      {indexerStatus.status}
-      <Search />
-      <Graph
-        references={dependencyGraph.references}
-        documentSymbol={dependencyGraph.currentSymbol}
-      />
+      <Welcome indexerStatus={indexerStatus} />
+      {indexerStatus.status === "indexed" && (
+        <Fragment>
+          <Search />
+          <Graph
+            references={dependencyGraph.references}
+            documentSymbol={dependencyGraph.currentSymbol}
+          />
+        </Fragment>
+      )}
     </Flex>
   );
 }

@@ -1,5 +1,5 @@
 import gql from "graphql-tag";
-import { sendQuery } from "ui/util/graphql";
+import { sendQuery, sendMutation } from "ui/util/graphql";
 
 export async function indexerStatus() {
   const query = gql`
@@ -12,4 +12,15 @@ export async function indexerStatus() {
     query
   });
   return result.indexingStatus;
+}
+
+export async function startIndexing() {
+  const mutation = gql`
+    mutation {
+      reindex
+    }
+  `;
+
+  const result = await sendMutation<{ indexingStatus: string }>(mutation, {});
+  return result;
 }
