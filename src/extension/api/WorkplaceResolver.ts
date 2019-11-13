@@ -1,32 +1,28 @@
 import { Resolver, Mutation, Arg, Query } from "type-graphql";
+const Conf = require("conf");
 import { Service, Inject } from "typedi";
 import vscode from "vscode";
 
 @Resolver()
 @Service()
 export default class WorkplaceResolver {
-  @Inject("extension-context")
-  context?: vscode.ExtensionContext;
+  private conf = new Conf({
+    projectName: "Insight",
+    projectVersion: 1
+  });
+
+  getKeyForPathMaps() {
+    return `pathMaps.${process.env.projectRoot}`;
+  }
 
   @Mutation(returns => String)
-  public setValue(@Arg("key") key: string, @Arg("value") value: string) {
-    if (this.context) {
-      const state: any = this.context.workspaceState.get(
-        "InsightWorkspaceState"
-      );
-      state[key] = value;
-      this.context.workspaceState.update("InsightWorkspaceState", state);
-      return value;
-    }
+  public setPathMap(@Arg("value") value: string) {
+    this.conf.set(this.getKeyForPathMaps(), value);
+    return "";
   }
 
   @Query(returns => String)
-  public getValue(@Arg("key") key: string) {
-    if (this.context) {
-      const state: any = this.context.workspaceState.get(
-        "InsightWorkspaceState"
-      );
-      return state[key] || "";
-    }
+  public getPathMap() {
+    return this.conf.get(this.getKeyForPathMaps()) || "";
   }
 }

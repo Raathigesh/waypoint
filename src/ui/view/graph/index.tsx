@@ -24,7 +24,7 @@ function Graph({ documentSymbol, references }: Props) {
 
   g.setGraph({
     rankdir: "LR",
-    edgesep: 25,
+    edgesep: 40,
     nodesep: 0
   });
   console.log(g);

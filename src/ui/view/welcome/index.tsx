@@ -1,14 +1,15 @@
 import React, { Fragment } from "react";
-import { Flex, Button, Text, Progress } from "@chakra-ui/core";
+import { Flex, Button, Text, Progress, Link } from "@chakra-ui/core";
 import { Coffee } from "react-feather";
 import { observer } from "mobx-react-lite";
 import { IndexerStatus } from "ui/store/models/IndexerStatus";
 
 interface Props {
   indexerStatus: typeof IndexerStatus.Type;
+  onOpenPreference?: () => void;
 }
 
-function Welcome({ indexerStatus }: Props) {
+function Welcome({ indexerStatus, onOpenPreference }: Props) {
   if (indexerStatus.status === "indexed") {
     return null;
   }
@@ -30,6 +31,7 @@ function Welcome({ indexerStatus }: Props) {
         >
           Start Indexing
         </Button>
+        <Link onClick={onOpenPreference}>Configure path map</Link>
       </Fragment>
     );
   } else if (indexerStatus.status === "indexing") {

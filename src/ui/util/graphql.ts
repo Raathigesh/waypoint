@@ -28,6 +28,7 @@ export function sendMutation<T>(query: DocumentNode, variables: object) {
       client.executeMutation(createRequest(query, variables)) as any,
       subscribe(({ data, error }: any) => {
         if (error) {
+          console.log(error);
           reject(error);
         } else {
           resolve(data);

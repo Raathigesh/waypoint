@@ -4,6 +4,7 @@ declare module "react-virtualized-auto-sizer";
 declare module "react-select/async";
 declare module "dagre";
 declare module "d3-shape";
+declare module "lodash.debounce";
 declare module "*.gql" {
   const content: any;
   export default content;

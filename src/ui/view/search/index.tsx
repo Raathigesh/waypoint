@@ -5,7 +5,7 @@ import { search } from "ui/store/services/search";
 import { dependencyGraphStore } from "ui/store";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { observer } from "mobx-react-lite";
-import { Box } from "@chakra-ui/core";
+import { Box, Flex } from "@chakra-ui/core";
 
 function Search() {
   const dependencyGraph = useContext(dependencyGraphStore);
@@ -15,14 +15,23 @@ function Search() {
     return results.items.map(item => ({
       value: item.name,
       label: `${item.name} : ${item.filePath}`,
+      path: item.filePath,
       symbol: item
     }));
   };
 
   const customStyles = {
+    container: (provided: any) => ({
+      ...provided,
+      width: "100%"
+    }),
     menu: (provided: any) => ({
       ...provided,
       zIndex: 120
+    }),
+    control: (provided: any) => ({
+      ...provided,
+      borderColor: "inherit"
     })
   };
 
@@ -32,21 +41,42 @@ function Search() {
     </Box>
   );
 
+  const formatOptionLabel = (item: any) => {
+    return (
+      <Flex>
+        <Flex
+          color="gray.800"
+          fontSize={13}
+          fontWeight={600}
+          marginRight="10px"
+        >
+          {item.value}
+        </Flex>
+        <Flex fontSize={12} color="gray.600">
+          {item.path}
+        </Flex>
+      </Flex>
+    );
+  };
+
   return (
-    <Select
-      styles={customStyles}
-      placeholder="Search"
-      cacheOptions
-      loadOptions={promiseOptions}
-      components={{
-        DropdownIndicator: SearchIconComponent,
-        IndicatorSeparator: () => null
-      }}
-      onChange={({ symbol }: { symbol: GqlSymbolInformation }) => {
-        dependencyGraph.setCurrentSymbol(symbol);
-        dependencyGraph.fetchReferences(symbol);
-      }}
-    />
+    <Flex width="100%">
+      <Select
+        formatOptionLabel={formatOptionLabel}
+        styles={customStyles}
+        placeholder="Search"
+        cacheOptions
+        loadOptions={promiseOptions}
+        components={{
+          DropdownIndicator: SearchIconComponent,
+          IndicatorSeparator: () => null
+        }}
+        onChange={({ symbol }: { symbol: GqlSymbolInformation }) => {
+          dependencyGraph.setCurrentSymbol(symbol);
+          dependencyGraph.fetchReferences(symbol);
+        }}
+      />
+    </Flex>
   );
 }
 

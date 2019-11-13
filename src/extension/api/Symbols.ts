@@ -17,6 +17,7 @@ import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { WorkspaceSymbolResponse } from "./types";
 import { GetReferencesArgs } from "./GetReferenceArgs";
 import ESModuleItem from "indexer/ESModuleItem";
+import { ReIndexArgs } from "./ReindexArgs";
 
 @Service()
 @Resolver(SearchResult)
@@ -32,10 +33,21 @@ export default class SymbolsResolver {
   }
 
   @Mutation(returns => String)
-  public async reindex() {
+  public async reindex(@Args() { items }: ReIndexArgs) {
+    let pathAlias = {};
+    if (items) {
+      pathAlias = items.reduce(
+        (acc, item) => ({
+          ...acc,
+          [item.alias || ""]: item.path
+        }),
+        {}
+      );
+    }
+
     const project: Project = {
       root: process.env.projectRoot || "",
-      pathAlias: { "app-simple-plans": "./app-simple-plans" }
+      pathAlias
     };
     await this.indexer.parse(project);
     return Status.OK;
