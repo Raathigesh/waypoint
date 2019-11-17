@@ -17,7 +17,7 @@ import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { WorkspaceSymbolResponse } from "./types";
 import { GetReferencesArgs } from "./GetReferenceArgs";
 import ESModuleItem from "indexer/ESModuleItem";
-import { ReIndexArgs } from "./ReindexArgs";
+import { ReIndexArgs } from "./ReIndexArgs";
 
 @Service()
 @Resolver(SearchResult)

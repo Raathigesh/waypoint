@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 import { sendQuery, sendMutation } from "ui/util/graphql";
-import { PathMapItem } from "extension/api/ReindexArgs";
+import { PathMapItem } from "extension/api/ReIndexArgs";
 
 export async function indexerStatus() {
   const query = gql`
