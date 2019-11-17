@@ -29,7 +29,7 @@ export const DependencyGraph = types
       references.forEach(reference => {
         const documentSymbol = DocumentSymbol.create({
           id: reference.id,
-          name: reference.name || "None",
+          name: reference.name || "Anonymous",
           filePath: reference.filePath,
           kind: "",
           location: {

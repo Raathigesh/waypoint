@@ -1,5 +1,5 @@
 import { types } from "mobx-state-tree";
-import { DocumentPosition, DocumentLocation } from "./DocumentLocation";
+import { DocumentLocation } from "./DocumentLocation";
 
 export const DocumentSymbol = types.model("DocumentSymbol", {
   id: types.string,

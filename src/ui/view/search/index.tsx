@@ -2,13 +2,14 @@ import React, { useContext } from "react";
 import Select from "react-select/async";
 import { Search as SearchIcon } from "react-feather";
 import { search } from "ui/store/services/search";
-import { dependencyGraphStore } from "ui/store";
+import { dependencyGraphStore, connectionStore } from "ui/store";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { observer } from "mobx-react-lite";
 import { Box, Flex } from "@chakra-ui/core";
 
 function Search() {
   const dependencyGraph = useContext(dependencyGraphStore);
+  const connection = useContext(connectionStore);
 
   const promiseOptions = async (inputValue: string) => {
     const results = await search(inputValue);
@@ -27,7 +28,7 @@ function Search() {
     }),
     menu: (provided: any) => ({
       ...provided,
-      zIndex: 120
+      zIndex: 520
     }),
     control: (provided: any) => ({
       ...provided,
@@ -74,6 +75,7 @@ function Search() {
         onChange={({ symbol }: { symbol: GqlSymbolInformation }) => {
           dependencyGraph.setCurrentSymbol(symbol);
           dependencyGraph.fetchReferences(symbol);
+          connection.reset();
         }}
       />
     </Flex>

@@ -9,6 +9,7 @@ export function VSCodeStyleOverride() {
       styles={css`
         body {
           color: black;
+          overflow: hidden;
         }
       `}
     />

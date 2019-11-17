@@ -1,7 +1,9 @@
 // @flow
-import React, { Fragment } from "react";
+import React, { Fragment, useContext } from "react";
 import { curveBasis as d3CurveBasis, line as d3Line } from "d3-shape";
 import { useTheme } from "@chakra-ui/core";
+import { observer } from "mobx-react-lite";
+import { connectionStore } from "ui/store";
 
 interface Position {
   x: number;
@@ -19,27 +21,23 @@ export function rectangleFromDiagonal(start: Position, end: Position) {
 }
 
 interface Props {
-  connections: {
-    points: Position[];
-    label: string;
-  }[];
   size: {
-    height: number;
-    width: number;
+    height: string;
+    width: string;
   };
 }
 
-export default function Connections({ connections, size }: Props) {
+function Connections({ size }: Props) {
+  const connections = useContext(connectionStore);
   const theme = useTheme();
   const colors: any = theme?.colors;
-  const fill = colors.connections.lines;
-  const paths = connections.map(({ points, label }) => {
+  const fill = colors?.orange["50"];
+  const paths = connections.enhancedViews().map(points => {
     const line = d3Line()
       .x((d: any) => d.x)
-      .y((d: any) => d.y)
-      .curve(d3CurveBasis)(points);
+      .y((d: any) => d.y)(points.filter(point => point));
 
-    const { x, y, w, h } = rectangleFromDiagonal(points[0], points[2]);
+    // const { x, y, w, h } = rectangleFromDiagonal(points[0], points[2]);
 
     return (
       <Fragment>
@@ -50,30 +48,9 @@ export default function Connections({ connections, size }: Props) {
             stroke: fill,
             strokeWidth: "1px"
           }}
-          markerStart="url(#markerStart)"
           markerEnd="url(#markerArrow)"
+          stroke-linejoin="round"
         />
-        <foreignObject
-          x={x}
-          y={y}
-          width={w}
-          height={h}
-          style={{ overflow: "visible" }}
-        >
-          <div
-            style={{
-              width: w,
-              height: h,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              fontSize: "12px",
-              color: fill
-            }}
-          >
-            <div style={{ marginBottom: "20px" }}>{label}</div>
-          </div>
-        </foreignObject>
       </Fragment>
     );
   });
@@ -81,10 +58,10 @@ export default function Connections({ connections, size }: Props) {
   return (
     <svg
       style={{
-        height: size.height + 30,
+        height: size.height,
         width: size.width,
         position: "absolute",
-        zIndex: 1
+        zIndex: 0
       }}
     >
       <defs>
@@ -96,10 +73,7 @@ export default function Connections({ connections, size }: Props) {
           refY="6"
           orient="auto"
         >
-          <path
-            d="M2,2 L2,11 L10,6 L2,2"
-            style={{ fill: colors.connections.lines }}
-          />
+          <path d="M2,2 L2,11 L10,6 L2,2" style={{ fill }} />
         </marker>
         <marker
           id="markerStart"
@@ -116,3 +90,5 @@ export default function Connections({ connections, size }: Props) {
     </svg>
   );
 }
+
+export default observer(Connections);
