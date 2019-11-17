@@ -3,7 +3,7 @@
   "displayName": "Insight",
   "description": "Know your app better",
   "publisher": "raathigeshan",
-  "version": "0.11.0",
+  "version": "0.12.0",
   "engines": {
     "vscode": "^1.33.0"
   },
@@ -35,7 +35,6 @@
     "vscode:prepublish": "yarn run build",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./src/extension --project ./tsconfig.json",
-    "ver": "tsc --version",
     "postinstall": "node ./node_modules/vscode/bin/install",
     "ui": "webpack-dev-server --env.development --config ./webpack.config.js",
     "build-ui": "webpack --env.production --config ./webpack.config.js",
