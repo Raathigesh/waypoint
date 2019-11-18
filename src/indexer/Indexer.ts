@@ -19,21 +19,27 @@ export default class Indexer {
 
     const promises: any = [];
 
-    files
-      .filter(filePath => getFileType(filePath) !== "UNSUPPORTED")
-      .forEach(filePath => {
-        const sourceFile = new SourceFile();
-        const parsePromise = sourceFile.parse(
-          filePath,
-          project.pathAlias,
-          project.root
-        );
-        promises.push(parsePromise);
-        this.files[filePath] = sourceFile;
-      });
+    try {
+      files
+        .filter(filePath => getFileType(filePath) !== "UNSUPPORTED")
+        .forEach(filePath => {
+          const sourceFile = new SourceFile();
+          const parsePromise = sourceFile.parse(
+            filePath,
+            project.pathAlias,
+            project.root
+          );
+          promises.push(parsePromise);
+          this.files[filePath] = sourceFile;
+        });
 
-    await Promise.all(promises);
-    this.status = "indexed";
+      await Promise.all(promises);
+    } catch (e) {
+      console.log("Error in indexer", e);
+    } finally {
+      this.status = "indexed";
+      console.log("Marking indexer status", this.status);
+    }
   }
 
   public search(query: string) {

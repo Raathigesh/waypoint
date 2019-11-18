@@ -26,22 +26,28 @@ export default class SourceFile {
     pathAliasMap: { [alias: string]: string },
     root: string
   ) {
-    this.path = filePath;
+    try {
+      this.path = filePath;
 
-    const content = await promisify(readFile)(filePath);
-    const ast = this.getAST(content.toString(), filePath);
+      const content = await promisify(readFile)(filePath);
+      const ast = this.getAST(content.toString(), filePath);
 
-    traverse(ast, {
-      ExportNamedDeclaration: (path: NodePath<ExportNamedDeclaration>) => {
-        this.extractExport(path, "named");
-      },
-      ExportDefaultDeclaration: (path: NodePath<ExportDefaultDeclaration>) => {
-        this.extractExport(path, "default");
-      },
-      ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
-        this.extractImport(path, pathAliasMap, root);
-      }
-    });
+      traverse(ast, {
+        ExportNamedDeclaration: (path: NodePath<ExportNamedDeclaration>) => {
+          this.extractExport(path, "named");
+        },
+        ExportDefaultDeclaration: (
+          path: NodePath<ExportDefaultDeclaration>
+        ) => {
+          this.extractExport(path, "default");
+        },
+        ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
+          this.extractImport(path, pathAliasMap, root);
+        }
+      });
+    } catch (e) {
+      console.log("Parsing failed", filePath, e);
+    }
   }
 
   private extractExport(

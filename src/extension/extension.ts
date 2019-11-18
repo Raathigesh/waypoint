@@ -16,7 +16,7 @@ export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
     initialize(context);
   });
-  initialize(context);
+
   if (process.env.dev) {
     initialize(context);
   }
