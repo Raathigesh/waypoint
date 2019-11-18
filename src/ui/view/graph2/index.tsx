@@ -72,7 +72,7 @@ function Graph2({ documentSymbol, references }: Props) {
     }
 
     const rect = mainNode.current.getBoundingClientRect();
-    connections.addTarget(rect.x - 10, rect.y + rect.height / 2);
+    connections.addTarget(rect.x - 15, rect.y + rect.height / 2);
 
     if (!container.current) {
       return;
@@ -99,7 +99,7 @@ function Graph2({ documentSymbol, references }: Props) {
           position="relative"
           paddingRight="30%"
         >
-          <Flex alignItems="flex-end" justifyContent="flex-end">
+          <Flex alignItems="flex-end" justifyContent="flex-end" zIndex={99}>
             {columns.map(column => {
               return (
                 <Flex flexDirection="column" justifyContent="center">
@@ -109,8 +109,8 @@ function Graph2({ documentSymbol, references }: Props) {
             })}
           </Flex>
           <Flex />
-          <Flex></Flex>
-          <Flex alignItems="flex-end" justifyContent="flex-end">
+          <Flex />
+          <Flex alignItems="flex-end" justifyContent="flex-end" zIndex={99}>
             {documentSymbol && (
               <Flex
                 flexDirection="column"
@@ -119,16 +119,15 @@ function Graph2({ documentSymbol, references }: Props) {
                 marginBottom="10px"
                 padding="5px"
                 borderRadius="3px"
-                borderColor="gray.200"
                 color="gray.50"
-                bg="gray.1000"
+                bg="blue.900"
                 fontSize={12}
               >
                 <Flex ref={mainNode}>{documentSymbol.name}</Flex>
               </Flex>
             )}
           </Flex>
-          <Flex alignItems="flex-start" justifyContent="flex-end">
+          <Flex alignItems="flex-start" justifyContent="flex-end" zIndex={99}>
             {columns.map(column => {
               return (
                 <Flex flexDirection="column" justifyContent="center">

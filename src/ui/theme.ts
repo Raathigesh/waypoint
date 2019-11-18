@@ -33,7 +33,8 @@ const colors = {
   },
 
   gray: {
-    50: "#FCFCFC",
+    0: "#FFFFFF",
+    50: "#F1F5F9",
     100: "#EDF2F7",
     200: "#E2E8F0",
     300: "#CBD5E0",
@@ -75,7 +76,7 @@ const colors = {
   yellow: {
     50: "#fffff0",
     100: "#fefcbf",
-    200: "#faf089",
+    200: "#EDDA72", //
     300: "#f6e05e",
     400: "#ecc94b",
     500: "#d69e2e",
@@ -121,7 +122,7 @@ const colors = {
     600: "#2a69ac",
     700: "#1e4e8c",
     800: "#153e75",
-    900: "#1a365d"
+    900: "#3D72DE" //
   },
 
   cyan: {

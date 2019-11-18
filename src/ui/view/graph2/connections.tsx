@@ -31,7 +31,7 @@ function Connections({ size }: Props) {
   const connections = useContext(connectionStore);
   const theme = useTheme();
   const colors: any = theme?.colors;
-  const fill = colors?.orange["50"];
+  const fill = colors?.orange["200"];
   const paths = connections.enhancedViews().map(points => {
     const line = d3Line()
       .x((d: any) => d.x)

@@ -21,11 +21,9 @@ function File({ file, style, key }: Props) {
       width="200px"
       marginRight="50px"
       marginBottom="10px"
-      padding="5px"
+      padding="10px"
       borderRadius="3px"
-      border="1px solid"
-      borderColor="orange.400"
-      backgroundColor="gray.50"
+      backgroundColor="gray.0"
       style={style}
     >
       <Text

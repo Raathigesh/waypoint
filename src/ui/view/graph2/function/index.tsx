@@ -4,6 +4,7 @@ import { observer } from "mobx-react-lite";
 import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 import { connectionStore } from "ui/store";
 import { Instance } from "mobx-state-tree";
+import { openFile } from "ui/EventBus";
 
 interface Props {
   symbol: Instance<typeof DocumentSymbol>;
@@ -33,11 +34,14 @@ function Function({ symbol }: Props) {
       padding="5px"
       borderRadius="3px"
       color="gray.50"
-      bg="gray.1000"
+      bg="blue.900"
       alignItems="center"
       margin="5px"
       cursor="pointer"
       fontSize={12}
+      onClick={() => {
+        openFile(symbol.filePath, (symbol.location as any).toJSON());
+      }}
     >
       {symbol.name}
     </Flex>
