@@ -6,6 +6,7 @@ import Search from "./view/search";
 import { dependencyGraphStore, indexerStatusStore } from "./store";
 import Welcome from "./view/welcome";
 import Preference from "./view/preference";
+import UsageTree from "./view/usage-tree";
 
 function App() {
   const dependencyGraph = useContext(dependencyGraphStore);
@@ -30,10 +31,11 @@ function App() {
             />
           </Flex>
 
-          <Graph
+          {/*  <Graph
             references={dependencyGraph.references}
             documentSymbol={dependencyGraph.currentSymbol}
-          />
+          /> */}
+          <UsageTree references={dependencyGraph.references} />
         </Fragment>
       )}
       <Preference isOpen={isOpen} onClose={onClose} />
