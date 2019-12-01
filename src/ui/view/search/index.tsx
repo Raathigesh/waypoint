@@ -13,12 +13,23 @@ function Search() {
 
   const promiseOptions = async (inputValue: string) => {
     const results = await search(inputValue);
-    return results.items.map(item => ({
+
+    const resultOptions = results.items.map(item => ({
       value: item.name,
       label: `${item.name} : ${item.filePath}`,
       path: item.filePath,
       symbol: item
     }));
+
+    const commandOptions = [
+      {
+        value: "Docs",
+        label: "Docs search",
+        path: ""
+      }
+    ];
+
+    return [...resultOptions];
   };
 
   const customStyles = {

@@ -18,6 +18,7 @@ import { WorkspaceSymbolResponse } from "./types";
 import { GetReferencesArgs } from "./GetReferenceArgs";
 import ESModuleItem from "indexer/ESModuleItem";
 import { ReIndexArgs } from "./ReIndexArgs";
+import { sep } from "path";
 
 @Service()
 @Resolver(SearchResult)
@@ -56,6 +57,11 @@ export default class SymbolsResolver {
   @Query(returns => String)
   public indexingStatus() {
     return this.indexer.status;
+  }
+
+  @Query(returns => String)
+  public separator() {
+    return sep;
   }
 
   @Mutation(returns => SearchResult)

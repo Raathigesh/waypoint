@@ -2,6 +2,17 @@ import gql from "graphql-tag";
 import { sendQuery, sendMutation } from "ui/util/graphql";
 import { PathMapItem } from "extension/api/ReIndexArgs";
 
+export async function getSeparator() {
+  const query = gql`
+    query Separator {
+      separator
+    }
+  `;
+
+  const result = await sendQuery<{ separator: string }>(query, {});
+  return result.separator;
+}
+
 export async function indexerStatus() {
   const query = gql`
     query IndexStatus {

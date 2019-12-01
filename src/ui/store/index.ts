@@ -6,7 +6,9 @@ import { PathMap } from "./models/PathMap";
 import { onSnapshot } from "mobx-state-tree";
 import { setPathMap } from "./services/config";
 import { Connections } from "./models/Connections";
+import { App } from "./models/app";
 
+const app = App.create({ separator: "" });
 const pathMap = PathMap.create();
 export const pathMapStore = createContext(pathMap);
 export const dependencyGraphStore = createContext(DependencyGraph.create());
@@ -22,6 +24,7 @@ export const connectionStore = createContext(
     }
   })
 );
+export const appStore = createContext(app);
 
 onSnapshot(
   pathMap,

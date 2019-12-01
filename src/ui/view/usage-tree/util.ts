@@ -1,14 +1,35 @@
 import { Instance } from "mobx-state-tree";
+import * as nanoid from "nanoid";
 import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 
 export interface TreeNode {
+  id?: string;
   label: string;
   path: string;
   type: "directory" | "file";
   children?: TreeNode[];
+  symbols?: Instance<typeof DocumentSymbol>[];
 }
 
-function ensurePath(root: TreeNode, fullPath: string, tokens: string[]) {
+function flatten(tree: TreeNode, root: TreeNode) {
+  if (tree.children && tree.children.length === 1) {
+    tree.label = `${tree.label}/${tree.children[0].label}`;
+
+    tree.symbols = tree.children[0].symbols;
+    tree.children = tree.children[0].children;
+  }
+
+  tree.id = `${root.label}/${tree.label}`;
+
+  (tree.children || []).forEach(node => flatten(node, tree));
+  return tree;
+}
+
+function ensurePath(
+  root: TreeNode,
+  symbol: Instance<typeof DocumentSymbol>,
+  tokens: string[]
+) {
   const currentToken = tokens.shift();
   const children = root.children || [];
 
@@ -19,33 +40,35 @@ function ensurePath(root: TreeNode, fullPath: string, tokens: string[]) {
   if (!hasTokenChildren) {
     hasTokenChildren = {
       label: currentToken || "",
-      path: fullPath,
+      path: symbol.filePath,
       type: isAFile ? "file" : "directory",
-      children: []
+      children: [],
+      symbols: isAFile ? [symbol] : []
     };
     root.children?.push(hasTokenChildren);
+  } else if (hasTokenChildren && isAFile) {
+    hasTokenChildren.symbols?.push(symbol);
   }
 
   if (tokens.length !== 0) {
-    ensurePath(hasTokenChildren, fullPath, tokens);
+    ensurePath(hasTokenChildren, symbol, tokens);
   }
 }
 
 export function constructTree(
-  references: Instance<typeof DocumentSymbol>[]
+  references: Instance<typeof DocumentSymbol>[],
+  separator: string
 ): TreeNode {
-  const paths = references.map(r => r.filePath);
-
   const tree: TreeNode = {
     label: "root",
     path: "",
     type: "directory",
     children: []
   };
-  paths.forEach(item => {
-    const tokens = item.split("\\");
+  references.forEach(item => {
+    const tokens = item.filePath.split(separator);
     ensurePath(tree, item, tokens);
   });
-  console.log(tree);
-  return tree;
+
+  return flatten(tree, tree);
 }
