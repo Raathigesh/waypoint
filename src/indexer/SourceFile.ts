@@ -8,13 +8,16 @@ import { promisify } from "util";
 const nanoid = require("nanoid");
 import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
+import { transformSync } from "@babel/core";
 import { NodePath } from "babel-traverse";
 import { getFileType } from "common/utils/file";
 import ImportStatement, { ImportSpecifier } from "./ImportStatement";
 import ESModuleItem from "./ESModuleItem";
 import { ImportDeclaration } from "@babel/types";
+import generate from "@babel/generator";
 import { resolve, isAbsolute, dirname } from "path";
 import { findAbsoluteFilePathWhichExists } from "./fileResolver";
+import { Location } from "entities/Location";
 
 export default class SourceFile {
   public path: string = "";
@@ -34,12 +37,12 @@ export default class SourceFile {
 
       traverse(ast, {
         ExportNamedDeclaration: (path: NodePath<ExportNamedDeclaration>) => {
-          this.extractExport(path, "named");
+          this.extractExport(path, "named", content.toString());
         },
         ExportDefaultDeclaration: (
           path: NodePath<ExportDefaultDeclaration>
         ) => {
-          this.extractExport(path, "default");
+          this.extractExport(path, "default", content.toString());
         },
         ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
           this.extractImport(path, pathAliasMap, root);
@@ -52,7 +55,8 @@ export default class SourceFile {
 
   private extractExport(
     path: NodePath<ExportDefaultDeclaration | ExportNamedDeclaration>,
-    mode: "default" | "named"
+    mode: "default" | "named",
+    content: string
   ) {
     const declaration = path.node.declaration;
     if (declaration) {
@@ -76,6 +80,26 @@ export default class SourceFile {
       symbol.name = name;
       symbol.kind = declaration.type as any;
       symbol.location = path.node.loc;
+      symbol.code = this.getCode(content, path.node.loc);
+      this.importStatements.forEach(importStatement => {
+        importStatement.specifiers.forEach(specifier => {
+          specifier.references.forEach(reference => {
+            if (
+              reference.location &&
+              this.isInLocation(path.node.loc, reference.location)
+            ) {
+              symbol.markers.push({
+                filePath: importStatement.path,
+                name: specifier.name,
+                location: this.adjustLocation(
+                  path.node.loc,
+                  reference.location
+                ) as any
+              });
+            }
+          });
+        });
+      });
       this.symbols.push(symbol);
     }
   }
@@ -133,7 +157,8 @@ export default class SourceFile {
           return {
             containerName,
             containerType: "FunctionDeclaration",
-            location: referencePath.node.loc
+            location: referencePath.node.loc,
+            code: ""
           };
         })
       };
@@ -152,5 +177,79 @@ export default class SourceFile {
       sourceType: "module",
       plugins: ["jsx", "classProperties", "dynamicImport", additionalPlugin]
     });
+  }
+
+  private isInLocation(locationA: Location, locationB: Location) {
+    const {
+      start: locAStart = { line: 0, column: 0 },
+      end: locAEnd = { line: 0, column: 0 }
+    } = locationA;
+
+    const {
+      start: locBStart = { line: 0, column: 0 },
+      end: locBEnd = { line: 0, column: 0 }
+    } = locationB;
+
+    let isStartWithIn = false;
+    if (locBStart.line > locAStart.line) {
+      isStartWithIn = true;
+    } else if (locBStart.line === locAStart.line) {
+      isStartWithIn = locBStart.column >= locAStart.column;
+    }
+
+    let isEndWithIn = false;
+    if (locBEnd.line < locAEnd.line) {
+      isEndWithIn = true;
+    } else if (locBEnd.line === locAEnd.line) {
+      isEndWithIn = locBEnd.column <= locAEnd.column;
+    }
+
+    return isStartWithIn && isEndWithIn;
+  }
+
+  private adjustLocation(functionLocation: Location, markerLocation: Location) {
+    const {
+      start: functionStart = { line: 0, column: 0 },
+      end: functionEnd = { line: 0, column: 0 }
+    } = functionLocation;
+
+    const {
+      start: markerStart = { line: 0, column: 0 },
+      end: markerEnd = { line: 0, column: 0 }
+    } = markerLocation;
+
+    const newLocation: Location = {
+      start: {
+        line: markerStart.line - functionStart.line,
+        column: markerStart.column
+      },
+      end: {
+        line: markerEnd.line - functionStart.line,
+        column: markerEnd.column
+      }
+    };
+
+    return newLocation;
+  }
+
+  private getCode(code: string, location: Location) {
+    const lines = code.split("\n");
+
+    const {
+      start = { line: 0, column: 0 },
+      end = { line: 0, column: 0 }
+    } = location;
+
+    const results: string[] = [];
+
+    lines.forEach((line, index) => {
+      if (index >= start.line - 1 && index <= end.line - 1) {
+        results.push(line);
+      }
+    });
+
+    return results.reduce((acc, line) => {
+      return acc + line + "\n";
+    }, "");
   }
 }

@@ -1,12 +1,15 @@
 import { types, flow } from "mobx-state-tree";
-import { DocumentSymbol } from "./DocumentSymbol";
-import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
-import { findReferences } from "../services/references";
+import { DocumentSymbol, Marker } from "./DocumentSymbol";
+import {
+  GqlSymbolInformation,
+  GqlMarkers
+} from "entities/GqlSymbolInformation";
+import { getMarkers } from "../services/search";
 
 export const DependencyGraph = types
   .model("DependencyGraph", {
     currentSymbol: types.maybeNull(DocumentSymbol),
-    references: types.array(DocumentSymbol)
+    otherSymbols: types.map(DocumentSymbol)
   })
   .actions(self => {
     const setCurrentSymbol = (symbol: GqlSymbolInformation) => {
@@ -14,37 +17,81 @@ export const DependencyGraph = types
         id: symbol.id,
         name: symbol.name,
         filePath: symbol.filePath,
-        kind: symbol.kind
+        kind: symbol.kind,
+        code: symbol.code,
+        markers: []
       });
     };
 
-    const fetchReferences = flow(function*(symbol: GqlSymbolInformation) {
-      const references: GqlSymbolInformation[] = yield findReferences({
-        filePath: symbol.filePath,
-        kind: symbol.kind,
-        name: symbol.name,
-        containerKind: undefined
-      });
-      self.references.clear();
-      references.forEach(reference => {
-        const documentSymbol = DocumentSymbol.create({
-          id: reference.id,
-          name: reference.name || "Anonymous",
-          filePath: reference.filePath,
-          kind: "",
-          location: {
-            start: {
-              column: reference?.location?.start?.column || 0,
-              line: reference?.location?.start?.line || 0
-            },
-            end: {
-              column: reference?.location?.end?.column || 0,
-              line: reference?.location?.end?.line || 0
-            }
-          }
-        });
-        self.references.push(documentSymbol);
+    const fetchMarkers = flow(function*(symbol: GqlSymbolInformation) {
+      const symbolWithMakers: GqlSymbolInformation = yield getMarkers(
+        symbol.filePath,
+        symbol.name
+      );
+
+      (symbolWithMakers.markers || []).forEach(reference => {
+        if (self.currentSymbol) {
+          self.currentSymbol.markers.push(
+            Marker.create({
+              filePath: reference.filePath,
+              name: reference.name,
+              location: {
+                start: {
+                  column: reference?.location?.start?.column || 0,
+                  line: reference?.location?.start?.line || 0
+                },
+                end: {
+                  column: reference?.location?.end?.column || 0,
+                  line: reference?.location?.end?.line || 0
+                }
+              }
+            })
+          );
+        }
       });
     });
-    return { setCurrentSymbol, fetchReferences };
+
+    const getMethod = flow(function*(line: number, column: number) {
+      if (self.currentSymbol) {
+        const clickedMarker = self.currentSymbol.markers.find(
+          marker =>
+            marker.location?.start.line === line &&
+            marker.location.start.column <= column &&
+            marker.location.end.column >= column
+        );
+
+        if (clickedMarker) {
+          const symbol: GqlSymbolInformation = yield getMarkers(
+            clickedMarker.filePath,
+            clickedMarker.name
+          );
+          self.otherSymbols.set(
+            symbol.id,
+            DocumentSymbol.create({
+              id: symbol.id,
+              name: symbol.name,
+              filePath: symbol.filePath || "",
+              kind: symbol.kind,
+              code: symbol.code,
+              markers: (symbol.markers || []).map(marker => ({
+                filePath: marker.filePath,
+                name: marker.name,
+                location: {
+                  start: {
+                    column: marker?.location?.start?.column || 0,
+                    line: marker?.location?.start?.line || 0
+                  },
+                  end: {
+                    column: marker?.location?.end?.column || 0,
+                    line: marker?.location?.end?.line || 0
+                  }
+                }
+              }))
+            })
+          );
+        }
+      }
+    });
+
+    return { setCurrentSymbol, fetchMarkers, getMethod };
   });

@@ -13,7 +13,10 @@ import Project from "indexer/Project";
 import { pubSub } from "common/pubSub";
 import { Status } from "./Status";
 import { SearchResult } from "../../entities/SearchResult";
-import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
+import {
+  GqlSymbolInformation,
+  GqlMarkers
+} from "entities/GqlSymbolInformation";
 import { WorkspaceSymbolResponse } from "./types";
 import { GetReferencesArgs } from "./GetReferenceArgs";
 import ESModuleItem from "indexer/ESModuleItem";
@@ -66,7 +69,6 @@ export default class SymbolsResolver {
 
   @Mutation(returns => SearchResult)
   public async search(@Arg("query") query: string) {
-    const symbols: GqlSymbolInformation[] = [];
     try {
       const result = new SearchResult();
       const items = this.indexer.search(query);
@@ -76,6 +78,7 @@ export default class SymbolsResolver {
         item.kind = obj.kind;
         item.name = obj.name;
         item.id = obj.id;
+        item.code = obj.code;
 
         return item;
       });
@@ -85,6 +88,14 @@ export default class SymbolsResolver {
       result.errorMessage = e.stack;
       return result;
     }
+  }
+
+  @Query(returns => GqlSymbolInformation)
+  public async getSymbolWithMarkers(
+    @Arg("path") path: string,
+    @Arg("name") name: string
+  ) {
+    return this.indexer.getSymbolWithMarkers(path, name);
   }
 
   @Query(returns => [GqlSymbolInformation])

@@ -7,6 +7,7 @@ import { dependencyGraphStore, indexerStatusStore } from "./store";
 import Welcome from "./view/welcome";
 import Preference from "./view/preference";
 import UsageTree from "./view/usage-tree";
+import Stage from "./view/stage";
 
 function App() {
   const dependencyGraph = useContext(dependencyGraphStore);
@@ -35,7 +36,8 @@ function App() {
             references={dependencyGraph.references}
             documentSymbol={dependencyGraph.currentSymbol}
           /> */}
-          <UsageTree references={dependencyGraph.references} />
+          {/* <UsageTree references={dependencyGraph.references} /> */}
+          <Stage />
         </Fragment>
       )}
       <Preference isOpen={isOpen} onClose={onClose} />

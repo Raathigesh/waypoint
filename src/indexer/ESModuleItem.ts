@@ -1,4 +1,8 @@
-import ExportStatus from "./ExportStatus";
+export interface Marker {
+  location: SymbolLocation;
+  filePath: string;
+  name: string;
+}
 
 export interface SymbolLocation {
   start: {
@@ -17,4 +21,6 @@ export default class ESModuleItem {
   public location?: SymbolLocation;
   public path: string = "";
   public kind: string = "";
+  public code: string = "";
+  public markers: Marker[] = [];
 }

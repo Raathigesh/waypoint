@@ -85,8 +85,7 @@ function Search() {
         }}
         onChange={({ symbol }: { symbol: GqlSymbolInformation }) => {
           dependencyGraph.setCurrentSymbol(symbol);
-          dependencyGraph.fetchReferences(symbol);
-          connection.reset();
+          dependencyGraph.fetchMarkers(symbol);
         }}
       />
     </Flex>

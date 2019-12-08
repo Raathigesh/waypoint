@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SourceFile should have named exports 1`] = `
+Array [
+  Object {
+    "code": "export function getItems() {}",
+    "id": "",
+    "kind": "FunctionDeclaration",
+    "location": SourceLocation {
+      "end": Position {
+        "column": 29,
+        "line": 1,
+      },
+      "start": Position {
+        "column": 0,
+        "line": 1,
+      },
+    },
+    "markers": Array [],
+    "name": "getItems",
+    "path": "",
+  },
+  Object {
+    "code": "export function getInStockCount() {}",
+    "id": "",
+    "kind": "FunctionDeclaration",
+    "location": SourceLocation {
+      "end": Position {
+        "column": 36,
+        "line": 2,
+      },
+      "start": Position {
+        "column": 0,
+        "line": 2,
+      },
+    },
+    "markers": Array [],
+    "name": "getInStockCount",
+    "path": "",
+  },
+]
+`;
+
+exports[`SourceFile should have named exports 2`] = `Array []`;

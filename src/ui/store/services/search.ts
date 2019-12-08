@@ -1,6 +1,10 @@
 import gql from "graphql-tag";
-import { sendMutation } from "ui/util/graphql";
+import { sendMutation, sendQuery } from "ui/util/graphql";
 import { SearchResult } from "entities/SearchResult";
+import {
+  GqlMarkers,
+  GqlSymbolInformation
+} from "entities/GqlSymbolInformation";
 
 export async function search(query: string) {
   const mutation = gql`
@@ -11,6 +15,7 @@ export async function search(query: string) {
           name
           filePath
           kind
+          code
           location {
             start {
               line
@@ -34,4 +39,51 @@ export async function search(query: string) {
     items: results.search.items,
     errorMessage: results.search.errorMessage
   };
+}
+
+export async function getMarkers(path: string, name: string) {
+  const query = gql`
+    query GetSymbolWithMarkers($path: String!, $name: String!) {
+      getSymbolWithMarkers(path: $path, name: $name) {
+        id
+        name
+        filePath
+        kind
+        code
+        location {
+          start {
+            line
+            column
+          }
+          end {
+            line
+            column
+          }
+        }
+        markers {
+          filePath
+          name
+          location {
+            start {
+              line
+              column
+            }
+            end {
+              line
+              column
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const results = await sendQuery<{
+    getSymbolWithMarkers: GqlSymbolInformation;
+  }>(query, {
+    path,
+    name
+  });
+
+  return results.getSymbolWithMarkers;
 }

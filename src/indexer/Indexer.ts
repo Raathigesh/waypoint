@@ -65,6 +65,12 @@ export default class Indexer {
     }
   }
 
+  public getSymbolWithMarkers(path: string, name: string) {
+    const file = this.files[path];
+    const symbol = file.symbols.find(symbol => symbol.name === name);
+    return symbol;
+  }
+
   public findReferences(path: string, symbolName: string) {
     const references: ESModuleItem[] = [];
 
@@ -83,7 +89,9 @@ export default class Indexer {
               kind: reference.containerType,
               name: reference.containerName,
               id: nanoid(),
-              location: reference.location
+              location: reference.location,
+              code: "",
+              markers: []
             });
           });
         }
