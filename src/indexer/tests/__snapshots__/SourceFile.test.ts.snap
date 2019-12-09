@@ -3,7 +3,8 @@
 exports[`SourceFile should have named exports 1`] = `
 Array [
   Object {
-    "code": "export function getItems() {}",
+    "code": "export function getItems() {}
+",
     "id": "",
     "kind": "FunctionDeclaration",
     "location": SourceLocation {
@@ -21,7 +22,8 @@ Array [
     "path": "",
   },
   Object {
-    "code": "export function getInStockCount() {}",
+    "code": "export function getInStockCount() {}
+",
     "id": "",
     "kind": "FunctionDeclaration",
     "location": SourceLocation {
@@ -64,8 +66,34 @@ Array [
       },
     },
     "markers": Array [
-      "D:/projects/insight/src/indexer/tests/project/query/items.js",
-      "project/query/items",
+      Object {
+        "filePath": "root/query/items.js",
+        "location": Object {
+          "end": Object {
+            "column": 24,
+            "line": 1,
+          },
+          "start": Object {
+            "column": 16,
+            "line": 1,
+          },
+        },
+        "name": "getItems",
+      },
+      Object {
+        "filePath": "project/query/items",
+        "location": Object {
+          "end": Object {
+            "column": 36,
+            "line": 2,
+          },
+          "start": Object {
+            "column": 21,
+            "line": 2,
+          },
+        },
+        "name": "getInStockCount",
+      },
     ],
     "name": "Store",
     "path": "",

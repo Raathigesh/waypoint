@@ -17,7 +17,7 @@ describe("SourceFile", () => {
     expect(sourceFile.importStatements).toMatchSnapshot();
   });
 
-  it.only("should identify markers", async () => {
+  it("should identify markers", async () => {
     const sourceFile = new SourceFile();
     await sourceFile.parse(
       resolve(__dirname, "./project/store/Root.js"),
@@ -25,23 +25,26 @@ describe("SourceFile", () => {
       ""
     );
 
-    expect(
-      sourceFile.symbols.map(symbol => ({
-        ...symbol,
-        markers: symbol.markers.map(marker =>
-          marker.filePath
-            .replace(root, "root")
-            .split(sep)
-            .join("/")
-        ),
-        id: "",
-        path: symbol.path
+    const root = resolve(__dirname, "./project");
+
+    const symbols = sourceFile.symbols.map(symbol => ({
+      ...symbol,
+      markers: symbol.markers.map(marker => ({
+        ...marker,
+        filePath: marker.filePath
           .replace(root, "root")
           .split(sep)
           .join("/")
-      }))
-    ).toMatchSnapshot();
-    const root = resolve(__dirname, "./project");
+      })),
+      id: "",
+      path: symbol.path
+        .replace(root, "root")
+        .split(sep)
+        .join("/")
+    }));
+
+    expect(symbols).toMatchSnapshot();
+
     expect(
       sourceFile.importStatements.map(item => ({
         ...item,
