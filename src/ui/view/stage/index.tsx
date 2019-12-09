@@ -23,8 +23,8 @@ function Stage() {
 
   const handleMouseMove = (e: any) => {
     if (shouldMove) {
-      setMarginLeft(initialClientX - e.clientX);
-      setMarginTop(initialClientY - e.clientY);
+      setMarginLeft(e.clientX - initialClientX);
+      setMarginTop(e.clientY - initialClientY);
     }
   };
 

@@ -42,3 +42,92 @@ Array [
 `;
 
 exports[`SourceFile should have named exports 2`] = `Array []`;
+
+exports[`SourceFile should identify markers 1`] = `
+Array [
+  Object {
+    "code": "export default function Store() {
+  const items = getItems();
+  const stockCount = getInStockCount();
+}
+",
+    "id": "",
+    "kind": "FunctionDeclaration",
+    "location": SourceLocation {
+      "end": Position {
+        "column": 1,
+        "line": 7,
+      },
+      "start": Position {
+        "column": 0,
+        "line": 4,
+      },
+    },
+    "markers": Array [
+      "D:/projects/insight/src/indexer/tests/project/query/items.js",
+      "project/query/items",
+    ],
+    "name": "Store",
+    "path": "",
+  },
+]
+`;
+
+exports[`SourceFile should identify markers 2`] = `
+Array [
+  Object {
+    "path": "root/query/items.js",
+    "specifiers": Array [
+      Object {
+        "isDefault": true,
+        "name": "getItems",
+        "references": Array [
+          Object {
+            "code": "",
+            "containerName": "Store",
+            "containerType": "FunctionDeclaration",
+            "location": SourceLocation {
+              "end": Position {
+                "column": 24,
+                "line": 5,
+              },
+              "identifierName": "getItems",
+              "start": Position {
+                "column": 16,
+                "line": 5,
+              },
+            },
+          },
+        ],
+      },
+    ],
+  },
+  Object {
+    "path": "project/query/items",
+    "specifiers": Array [
+      Object {
+        "isDefault": true,
+        "name": "getInStockCount",
+        "references": Array [
+          Object {
+            "code": "",
+            "containerName": "Store",
+            "containerType": "FunctionDeclaration",
+            "location": SourceLocation {
+              "end": Position {
+                "column": 36,
+                "line": 6,
+              },
+              "identifierName": "getInStockCount",
+              "start": Position {
+                "column": 21,
+                "line": 6,
+              },
+            },
+          },
+        ],
+      },
+    ],
+  },
+]
+`;
