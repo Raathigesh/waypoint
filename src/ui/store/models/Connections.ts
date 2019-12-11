@@ -51,11 +51,11 @@ export const Connections = types
                     y: start.top + link.line * 14
                   },
                   firstBreak: {
-                    x: start.right + 5,
+                    x: start.right + 15,
                     y: start.top + link.line * 14
                   },
                   secondBreak: {
-                    x: end.left - 12,
+                    x: end.left - 20,
                     y: end.top + end.height / 2
                   },
                   end: {
