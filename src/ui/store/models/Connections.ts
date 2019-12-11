@@ -1,4 +1,5 @@
-import { types } from "mobx-state-tree";
+import { types, getEnv, Instance } from "mobx-state-tree";
+import { DependencyGraph } from "./DependencyGraph";
 
 export const Point = types.model("Point", {
   x: types.number,
@@ -6,50 +7,86 @@ export const Point = types.model("Point", {
 });
 
 export const Connection = types.model("Connection", {
-  points: types.array(Point)
+  start: Point,
+  firstBreak: Point,
+  secondBreak: Point,
+  end: Point
+});
+
+export const Rectangle = types.model("Rectangle", {
+  width: types.number,
+  height: types.number,
+  top: types.number,
+  right: types.number,
+  bottom: types.number,
+  left: types.number
 });
 
 export const Connections = types
   .model("Connections", {
-    connections: types.array(Connection),
+    connections: types.map(Rectangle),
     target: types.maybeNull(Point),
     relative: Point
   })
   .views(self => ({
     enhancedViews() {
-      return self.connections.map(connection =>
-        [
-          ...connection.points,
-          {
-            x: connection.points[connection.points.length - 1].x,
-            y: (self.target && self.target.y) || 0
-          },
-          self.target
-        ].map(point => ({
-          x: (point?.x || 0) - self.relative.x,
-          y: (point?.y || 0) - self.relative.y
-        }))
-      );
+      const env: {
+        dependencyGraph: typeof DependencyGraph.Type;
+      } = getEnv(self);
+
+      const connections: Instance<typeof Connection>[] = [];
+
+      Array.from(env.dependencyGraph.links.keys()).forEach(key => {
+        const links = env.dependencyGraph.links.get(key);
+        if (links) {
+          links.forEach(link => {
+            const start = self.connections.get(key);
+            const end = self.connections.get(link.target);
+
+            if (start && end) {
+              connections.push(
+                Connection.create({
+                  start: {
+                    x: start.right,
+                    y: start.top + link.line * 14
+                  },
+                  firstBreak: {
+                    x: start.right + 5,
+                    y: start.top + link.line * 14
+                  },
+                  secondBreak: {
+                    x: end.left - 10,
+                    y: end.top + end.height / 2
+                  },
+                  end: {
+                    x: end.left - 8,
+                    y: end.top + end.height / 2
+                  }
+                })
+              );
+            }
+          });
+        }
+      });
+
+      return connections;
     }
   }))
   .actions(self => {
     return {
-      addTarget(x: number, y: number) {
-        self.target = Point.create({ x, y });
-      },
-      setRelative(x: number, y: number) {
-        self.relative = Point.create({ x, y });
-      },
-      addConnection(x1: number, y1: number, x2: number, y2: number) {
-        const point1 = Point.create({ x: x1, y: y1 });
-        const point2 = Point.create({ x: x2, y: y2 });
-        const connection = Connection.create({
-          points: [point1, point2]
-        });
-        self.connections.push(connection);
-      },
-      reset() {
-        self.connections.clear();
+      addPosition(
+        id: string,
+        width: number,
+        height: number,
+        top: number,
+        right: number,
+        bottom: number,
+        left: number
+      ) {
+        self.connections.set(
+          id,
+          Rectangle.create({ width, height, top, right, bottom, left })
+        );
       }
     };
   });

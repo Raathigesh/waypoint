@@ -72,13 +72,13 @@ function Graph2({ documentSymbol, references }: Props) {
     }
 
     const rect = mainNode.current.getBoundingClientRect();
-    connections.addTarget(rect.x - 15, rect.y + rect.height / 2);
+    // connections.addTarget(rect.x - 15, rect.y + rect.height / 2);
 
     if (!container.current) {
       return;
     }
     const containerRect = container.current.getBoundingClientRect();
-    connections.setRelative(containerRect.x, containerRect.y);
+    // connections.setRelative(containerRect.x, containerRect.y);
   });
 
   return (

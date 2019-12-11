@@ -6,11 +6,16 @@ import {
 } from "entities/GqlSymbolInformation";
 import { getMarkers } from "../services/search";
 
+const NodeLink = types.model("NodeLink", {
+  line: types.number,
+  target: types.string
+});
+
 export const DependencyGraph = types
   .model("DependencyGraph", {
     currentSymbol: types.maybeNull(DocumentSymbol),
     otherSymbols: types.map(DocumentSymbol),
-    links: types.map(types.array(types.string))
+    links: types.map(types.array(NodeLink))
   })
   .actions(self => {
     const setCurrentSymbol = (symbol: GqlSymbolInformation) => {
@@ -85,9 +90,20 @@ export const DependencyGraph = types
         );
 
         if (self.links.get(id)) {
-          self.links.set(id, [...(self.links.get(id) || []), symbol.id]);
+          self.links.set(id, [
+            ...(self.links.get(id) || []),
+            NodeLink.create({
+              line: clickedMarker.location?.start.line || 0,
+              target: symbol.id
+            })
+          ]);
         } else {
-          self.links.set(id, [symbol.id]);
+          self.links.set(id, [
+            NodeLink.create({
+              line: clickedMarker.location?.start.line || 0,
+              target: symbol.id
+            })
+          ]);
         }
 
         self.otherSymbols.set(
@@ -120,18 +136,18 @@ export const DependencyGraph = types
     return { setCurrentSymbol, fetchMarkers, addBubble };
   })
   .views(self => {
-    const getSymbolById = (id: string) => {
-      if (self.currentSymbol && self.currentSymbol.id === id) {
+    const getSymbolById = (link: Instance<typeof NodeLink>) => {
+      if (self.currentSymbol && self.currentSymbol.id === link.target) {
         return self.currentSymbol;
       }
-      return self.otherSymbols.get(id);
+      return self.otherSymbols.get(link.target);
     };
 
     const getGraphColumns = () => {
       const results: Array<Array<Instance<typeof DocumentSymbol>>> = [];
 
-      let currentColumnItems: string[] = [];
-      let nextColumnItems: string[] = [];
+      let currentColumnItems: Instance<typeof NodeLink>[] = [];
+      let nextColumnItems: Instance<typeof NodeLink>[] = [];
 
       let nodes: Instance<typeof DocumentSymbol>[] = [];
 
@@ -140,7 +156,7 @@ export const DependencyGraph = types
       }
 
       const itemLinks = self.links.get(self.currentSymbol.id) || [];
-      currentColumnItems = currentColumnItems.concat(itemLinks);
+      currentColumnItems = currentColumnItems.concat(itemLinks.reverse());
 
       while (currentColumnItems.length !== 0) {
         const link = currentColumnItems.pop();

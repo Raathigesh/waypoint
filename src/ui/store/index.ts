@@ -11,18 +11,22 @@ import { App } from "./models/app";
 const app = App.create({ separator: "" });
 const pathMap = PathMap.create();
 export const pathMapStore = createContext(pathMap);
-export const dependencyGraphStore = createContext(DependencyGraph.create());
+
+const dependencyGraph = DependencyGraph.create();
+export const dependencyGraphStore = createContext(dependencyGraph);
 export const indexerStatusStore = createContext(
   IndexerStatus.create({ status: "none" }, { pathMap })
 );
 export const connectionStore = createContext(
-  Connections.create({
-    connections: [],
-    relative: {
-      x: 0,
-      y: 0
-    }
-  })
+  Connections.create(
+    {
+      relative: {
+        x: 0,
+        y: 0
+      }
+    },
+    { dependencyGraph }
+  )
 );
 export const appStore = createContext(app);
 

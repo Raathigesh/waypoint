@@ -20,12 +20,12 @@ function Function({ symbol }: Props) {
     }
 
     const rect = ref.current.getBoundingClientRect();
-    connections.addConnection(
+    /* connections.addConnection(
       rect.right,
       rect.top + rect.height / 2,
       rect.right + 25,
       rect.top + rect.height / 2
-    );
+    ); */
   });
 
   return (

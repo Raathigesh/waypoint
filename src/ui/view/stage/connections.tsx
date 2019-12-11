@@ -34,13 +34,16 @@ function Connections({ size }: Props) {
   const fill = colors?.orange["200"];
   const paths = connections
     .enhancedViews()
-    .map(connection => [connection.start, connection.end])
+    .map(connection => [
+      connection.start,
+      connection.firstBreak,
+      connection.secondBreak,
+      connection.end
+    ])
     .map(points => {
       const line = d3Line()
         .x((d: any) => d.x)
         .y((d: any) => d.y)(points);
-
-      // const { x, y, w, h } = rectangleFromDiagonal(points[0], points[2]);
 
       return (
         <Fragment>
@@ -64,7 +67,9 @@ function Connections({ size }: Props) {
         height: size.height,
         width: size.width,
         position: "absolute",
-        zIndex: 0
+        zIndex: 0,
+        marginTop: "-49px",
+        marginLeft: "-13px"
       }}
     >
       <defs>
