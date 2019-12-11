@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, Fragment } from "react";
 import { observer } from "mobx-react-lite";
 import { Flex, IconButton, useDisclosure } from "@chakra-ui/core";
-import Graph from "./view/graph2";
 import Search from "./view/search";
 import { dependencyGraphStore, indexerStatusStore } from "./store";
 import Welcome from "./view/welcome";
 import Preference from "./view/preference";
-import UsageTree from "./view/usage-tree";
 import Stage from "./view/stage";
 
 function App() {
@@ -32,11 +30,6 @@ function App() {
             />
           </Flex>
 
-          {/*  <Graph
-            references={dependencyGraph.references}
-            documentSymbol={dependencyGraph.currentSymbol}
-          /> */}
-          {/* <UsageTree references={dependencyGraph.references} /> */}
           <Stage />
         </Fragment>
       )}
