@@ -5,10 +5,16 @@ import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-tomorrow";
 import { dependencyGraphStore, connectionStore } from "ui/store";
 import { observer } from "mobx-react-lite";
+import { Instance } from "mobx-state-tree";
+import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 
 const getHeightFromCode = (code: string) => code.split("\n").length * 15 + 15;
 
-function Code({ symbol }) {
+interface Props {
+  symbol: Instance<typeof DocumentSymbol>;
+}
+
+function Code({ symbol }: Props) {
   const dependencyGraph = useContext(dependencyGraphStore);
   const ref: any = useRef(null);
   const connections = useContext(connectionStore);

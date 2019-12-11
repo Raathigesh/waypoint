@@ -55,11 +55,11 @@ export const Connections = types
                     y: start.top + link.line * 14
                   },
                   secondBreak: {
-                    x: end.left - 10,
+                    x: end.left - 12,
                     y: end.top + end.height / 2
                   },
                   end: {
-                    x: end.left - 8,
+                    x: end.left - 12,
                     y: end.top + end.height / 2
                   }
                 })

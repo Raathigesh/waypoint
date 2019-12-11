@@ -54,6 +54,7 @@ function Connections({ size }: Props) {
               stroke: fill,
               strokeWidth: "1px"
             }}
+            markerStart="url(#markerStart)"
             markerEnd="url(#markerArrow)"
             stroke-linejoin="round"
           />
@@ -69,14 +70,14 @@ function Connections({ size }: Props) {
         position: "absolute",
         zIndex: 0,
         marginTop: "-49px",
-        marginLeft: "-13px"
+        marginLeft: "-8px"
       }}
     >
       <defs>
         <marker
           id="markerArrow"
-          markerWidth="33"
-          markerHeight="33"
+          markerWidth="23"
+          markerHeight="23"
           refX="2"
           refY="6"
           orient="auto"
