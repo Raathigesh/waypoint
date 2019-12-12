@@ -6,44 +6,28 @@ import { connectionStore } from "ui/store";
 import Connections from "./connections";
 
 function Stage() {
-  const mainNode: any = useRef(null);
-  const container: any = useRef(null);
-  const connections = useContext(connectionStore);
-
-  const [initialClientX, setInitialClientX] = useState(0);
-  const [initialClientY, setInitialClientY] = useState(0);
-
-  const [marginLeft, setMarginLeft] = useState(0);
-  const [marginTop, setMarginTop] = useState(0);
-  const [shouldMove, setShouldMove] = useState(false);
-
-  useLayoutEffect(() => {
-    if (!mainNode.current) {
-      return;
-    }
-
-    const rect = mainNode.current.getBoundingClientRect();
-
-    if (!container.current) {
-      return;
-    }
-    const containerRect = container.current.getBoundingClientRect();
-  });
+  const initialClick: any = useRef(null);
+  const shouldMove: any = useRef(false);
+  const element: any = useRef(null);
 
   const handleMouseDown = (e: any) => {
-    setInitialClientX(e.clientX);
-    setInitialClientY(e.clientY);
-    setShouldMove(true);
+    initialClick.current = {
+      x: e.clientX,
+      y: e.clientY
+    };
+    shouldMove.current = true;
   };
 
   const handleMouseUp = () => {
-    setShouldMove(false);
+    shouldMove.current = false;
   };
 
   const handleMouseMove = (e: any) => {
-    if (shouldMove) {
-      setMarginLeft(e.clientX - initialClientX);
-      setMarginTop(e.clientY - initialClientY);
+    if (shouldMove.current && element.current) {
+      const deltaLeft = e.clientX - initialClick.current.x;
+      const deltaTop = e.clientY - initialClick.current.y;
+      element.current.style.marginLeft = `${deltaLeft}px`;
+      element.current.style.marginTop = `${deltaTop}px`;
     }
   };
 
@@ -54,9 +38,8 @@ function Stage() {
       onMouseMove={handleMouseMove}
       width="100%"
       cursor={shouldMove ? "move" : "inherit"}
-      ref={container}
     >
-      <Flex marginLeft={`${marginLeft}px`} marginTop={`${marginTop}px`}>
+      <Flex ref={element}>
         <Bubble />
         <Connections size={{ height: "100%", width: "100%" }} />
       </Flex>
