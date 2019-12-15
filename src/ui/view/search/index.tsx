@@ -1,15 +1,31 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import Select from "react-select/async";
 import { Search as SearchIcon } from "react-feather";
-import { search } from "ui/store/services/search";
-import { dependencyGraphStore, connectionStore } from "ui/store";
+import { search, getSymbolsForActiveFile } from "ui/store/services/search";
+import { dependencyGraphStore } from "ui/store";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { observer } from "mobx-react-lite";
 import { Box, Flex } from "@chakra-ui/core";
+import { Instance } from "mobx-state-tree";
 
 function Search() {
   const dependencyGraph = useContext(dependencyGraphStore);
-  const connection = useContext(connectionStore);
+  const [activeFileOptions, setActiveFileOptions] = useState<
+    GqlSymbolInformation[]
+  >([]);
+
+  const onMenuOpen = async () => {
+    const activeFileSymbols = await getSymbolsForActiveFile();
+
+    const options = activeFileSymbols.map(item => ({
+      value: item.name,
+      label: `${item.name} : ${item.filePath}`,
+      path: item.filePath,
+      symbol: item
+    }));
+
+    setActiveFileOptions(options as any);
+  };
 
   const promiseOptions = async (inputValue: string) => {
     const results = await search(inputValue);
@@ -20,14 +36,6 @@ function Search() {
       path: item.filePath,
       symbol: item
     }));
-
-    const commandOptions = [
-      {
-        value: "Docs",
-        label: "Docs search",
-        path: ""
-      }
-    ];
 
     return [...resultOptions];
   };
@@ -74,10 +82,12 @@ function Search() {
   return (
     <Flex width="100%">
       <Select
+        defaultOptions={activeFileOptions}
         formatOptionLabel={formatOptionLabel}
         styles={customStyles}
         placeholder="Search"
         cacheOptions
+        onMenuOpen={onMenuOpen}
         loadOptions={promiseOptions}
         components={{
           DropdownIndicator: SearchIconComponent,

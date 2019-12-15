@@ -1,7 +1,6 @@
 import { Resolver, Mutation, Arg, Query } from "type-graphql";
 const Conf = require("conf");
 import { Service, Inject } from "typedi";
-import vscode from "vscode";
 
 @Resolver()
 @Service()

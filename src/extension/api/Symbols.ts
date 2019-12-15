@@ -22,14 +22,21 @@ import { GetReferencesArgs } from "./GetReferenceArgs";
 import ESModuleItem from "indexer/ESModuleItem";
 import { ReIndexArgs } from "./ReIndexArgs";
 import { sep } from "path";
+import * as vscode from "vscode";
 
 @Service()
 @Resolver(SearchResult)
 export default class SymbolsResolver {
+  private activeEditorPath: string | undefined;
+
   constructor(
     private readonly container: ContainerInstance,
     private readonly indexer: Indexer
-  ) {}
+  ) {
+    vscode.window.onDidChangeActiveTextEditor(e => {
+      this.activeEditorPath = e?.document.fileName;
+    });
+  }
 
   @Query(returns => SearchResult)
   results() {
@@ -110,5 +117,24 @@ export default class SymbolsResolver {
     return this.indexer
       .findReferences(symbol.filePath || "", symbol.name || "")
       .map(reference => ({ ...reference, filePath: reference.path }));
+  }
+
+  @Query(returns => [GqlSymbolInformation])
+  public async getSymbolsForActiveFile() {
+    if (this.activeEditorPath) {
+      return this.indexer
+        .getSymbolsForPath(this.activeEditorPath)
+        .map((symbol: ESModuleItem) => {
+          const item = new GqlSymbolInformation();
+          item.filePath = symbol.path;
+          item.kind = symbol.kind;
+          item.name = symbol.name;
+          item.id = symbol.id;
+          item.code = symbol.code;
+
+          return item;
+        });
+    }
+    return [];
   }
 }

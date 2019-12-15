@@ -2,15 +2,11 @@ require("module-alias/register");
 import * as vscode from "vscode";
 import ContentProvider from "./ContentProvider";
 import { join, resolve } from "path";
-import { ChildProcess, spawn } from "child_process";
-import { executeQuery } from "common/messaging/graphql";
 import gql from "graphql-tag";
 import { getUIMessenger } from "common/messaging/ui";
 import Services from "./services";
 import { startApiServer } from "./api";
 import { Container } from "typedi";
-
-let serverProcess: ChildProcess | null = null;
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
@@ -23,11 +19,7 @@ export function activate(context: vscode.ExtensionContext) {
   context.subscriptions.push(disposable);
 }
 
-export function deactivate() {
-  if (serverProcess) {
-    serverProcess.kill();
-  }
-}
+export function deactivate() {}
 
 async function initialize(context: vscode.ExtensionContext) {
   Container.set("extension-context", context);
@@ -38,13 +30,6 @@ async function initialize(context: vscode.ExtensionContext) {
   await startApiServer();
   const uiMessenger = getUIMessenger();
   Services.forEach(Service => new Service(context, uiMessenger));
-
-  const query = gql`
-    mutation {
-      reindex
-    }
-  `;
-  // executeQuery(query, undefined);
 
   const contentProvider = new ContentProvider();
   let currentPanel: vscode.WebviewPanel | undefined = undefined;

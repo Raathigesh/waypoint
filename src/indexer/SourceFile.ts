@@ -1,6 +1,9 @@
 import {
-  ExportDefaultDeclaration,
-  ExportNamedDeclaration,
+  FunctionDeclaration,
+  VariableDeclaration,
+  ClassDeclaration,
+  TypeAlias,
+  SourceLocation,
   Identifier
 } from "babel-types";
 import { readFile } from "fs";
@@ -8,13 +11,11 @@ import { promisify } from "util";
 const nanoid = require("nanoid");
 import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
-import { transformSync } from "@babel/core";
 import { NodePath } from "babel-traverse";
 import { getFileType } from "common/utils/file";
 import ImportStatement, { ImportSpecifier } from "./ImportStatement";
 import ESModuleItem from "./ESModuleItem";
 import { ImportDeclaration } from "@babel/types";
-import generate from "@babel/generator";
 import { resolve, isAbsolute, dirname } from "path";
 import { findAbsoluteFilePathWhichExists } from "./fileResolver";
 import { Location } from "entities/Location";
@@ -36,13 +37,17 @@ export default class SourceFile {
       const ast = this.getAST(content.toString(), filePath);
 
       traverse(ast, {
-        ExportNamedDeclaration: (path: NodePath<ExportNamedDeclaration>) => {
-          this.extractExport(path, content.toString());
+        FunctionDeclaration: (path: NodePath<FunctionDeclaration>) => {
+          this.extractFunctionDeclaration(path, content.toString());
         },
-        ExportDefaultDeclaration: (
-          path: NodePath<ExportDefaultDeclaration>
-        ) => {
-          this.extractExport(path, content.toString());
+        VariableDeclaration: (path: NodePath<VariableDeclaration>) => {
+          this.extractVariableDeclaration(path, content.toString());
+        },
+        ClassDeclaration: (path: NodePath<ClassDeclaration>) => {
+          this.extractClassDeclaration(path, content.toString());
+        },
+        TypeAlias: (path: NodePath<TypeAlias>) => {
+          this.extractTypeAlias(path, content.toString());
         },
         ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
           this.extractImport(path, pathAliasMap, root);
@@ -53,54 +58,68 @@ export default class SourceFile {
     }
   }
 
-  private extractExport(
-    path: NodePath<ExportDefaultDeclaration | ExportNamedDeclaration>,
+  private extractFunctionDeclaration(
+    path: NodePath<FunctionDeclaration>,
     content: string
   ) {
-    const declaration = path.node.declaration;
-    if (declaration) {
-      let name = "none";
+    const name = path.node.id.name;
+    this.createSymbol(name, path.node.type, path.node.loc, content);
+  }
 
-      if (
-        declaration.type === "FunctionDeclaration" ||
-        declaration.type === "ClassDeclaration" ||
-        declaration.type === "TypeAlias"
-      ) {
-        name = declaration.id && declaration.id.name;
-      } else if (declaration.type === "VariableDeclaration") {
-        name =
-          declaration.declarations[0] &&
-          declaration.declarations[0].id &&
-          (declaration.declarations[0].id as any).name;
-      }
+  private extractVariableDeclaration(
+    path: NodePath<VariableDeclaration>,
+    content: string
+  ) {
+    if (path.parent.type === "Program") {
+      return;
+    }
 
-      const symbol = new ESModuleItem();
-      symbol.id = nanoid();
-      symbol.name = name;
-      symbol.kind = declaration.type as any;
-      symbol.location = path.node.loc;
-      symbol.code = this.getCode(content, path.node.loc);
-      this.importStatements.forEach(importStatement => {
-        importStatement.specifiers.forEach(specifier => {
-          specifier.references.forEach(reference => {
-            if (
-              reference.location &&
-              this.isInLocation(path.node.loc, reference.location)
-            ) {
-              symbol.markers.push({
-                filePath: importStatement.path,
-                name: specifier.name,
-                location: this.adjustLocation(
-                  path.node.loc,
-                  reference.location
-                ) as any
-              });
-            }
-          });
+    const name = (path.node.declarations[0].id as Identifier).name;
+    this.createSymbol(name, path.node.type, path.node.loc, content);
+  }
+
+  private extractClassDeclaration(
+    path: NodePath<ClassDeclaration>,
+    content: string
+  ) {
+    const name = path.node.id.name;
+    this.createSymbol(name, path.node.type, path.node.loc, content);
+  }
+
+  private extractTypeAlias(path: NodePath<TypeAlias>, content: string) {
+    const name = path.node.id.name;
+    this.createSymbol(name, path.node.type, path.node.loc, content);
+  }
+
+  private createSymbol(
+    name: string,
+    kind: string,
+    location: SourceLocation,
+    content: string
+  ) {
+    const symbol = new ESModuleItem();
+    symbol.id = nanoid();
+    symbol.name = name;
+    symbol.kind = kind;
+    symbol.location = location;
+    symbol.code = this.getCode(content, location);
+    this.importStatements.forEach(importStatement => {
+      importStatement.specifiers.forEach(specifier => {
+        specifier.references.forEach(reference => {
+          if (
+            reference.location &&
+            this.isInLocation(location, reference.location)
+          ) {
+            symbol.markers.push({
+              filePath: importStatement.path,
+              name: specifier.name,
+              location: this.adjustLocation(location, reference.location) as any
+            });
+          }
         });
       });
-      this.symbols.push(symbol);
-    }
+    });
+    this.symbols.push(symbol);
   }
 
   private extractImport(

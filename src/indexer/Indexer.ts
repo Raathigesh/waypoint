@@ -71,6 +71,15 @@ export default class Indexer {
     return symbol;
   }
 
+  public getSymbolsForPath(path: string) {
+    const file = this.files[path];
+    if (!file) {
+      return [];
+    }
+
+    return file.symbols;
+  }
+
   public findReferences(path: string, symbolName: string) {
     const references: ESModuleItem[] = [];
 

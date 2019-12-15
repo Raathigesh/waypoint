@@ -87,3 +87,32 @@ export async function getMarkers(path: string, name: string) {
 
   return results.getSymbolWithMarkers;
 }
+
+export async function getSymbolsForActiveFile() {
+  const query = gql`
+    query GetSymbolsForActiveFile {
+      getSymbolsForActiveFile {
+        id
+        name
+        filePath
+        kind
+        code
+        location {
+          start {
+            line
+            column
+          }
+          end {
+            line
+            column
+          }
+        }
+      }
+    }
+  `;
+
+  const results = await sendQuery<{
+    getSymbolsForActiveFile: GqlSymbolInformation[];
+  }>(query, {});
+  return results.getSymbolsForActiveFile;
+}
