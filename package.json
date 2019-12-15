@@ -93,6 +93,7 @@
     "react-router-dom": "^5.0.0",
     "react-select": "^3.0.8",
     "react-spring": "^8.0.27",
+    "react-syntax-highlighter": "^11.0.2",
     "react-tippy": "^1.2.3",
     "rimraf": "^2.6.3",
     "style-loader": "^0.23.1",

@@ -31,7 +31,7 @@ function Connections({ size }: Props) {
   const connections = useContext(connectionStore);
   const theme = useTheme();
   const colors: any = theme?.colors;
-  const fill = colors?.orange["200"];
+  const fill = colors?.blue["600"];
   const paths = connections
     .enhancedViews()
     .map(connection => [
@@ -64,6 +64,7 @@ function Connections({ size }: Props) {
 
   return (
     <svg
+      width="100%"
       style={{
         height: size.height,
         width: size.width,

@@ -67,7 +67,12 @@ export const DependencyGraph = types
       });
     });
 
-    const addBubble = flow(function*(id: string, line: number, column: number) {
+    const addBubble = flow(function*(
+      id: string,
+      line: number,
+      column: number,
+      top: number
+    ) {
       let symbol: Instance<typeof DocumentSymbol> | undefined = getSymbolById(
         id
       );
@@ -93,14 +98,14 @@ export const DependencyGraph = types
           self.links.set(id, [
             ...(self.links.get(id) || []),
             NodeLink.create({
-              line: clickedMarker.location?.start.line || 0,
+              line: top,
               target: symbol.id
             })
           ]);
         } else {
           self.links.set(id, [
             NodeLink.create({
-              line: clickedMarker.location?.start.line || 0,
+              line: top,
               target: symbol.id
             })
           ]);
@@ -133,7 +138,24 @@ export const DependencyGraph = types
       }
     });
 
-    return { setCurrentSymbol, fetchMarkers, addBubble };
+    const removeNode = (id: string) => {
+      const linksToRemove = [id];
+
+      while (linksToRemove.length !== 0) {
+        const linkToRemove = linksToRemove.pop();
+        if (linkToRemove) {
+          self.otherSymbols.delete(linkToRemove);
+
+          const connections = self.links.get(linkToRemove);
+          connections?.forEach(connection => {
+            linksToRemove.push(connection.target);
+          });
+          self.links.delete(linkToRemove);
+        }
+      }
+    };
+
+    return { setCurrentSymbol, fetchMarkers, addBubble, removeNode };
   })
   .views(self => {
     const getSymbolById = (link: Instance<typeof NodeLink>) => {
@@ -156,7 +178,9 @@ export const DependencyGraph = types
       }
 
       const itemLinks = self.links.get(self.currentSymbol.id) || [];
-      currentColumnItems = currentColumnItems.concat(itemLinks.reverse());
+      currentColumnItems = currentColumnItems.concat(
+        itemLinks.sort((a, b) => b.line - a.line)
+      );
 
       while (currentColumnItems.length !== 0) {
         const link = currentColumnItems.pop();
@@ -172,7 +196,9 @@ export const DependencyGraph = types
 
         if (currentColumnItems.length === 0) {
           results.push(nodes);
-          currentColumnItems = currentColumnItems.concat(nextColumnItems);
+          currentColumnItems = currentColumnItems.concat(
+            nextColumnItems.sort((a, b) => b.line - a.line)
+          );
           nextColumnItems = [];
           nodes = [];
         }

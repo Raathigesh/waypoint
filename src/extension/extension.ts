@@ -54,7 +54,7 @@ async function initialize(context: vscode.ExtensionContext) {
 
   currentPanel = vscode.window.createWebviewPanel(
     "insight",
-    "Insight",
+    "Code bubbles",
     vscode.ViewColumn.Two,
     {
       enableScripts: true,

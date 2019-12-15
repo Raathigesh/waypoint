@@ -12,7 +12,7 @@ function Bubble() {
   }
 
   return (
-    <Flex marginTop="15px">
+    <Flex marginTop="15px" alignItems="flex-start">
       {currentSymbol && <Code symbol={currentSymbol} />}
 
       {dependencyGraph.getGraphColumns()?.map(bubbles => (

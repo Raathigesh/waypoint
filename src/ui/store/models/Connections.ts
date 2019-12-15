@@ -48,19 +48,19 @@ export const Connections = types
                 Connection.create({
                   start: {
                     x: start.right,
-                    y: start.top + link.line * 14
+                    y: link.line
                   },
                   firstBreak: {
                     x: start.right + 15,
-                    y: start.top + link.line * 14
+                    y: link.line
                   },
                   secondBreak: {
-                    x: end.left - 20,
-                    y: end.top + end.height / 2
+                    x: end.left - 30,
+                    y: end.top + 10
                   },
                   end: {
                     x: end.left - 12,
-                    y: end.top + end.height / 2
+                    y: end.top + 10
                   }
                 })
               );

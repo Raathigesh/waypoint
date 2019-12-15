@@ -37,12 +37,12 @@ export default class SourceFile {
 
       traverse(ast, {
         ExportNamedDeclaration: (path: NodePath<ExportNamedDeclaration>) => {
-          this.extractExport(path, "named", content.toString());
+          this.extractExport(path, content.toString());
         },
         ExportDefaultDeclaration: (
           path: NodePath<ExportDefaultDeclaration>
         ) => {
-          this.extractExport(path, "default", content.toString());
+          this.extractExport(path, content.toString());
         },
         ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
           this.extractImport(path, pathAliasMap, root);
@@ -55,7 +55,6 @@ export default class SourceFile {
 
   private extractExport(
     path: NodePath<ExportDefaultDeclaration | ExportNamedDeclaration>,
-    mode: "default" | "named",
     content: string
   ) {
     const declaration = path.node.declaration;

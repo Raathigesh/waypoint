@@ -26,8 +26,25 @@ function Stage() {
     if (shouldMove.current && element.current) {
       const deltaLeft = e.clientX - initialClick.current.x;
       const deltaTop = e.clientY - initialClick.current.y;
-      element.current.style.marginLeft = `${deltaLeft}px`;
-      element.current.style.marginTop = `${deltaTop}px`;
+      const previousMarginLeft = parseInt(
+        element.current.style.marginLeft.replace("px", "") || 0
+      );
+      const previousMarginTop = parseInt(
+        element.current.style.marginTop.replace("px", "") || 0
+      );
+      console.log(
+        "previousMarginLeft",
+        previousMarginLeft,
+        "deltaLeft",
+        deltaLeft,
+        "deltaTop",
+        deltaTop
+      );
+      element.current.style.marginLeft = `${previousMarginLeft + deltaLeft}px`;
+      element.current.style.marginTop = `${previousMarginTop + deltaTop}px`;
+
+      initialClick.current.x = e.clientX;
+      initialClick.current.y = e.clientY;
     }
   };
 
@@ -38,6 +55,7 @@ function Stage() {
       onMouseMove={handleMouseMove}
       width="100%"
       cursor={shouldMove ? "move" : "inherit"}
+      height="100vh"
     >
       <Flex ref={element}>
         <Bubble />
