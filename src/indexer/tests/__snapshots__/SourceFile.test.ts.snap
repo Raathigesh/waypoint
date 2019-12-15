@@ -13,7 +13,7 @@ Array [
         "line": 1,
       },
       "start": Position {
-        "column": 0,
+        "column": 7,
         "line": 1,
       },
     },
@@ -32,7 +32,7 @@ Array [
         "line": 2,
       },
       "start": Position {
-        "column": 0,
+        "column": 7,
         "line": 2,
       },
     },
@@ -48,6 +48,25 @@ exports[`SourceFile should have named exports 2`] = `Array []`;
 exports[`SourceFile should identify markers 1`] = `
 Array [
   Object {
+    "code": "const getSessions = () => {};
+",
+    "id": "",
+    "kind": "VariableDeclaration",
+    "location": SourceLocation {
+      "end": Position {
+        "column": 29,
+        "line": 4,
+      },
+      "start": Position {
+        "column": 0,
+        "line": 4,
+      },
+    },
+    "markers": Array [],
+    "name": "getSessions",
+    "path": "",
+  },
+  Object {
     "code": "export default function Store() {
   const items = getItems();
   const stockCount = getInStockCount();
@@ -58,11 +77,11 @@ Array [
     "location": SourceLocation {
       "end": Position {
         "column": 1,
-        "line": 7,
+        "line": 9,
       },
       "start": Position {
-        "column": 0,
-        "line": 4,
+        "column": 15,
+        "line": 6,
       },
     },
     "markers": Array [
@@ -117,12 +136,12 @@ Array [
             "location": SourceLocation {
               "end": Position {
                 "column": 24,
-                "line": 5,
+                "line": 7,
               },
               "identifierName": "getItems",
               "start": Position {
                 "column": 16,
-                "line": 5,
+                "line": 7,
               },
             },
           },
@@ -144,12 +163,12 @@ Array [
             "location": SourceLocation {
               "end": Position {
                 "column": 36,
-                "line": 6,
+                "line": 8,
               },
               "identifierName": "getInStockCount",
               "start": Position {
                 "column": 21,
-                "line": 6,
+                "line": 8,
               },
             },
           },

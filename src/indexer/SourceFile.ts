@@ -70,7 +70,7 @@ export default class SourceFile {
     path: NodePath<VariableDeclaration>,
     content: string
   ) {
-    if (path.parent.type === "Program") {
+    if (path.parent.type !== "Program") {
       return;
     }
 
