@@ -4,7 +4,7 @@ import {
   GqlSymbolInformation,
   GqlMarkers
 } from "entities/GqlSymbolInformation";
-import { getMarkers } from "../services/search";
+import { getMarkers, getCode } from "../services/search";
 
 const NodeLink = types.model("NodeLink", {
   line: types.number,
@@ -18,16 +18,18 @@ export const DependencyGraph = types
     links: types.map(types.array(NodeLink))
   })
   .actions(self => {
-    const setCurrentSymbol = (symbol: GqlSymbolInformation) => {
+    const setCurrentSymbol = flow(function*(symbol: GqlSymbolInformation) {
       self.currentSymbol = DocumentSymbol.create({
         id: symbol.id,
         name: symbol.name,
         filePath: symbol.filePath,
         kind: symbol.kind,
-        code: symbol.code,
         markers: []
       });
-    };
+
+      const code = yield getCode(symbol.filePath, symbol.id);
+      self.currentSymbol.code = code;
+    });
 
     const getSymbolById = (id: string) => {
       if (self.currentSymbol && self.currentSymbol.id === id) {
@@ -111,6 +113,8 @@ export const DependencyGraph = types
           ]);
         }
 
+        const code = yield getCode(symbol.filePath, symbol.id);
+
         self.otherSymbols.set(
           symbol.id,
           DocumentSymbol.create({
@@ -118,7 +122,7 @@ export const DependencyGraph = types
             name: symbol.name,
             filePath: symbol.filePath || "",
             kind: symbol.kind,
-            code: symbol.code,
+            code,
             markers: (symbol.markers || []).map(marker => ({
               filePath: marker.filePath,
               name: marker.name,

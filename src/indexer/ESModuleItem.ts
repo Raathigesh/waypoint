@@ -21,6 +21,5 @@ export default class ESModuleItem {
   public location?: SymbolLocation;
   public path: string = "";
   public kind: string = "";
-  public code: string = "";
   public markers: Marker[] = [];
 }

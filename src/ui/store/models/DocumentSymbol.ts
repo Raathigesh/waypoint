@@ -12,7 +12,7 @@ export const DocumentSymbol = types.model("DocumentSymbol", {
   name: types.string,
   filePath: types.string,
   kind: types.string,
-  code: types.string,
+  code: types.maybeNull(types.string),
   location: types.maybeNull(DocumentLocation),
   markers: types.array(Marker)
 });

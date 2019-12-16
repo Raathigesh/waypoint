@@ -15,7 +15,6 @@ export async function search(query: string) {
           name
           filePath
           kind
-          code
           location {
             start {
               line
@@ -49,7 +48,6 @@ export async function getMarkers(path: string, name: string) {
         name
         filePath
         kind
-        code
         location {
           start {
             line
@@ -96,7 +94,6 @@ export async function getSymbolsForActiveFile() {
         name
         filePath
         kind
-        code
         location {
           start {
             line
@@ -115,4 +112,18 @@ export async function getSymbolsForActiveFile() {
     getSymbolsForActiveFile: GqlSymbolInformation[];
   }>(query, {});
   return results.getSymbolsForActiveFile;
+}
+
+export async function getCode(path: string, id: string) {
+  const query = gql`
+    query GetCode($path: String!, $id: String!) {
+      getCode(path: $path, id: $id)
+    }
+  `;
+
+  const results = await sendQuery<{ getCode: string }>(query, {
+    path,
+    id
+  });
+  return results.getCode;
 }

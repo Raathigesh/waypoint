@@ -1,11 +1,13 @@
 const recursiveReadDir = require("recursive-readdir");
 const fuzzysort = require("fuzzysort");
+import { promisify } from "util";
 const nanoid = require("nanoid");
 import { Service } from "typedi";
 import Project from "./Project";
 import SourceFile from "./SourceFile";
 import { getFileType } from "common/utils/file";
 import ESModuleItem from "./ESModuleItem";
+import { readFile } from "fs";
 
 @Service()
 export default class Indexer {
@@ -99,7 +101,6 @@ export default class Indexer {
               name: reference.containerName,
               id: nanoid(),
               location: reference.location,
-              code: "",
               markers: []
             });
           });
@@ -107,6 +108,37 @@ export default class Indexer {
       });
     });
     return references;
+  }
+
+  public async getCode(path: string, id: string) {
+    const file = this.files[path];
+    if (file) {
+      const symbol = file.symbols.find(symbol => symbol.id === id);
+      if (!symbol || !symbol.location) {
+        return "";
+      }
+
+      const content = await promisify(readFile)(path);
+      const code = content.toString();
+      const lines = code.split("\n");
+
+      const {
+        start = { line: 0, column: 0 },
+        end = { line: 0, column: 0 }
+      } = symbol.location;
+
+      const results: string[] = [];
+
+      lines.forEach((line, index) => {
+        if (index >= start.line - 1 && index <= end.line - 1) {
+          results.push(line);
+        }
+      });
+
+      return results.reduce((acc, line) => {
+        return acc + line + "\n";
+      }, "");
+    }
   }
 
   private async readProjectFiles(root: string) {

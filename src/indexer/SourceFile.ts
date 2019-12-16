@@ -38,16 +38,16 @@ export default class SourceFile {
 
       traverse(ast, {
         FunctionDeclaration: (path: NodePath<FunctionDeclaration>) => {
-          this.extractFunctionDeclaration(path, content.toString());
+          this.extractFunctionDeclaration(path);
         },
         VariableDeclaration: (path: NodePath<VariableDeclaration>) => {
-          this.extractVariableDeclaration(path, content.toString());
+          this.extractVariableDeclaration(path);
         },
         ClassDeclaration: (path: NodePath<ClassDeclaration>) => {
-          this.extractClassDeclaration(path, content.toString());
+          this.extractClassDeclaration(path);
         },
         TypeAlias: (path: NodePath<TypeAlias>) => {
-          this.extractTypeAlias(path, content.toString());
+          this.extractTypeAlias(path);
         },
         ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
           this.extractImport(path, pathAliasMap, root);
@@ -58,51 +58,40 @@ export default class SourceFile {
     }
   }
 
-  private extractFunctionDeclaration(
-    path: NodePath<FunctionDeclaration>,
-    content: string
-  ) {
+  private extractFunctionDeclaration(path: NodePath<FunctionDeclaration>) {
     const name = path.node.id.name;
-    this.createSymbol(name, path.node.type, path.node.loc, content);
+    this.createSymbol(name, path.node.type, path.node.loc);
   }
 
-  private extractVariableDeclaration(
-    path: NodePath<VariableDeclaration>,
-    content: string
-  ) {
-    if (path.parent.type !== "Program") {
+  private extractVariableDeclaration(path: NodePath<VariableDeclaration>) {
+    if (
+      path.parent.type !== "Program" &&
+      path.parent.type !== "ExportNamedDeclaration"
+    ) {
       return;
     }
-
+    path.getStatementParent;
     const name = (path.node.declarations[0].id as Identifier).name;
-    this.createSymbol(name, path.node.type, path.node.loc, content);
+    this.createSymbol(name, path.node.type, path.node.loc);
   }
 
-  private extractClassDeclaration(
-    path: NodePath<ClassDeclaration>,
-    content: string
-  ) {
+  private extractClassDeclaration(path: NodePath<ClassDeclaration>) {
     const name = path.node.id.name;
-    this.createSymbol(name, path.node.type, path.node.loc, content);
+    this.createSymbol(name, path.node.type, path.node.loc);
   }
 
-  private extractTypeAlias(path: NodePath<TypeAlias>, content: string) {
+  private extractTypeAlias(path: NodePath<TypeAlias>) {
     const name = path.node.id.name;
-    this.createSymbol(name, path.node.type, path.node.loc, content);
+    this.createSymbol(name, path.node.type, path.node.loc);
   }
 
-  private createSymbol(
-    name: string,
-    kind: string,
-    location: SourceLocation,
-    content: string
-  ) {
+  private createSymbol(name: string, kind: string, location: SourceLocation) {
     const symbol = new ESModuleItem();
     symbol.id = nanoid();
     symbol.name = name;
     symbol.kind = kind;
     symbol.location = location;
-    symbol.code = this.getCode(content, location);
+    symbol.path = this.path;
     this.importStatements.forEach(importStatement => {
       importStatement.specifiers.forEach(specifier => {
         specifier.references.forEach(reference => {
@@ -248,26 +237,5 @@ export default class SourceFile {
     };
 
     return newLocation;
-  }
-
-  private getCode(code: string, location: Location) {
-    const lines = code.split("\n");
-
-    const {
-      start = { line: 0, column: 0 },
-      end = { line: 0, column: 0 }
-    } = location;
-
-    const results: string[] = [];
-
-    lines.forEach((line, index) => {
-      if (index >= start.line - 1 && index <= end.line - 1) {
-        results.push(line);
-      }
-    });
-
-    return results.reduce((acc, line) => {
-      return acc + line + "\n";
-    }, "");
   }
 }

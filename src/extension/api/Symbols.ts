@@ -85,7 +85,6 @@ export default class SymbolsResolver {
         item.kind = obj.kind;
         item.name = obj.name;
         item.id = obj.id;
-        item.code = obj.code;
 
         return item;
       });
@@ -102,7 +101,19 @@ export default class SymbolsResolver {
     @Arg("path") path: string,
     @Arg("name") name: string
   ) {
-    return this.indexer.getSymbolWithMarkers(path, name);
+    const symbol = this.indexer.getSymbolWithMarkers(path, name);
+
+    const item = new GqlSymbolInformation();
+    if (symbol) {
+      item.filePath = symbol.path;
+      item.kind = symbol.kind;
+      item.name = symbol.name;
+      item.id = symbol.id;
+      item.markers = symbol.markers;
+      item.location = symbol.location;
+    }
+
+    return item;
   }
 
   @Query(returns => [GqlSymbolInformation])
@@ -130,11 +141,14 @@ export default class SymbolsResolver {
           item.kind = symbol.kind;
           item.name = symbol.name;
           item.id = symbol.id;
-          item.code = symbol.code;
-
           return item;
         });
     }
     return [];
+  }
+
+  @Query(returns => String)
+  public async getCode(@Arg("path") path: string, @Arg("id") id: string) {
+    return this.indexer.getCode(path, id);
   }
 }
