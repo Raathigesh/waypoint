@@ -3,8 +3,6 @@
 exports[`SourceFile should have named exports 1`] = `
 Array [
   Object {
-    "code": "export function getItems() {}
-",
     "id": "",
     "kind": "FunctionDeclaration",
     "location": SourceLocation {
@@ -19,11 +17,9 @@ Array [
     },
     "markers": Array [],
     "name": "getItems",
-    "path": "",
+    "path": "root/query/items.js",
   },
   Object {
-    "code": "export function getInStockCount() {}
-",
     "id": "",
     "kind": "FunctionDeclaration",
     "location": SourceLocation {
@@ -38,7 +34,7 @@ Array [
     },
     "markers": Array [],
     "name": "getInStockCount",
-    "path": "",
+    "path": "root/query/items.js",
   },
 ]
 `;
@@ -48,8 +44,6 @@ exports[`SourceFile should have named exports 2`] = `Array []`;
 exports[`SourceFile should identify markers 1`] = `
 Array [
   Object {
-    "code": "const getSessions = () => {};
-",
     "id": "",
     "kind": "VariableDeclaration",
     "location": SourceLocation {
@@ -64,20 +58,15 @@ Array [
     },
     "markers": Array [],
     "name": "getSessions",
-    "path": "",
+    "path": "root/store/Root.js",
   },
   Object {
-    "code": "export default function Store() {
-  const items = getItems();
-  const stockCount = getInStockCount();
-}
-",
     "id": "",
     "kind": "FunctionDeclaration",
     "location": SourceLocation {
       "end": Position {
         "column": 1,
-        "line": 9,
+        "line": 10,
       },
       "start": Position {
         "column": 15,
@@ -113,9 +102,23 @@ Array [
         },
         "name": "getInStockCount",
       },
+      Object {
+        "filePath": "root/store/Root.js",
+        "location": Object {
+          "end": Object {
+            "column": 30,
+            "line": 3,
+          },
+          "start": Object {
+            "column": 19,
+            "line": 3,
+          },
+        },
+        "name": "getSessions",
+      },
     ],
     "name": "Store",
-    "path": "",
+    "path": "root/store/Root.js",
   },
 ]
 `;

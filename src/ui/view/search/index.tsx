@@ -86,6 +86,7 @@ function Search() {
         formatOptionLabel={formatOptionLabel}
         styles={customStyles}
         placeholder="Search"
+        isClearable
         cacheOptions
         onMenuOpen={onMenuOpen}
         loadOptions={promiseOptions}

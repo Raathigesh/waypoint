@@ -4,14 +4,15 @@ import {
   ClassDeclaration,
   TypeAlias,
   SourceLocation,
-  Identifier
+  Identifier,
+  Program
 } from "babel-types";
 import { readFile } from "fs";
 import { promisify } from "util";
 const nanoid = require("nanoid");
 import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
-import { NodePath } from "babel-traverse";
+import { NodePath, Scope } from "babel-traverse";
 import { getFileType } from "common/utils/file";
 import ImportStatement, { ImportSpecifier } from "./ImportStatement";
 import ESModuleItem from "./ESModuleItem";
@@ -24,6 +25,7 @@ export default class SourceFile {
   public path: string = "";
   public symbols: ESModuleItem[] = [];
   public importStatements: ImportStatement[] = [];
+  public programScope: Scope | undefined;
 
   public async parse(
     filePath: string,
@@ -37,6 +39,9 @@ export default class SourceFile {
       const ast = this.getAST(content.toString(), filePath);
 
       traverse(ast, {
+        Program: (path: NodePath<Program>) => {
+          this.programScope = path.scope;
+        },
         FunctionDeclaration: (path: NodePath<FunctionDeclaration>) => {
           this.extractFunctionDeclaration(path);
         },
@@ -53,6 +58,7 @@ export default class SourceFile {
           this.extractImport(path, pathAliasMap, root);
         }
       });
+      this.linkLocalSymbols();
     } catch (e) {
       console.log("Parsing failed", filePath, e);
     }
@@ -109,6 +115,40 @@ export default class SourceFile {
       });
     });
     this.symbols.push(symbol);
+  }
+
+  private linkLocalSymbols() {
+    if (!this.programScope) {
+      return;
+    }
+
+    const bindings = Object.entries(this.programScope.bindings);
+    bindings.forEach(([name, binding]) => {
+      binding.referencePaths.forEach(reference => {
+        this.symbols.forEach(symbol => {
+          if (
+            reference.node.loc &&
+            symbol.location &&
+            this.isInLocation(symbol.location, reference.node.loc)
+          ) {
+            const existingMarker = symbol.markers.find(
+              marker => marker.name === name
+            );
+
+            if (!existingMarker) {
+              symbol.markers.push({
+                filePath: symbol.path,
+                name,
+                location: this.adjustLocation(
+                  symbol.location,
+                  reference.node.loc
+                ) as any
+              });
+            }
+          }
+        });
+      });
+    });
   }
 
   private extractImport(

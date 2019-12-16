@@ -10,8 +10,17 @@ describe("SourceFile", () => {
       ""
     );
 
+    const root = resolve(__dirname, "./project");
+
     expect(
-      sourceFile.symbols.map(symbol => ({ ...symbol, id: "" }))
+      sourceFile.symbols.map(symbol => ({
+        ...symbol,
+        id: "",
+        path: symbol.path
+          .replace(root, "root")
+          .split(sep)
+          .join("/")
+      }))
     ).toMatchSnapshot();
 
     expect(sourceFile.importStatements).toMatchSnapshot();

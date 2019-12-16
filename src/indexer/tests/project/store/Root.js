@@ -6,4 +6,5 @@ const getSessions = () => {};
 export default function Store() {
   const items = getItems();
   const stockCount = getInStockCount();
+  const sessions = getSessions();
 }
