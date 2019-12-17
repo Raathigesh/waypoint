@@ -85,8 +85,19 @@ export const Connections = types
       ) {
         self.connections.set(
           id,
-          Rectangle.create({ width, height, top, right, bottom, left })
+          Rectangle.create({
+            width,
+            height,
+            top,
+            right,
+            bottom,
+            left: left + self.relative.x
+          })
         );
+      },
+      addRelative(x: number, y: number) {
+        self.relative.x = x;
+        self.relative.y = y;
       }
     };
   });

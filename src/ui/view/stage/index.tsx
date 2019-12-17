@@ -9,6 +9,7 @@ function Stage() {
   const initialClick: any = useRef(null);
   const shouldMove: any = useRef(false);
   const element: any = useRef(null);
+  const connection = useContext(connectionStore);
 
   const handleMouseDown = (e: any) => {
     initialClick.current = {
@@ -19,6 +20,12 @@ function Stage() {
   };
 
   const handleMouseUp = () => {
+    if (element.current) {
+    }
+    connection.addRelative(
+      element.current.scrollLeft,
+      element.current.scrollTop
+    );
     shouldMove.current = false;
   };
 
@@ -26,22 +33,11 @@ function Stage() {
     if (shouldMove.current && element.current) {
       const deltaLeft = e.clientX - initialClick.current.x;
       const deltaTop = e.clientY - initialClick.current.y;
-      const previousMarginLeft = parseInt(
-        element.current.style.marginLeft.replace("px", "") || 0
-      );
-      const previousMarginTop = parseInt(
-        element.current.style.marginTop.replace("px", "") || 0
-      );
-      console.log(
-        "previousMarginLeft",
-        previousMarginLeft,
-        "deltaLeft",
-        deltaLeft,
-        "deltaTop",
-        deltaTop
-      );
-      element.current.style.marginLeft = `${previousMarginLeft + deltaLeft}px`;
-      element.current.style.marginTop = `${previousMarginTop + deltaTop}px`;
+      const previousMarginLeft = element.current.scrollLeft;
+      const previousMarginTop = element.current.scrollTop;
+
+      element.current.scrollLeft = previousMarginLeft + deltaLeft;
+      element.current.scrollTop = previousMarginTop + deltaTop;
 
       initialClick.current.x = e.clientX;
       initialClick.current.y = e.clientY;
@@ -50,14 +46,16 @@ function Stage() {
 
   return (
     <Flex
+      ref={element}
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
-      width="100%"
+      width="100vw"
       cursor={shouldMove ? "move" : "inherit"}
-      height="100vh"
+      height="calc(100vh - 100px)"
+      overflow="auto"
     >
-      <Flex ref={element}>
+      <Flex position="relative">
         <Bubble />
         <Connections size={{ height: "100%", width: "100%" }} />
       </Flex>
