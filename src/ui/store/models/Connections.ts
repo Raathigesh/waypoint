@@ -88,7 +88,7 @@ export const Connections = types
           Rectangle.create({
             width,
             height,
-            top,
+            top: top + self.relative.y,
             right,
             bottom,
             left: left + self.relative.x

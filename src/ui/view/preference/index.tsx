@@ -39,7 +39,7 @@ function Preference({ isOpen, onClose }: Props) {
         <DrawerBody>
           {pathMap.items.map(item => {
             return (
-              <Flex>
+              <Flex key={item.id}>
                 <Input
                   value={item.alias}
                   placeholder="Alias"

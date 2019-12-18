@@ -46,19 +46,18 @@ function Connections({ size }: Props) {
         .y((d: any) => d.y)(points);
 
       return (
-        <Fragment>
-          <path
-            d={line}
-            style={{
-              fill: "transparent",
-              stroke: fill,
-              strokeWidth: "1px"
-            }}
-            markerStart="url(#markerStart)"
-            markerEnd="url(#markerArrow)"
-            stroke-linejoin="round"
-          />
-        </Fragment>
+        <path
+          key={points.join(",")}
+          d={line}
+          style={{
+            fill: "transparent",
+            stroke: fill,
+            strokeWidth: "1px"
+          }}
+          markerStart="url(#markerStart)"
+          markerEnd="url(#markerArrow)"
+          strokeLinejoin="round"
+        />
       );
     });
 

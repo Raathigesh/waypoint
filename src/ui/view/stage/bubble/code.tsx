@@ -10,13 +10,15 @@ import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 import { css, Global } from "@emotion/core";
 import { X } from "react-feather";
 
-const getHeightFromCode = (code: string) => code.split("\n").length * 15 + 15;
+const getMaxLineLength = (code: string) =>
+  Math.max(...code.split("\n").map(line => line.length));
 
 interface Props {
   symbol: Instance<typeof DocumentSymbol>;
+  charWidth: number;
 }
 
-function Code({ symbol }: Props) {
+function Code({ symbol, charWidth }: Props) {
   const dependencyGraph = useContext(dependencyGraphStore);
   const ref: any = useRef(null);
   const connections = useContext(connectionStore);
@@ -24,20 +26,22 @@ function Code({ symbol }: Props) {
   const [isMouseOver, setIsMouseOver] = useState(false);
 
   useLayoutEffect(() => {
-    if (!ref.current) {
-      return;
-    }
+    setTimeout(() => {
+      if (!ref.current) {
+        return;
+      }
 
-    const rect = ref.current.getBoundingClientRect();
-    connections.addPosition(
-      symbol.id,
-      rect.width,
-      rect.height,
-      rect.top,
-      rect.right,
-      rect.bottom,
-      rect.left
-    );
+      const rect = ref.current.getBoundingClientRect();
+      connections.addPosition(
+        symbol.id,
+        rect.width,
+        rect.height,
+        rect.top,
+        rect.right,
+        rect.bottom,
+        rect.left
+      );
+    }, 500);
   }, []);
 
   const markers = symbol?.markers.map(marker => ({
@@ -45,9 +49,9 @@ function Code({ symbol }: Props) {
     startCol: marker.location?.start.column || 0,
     endRow: marker.location?.end.line || 0,
     endCol: marker.location?.end.column || 0,
-    className: `marker-${marker.location?.start.line || 0}-${marker.location
-      ?.start.column || 0}-${marker.location?.end.line || 0}-${marker.location
-      ?.end.column || 0}`,
+    className: `marker-${symbol.id}-${marker.location?.start.line || 0}-${marker
+      .location?.start.column || 0}-${marker.location?.end.line || 0}-${marker
+      .location?.end.column || 0}`,
     type: "background"
   }));
 
@@ -97,7 +101,8 @@ function Code({ symbol }: Props) {
         showGutter={false}
         style={{ padding: "5px" }}
         theme="tomorrow"
-        width="450px"
+        width={`${(charWidth + 1.6) *
+          getMaxLineLength((symbol && symbol?.code) || "")}px`}
         onChange={() => {}}
         value={(symbol && symbol?.code) || ""}
         name="UNIQUE_ID_OF_DIV"
