@@ -129,13 +129,9 @@ Array [
     "path": "root/query/items.js",
     "specifiers": Array [
       Object {
-        "isDefault": true,
         "name": "getItems",
         "references": Array [
           Object {
-            "code": "",
-            "containerName": "Store",
-            "containerType": "FunctionDeclaration",
             "location": SourceLocation {
               "end": Position {
                 "column": 24,
@@ -156,13 +152,9 @@ Array [
     "path": "project/query/items",
     "specifiers": Array [
       Object {
-        "isDefault": true,
         "name": "getInStockCount",
         "references": Array [
           Object {
-            "code": "",
-            "containerName": "Store",
-            "containerType": "FunctionDeclaration",
             "location": SourceLocation {
               "end": Position {
                 "column": 36,
