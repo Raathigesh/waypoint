@@ -178,34 +178,11 @@ export default class SourceFile {
     path.node.specifiers.forEach(specifierPath => {
       const referencePaths =
         path.scope.bindings[specifierPath.local.name].referencePaths;
-
       const defaultSpecifier: ImportSpecifier = {
-        isDefault: true,
         name: specifierPath.local.name,
         references: referencePaths.map(referencePath => {
-          let containerName = "";
-          const functionParent = referencePath.getFunctionParent();
-          if (!functionParent) {
-            return {
-              containerName,
-              containerType: "Not Found"
-            };
-          }
-
-          if (functionParent.type === "ArrowFunctionExpression") {
-            containerName =
-              (functionParent.parent as any).id &&
-              (functionParent.parent as any).id.name;
-          } else if (functionParent.type === "FunctionDeclaration") {
-            containerName =
-              (functionParent.node.id && functionParent.node.id.name) || "";
-          }
-
           return {
-            containerName,
-            containerType: "FunctionDeclaration",
-            location: referencePath.node.loc,
-            code: ""
+            location: referencePath.node.loc
           };
         })
       };

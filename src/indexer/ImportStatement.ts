@@ -2,10 +2,7 @@ import ESModuleItem from "./ESModuleItem";
 
 export interface ImportSpecifier {
   name: string;
-  isDefault: boolean;
   references: {
-    containerName: string;
-    containerType: string;
     location?: {
       start: {
         line: number;

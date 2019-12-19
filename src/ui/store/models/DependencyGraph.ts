@@ -145,6 +145,11 @@ export const DependencyGraph = types
     const removeNode = (id: string) => {
       const linksToRemove = [id];
 
+      if (self.currentSymbol && self.currentSymbol?.id === id) {
+        self.currentSymbol = null;
+        return;
+      }
+
       while (linksToRemove.length !== 0) {
         const linkToRemove = linksToRemove.pop();
         if (linkToRemove) {

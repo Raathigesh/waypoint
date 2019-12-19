@@ -82,34 +82,6 @@ export default class Indexer {
     return file.symbols;
   }
 
-  public findReferences(path: string, symbolName: string) {
-    const references: ESModuleItem[] = [];
-
-    Object.entries(this.files).forEach(([, file]) => {
-      file.importStatements.forEach(importStatement => {
-        const specifier =
-          importStatement.path === path &&
-          importStatement.specifiers.find(
-            specifier => specifier.name === symbolName
-          );
-
-        if (specifier) {
-          specifier.references.forEach(reference => {
-            references.push({
-              path: file.path,
-              kind: reference.containerType,
-              name: reference.containerName,
-              id: nanoid(),
-              location: reference.location,
-              markers: []
-            });
-          });
-        }
-      });
-    });
-    return references;
-  }
-
   public async getCode(path: string, id: string) {
     const file = this.files[path];
     if (file) {

@@ -117,20 +117,6 @@ export default class SymbolsResolver {
   }
 
   @Query(returns => [GqlSymbolInformation])
-  public async findReferences(
-    @Args()
-    { symbol }: GetReferencesArgs
-  ) {
-    if (!symbol) {
-      return [];
-    }
-
-    return this.indexer
-      .findReferences(symbol.filePath || "", symbol.name || "")
-      .map(reference => ({ ...reference, filePath: reference.path }));
-  }
-
-  @Query(returns => [GqlSymbolInformation])
   public async getSymbolsForActiveFile() {
     if (this.activeEditorPath) {
       return this.indexer

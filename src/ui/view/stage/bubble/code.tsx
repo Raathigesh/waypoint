@@ -101,7 +101,7 @@ function Code({ symbol, charWidth }: Props) {
         showGutter={false}
         style={{ padding: "5px" }}
         theme="tomorrow"
-        width={`${(charWidth + 1.6) *
+        width={`${(charWidth + 2) *
           getMaxLineLength((symbol && symbol?.code) || "")}px`}
         onChange={() => {}}
         value={(symbol && symbol?.code) || ""}
