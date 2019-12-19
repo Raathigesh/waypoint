@@ -1,14 +1,15 @@
 import React, { useContext, useRef, useLayoutEffect, useState } from "react";
-import { Flex, IconButton } from "@chakra-ui/core";
+import { Flex, IconButton, Link, Text, Tooltip } from "@chakra-ui/core";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-tomorrow";
-import { dependencyGraphStore, connectionStore } from "ui/store";
+import { dependencyGraphStore, connectionStore, appStore } from "ui/store";
 import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
 import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 import { css, Global } from "@emotion/core";
 import { X } from "react-feather";
+import { openFile } from "ui/EventBus";
 
 const getMaxLineLength = (code: string) =>
   Math.max(...code.split("\n").map(line => line.length));
@@ -20,6 +21,7 @@ interface Props {
 
 function Code({ symbol, charWidth }: Props) {
   const dependencyGraph = useContext(dependencyGraphStore);
+  const projectInfo = useContext(appStore);
   const ref: any = useRef(null);
   const connections = useContext(connectionStore);
 
@@ -80,6 +82,7 @@ function Code({ symbol, charWidth }: Props) {
       zIndex={1}
       padding="10px"
       backgroundColor="white"
+      flexDirection="column"
       borderRadius="5px"
       boxShadow="box-shadow:
       0 0px 1.5px rgba(0, 0, 0, 0.028),
@@ -89,60 +92,87 @@ function Code({ symbol, charWidth }: Props) {
       onMouseEnter={() => setIsMouseOver(true)}
       onMouseLeave={() => setIsMouseOver(false)}
     >
-      <Global
-        styles={css`
-          ${cssString}
-        `}
-      />
-      <AceEditor
-        readOnly
-        mode="javascript"
-        highlightActiveLine={false}
-        showGutter={false}
-        style={{ padding: "5px" }}
-        theme="tomorrow"
-        width={`${(charWidth + 2) *
-          getMaxLineLength((symbol && symbol?.code) || "")}px`}
-        onChange={() => {}}
-        value={(symbol && symbol?.code) || ""}
-        name="UNIQUE_ID_OF_DIV"
-        editorProps={{ $blockScrolling: true }}
-        maxLines={Infinity}
-        markers={markers}
-        onCursorChange={(selection, e) => {
-          const row = selection.cursor.row;
-          const column = selection.cursor.column;
-          const clickedMaker = markers.find(
-            marker =>
-              marker.startRow >= row &&
-              marker.endRow <= row &&
-              marker.startCol <= column &&
-              marker.endCol >= column
-          );
-
-          const markerElement = document.getElementsByClassName(
-            clickedMaker?.className || ""
-          );
-
-          console.log(clickedMaker, markerElement);
-          if (markerElement[0]) {
-            dependencyGraph.addBubble(
-              symbol.id,
-              row,
-              column,
-              markerElement[0].getBoundingClientRect().top
+      <Flex flexDirection="column">
+        <Global
+          styles={css`
+            ${cssString}
+          `}
+        />
+        <AceEditor
+          readOnly
+          mode="javascript"
+          highlightActiveLine={false}
+          showGutter={false}
+          style={{ padding: "5px" }}
+          theme="tomorrow"
+          width={`${(charWidth + 2) *
+            getMaxLineLength((symbol && symbol?.code) || "")}px`}
+          onChange={() => {}}
+          value={(symbol && symbol?.code) || ""}
+          name="UNIQUE_ID_OF_DIV"
+          editorProps={{ $blockScrolling: true }}
+          maxLines={Infinity}
+          markers={markers}
+          onCursorChange={(selection, e) => {
+            const row = selection.cursor.row;
+            const column = selection.cursor.column;
+            const clickedMaker = markers.find(
+              marker =>
+                marker.startRow >= row &&
+                marker.endRow <= row &&
+                marker.startCol <= column &&
+                marker.endCol >= column
             );
-          }
-        }}
-      />
-      {isMouseOver && (
-        <Flex position="absolute" right="10px" cursor="pointer">
-          <X
-            size="10px"
-            onClick={() => dependencyGraph.removeNode(symbol.id)}
-          />
-        </Flex>
-      )}
+
+            const markerElement = document.getElementsByClassName(
+              clickedMaker?.className || ""
+            );
+
+            console.log(clickedMaker, markerElement);
+            if (markerElement[0]) {
+              dependencyGraph.addBubble(
+                symbol.id,
+                row,
+                column,
+                markerElement[0].getBoundingClientRect().top
+              );
+            }
+          }}
+        />
+        {isMouseOver && (
+          <Flex position="absolute" right="10px" cursor="pointer">
+            <X
+              size="10px"
+              onClick={() => dependencyGraph.removeNode(symbol.id)}
+            />
+          </Flex>
+        )}
+      </Flex>
+      <Flex>
+        <Link
+          fontSize={11}
+          whiteSpace="nowrap"
+          onClick={() => {
+            console.log(symbol);
+            openFile(symbol.filePath, symbol.location as any);
+          }}
+        >
+          <Text
+            isTruncated
+            style={{ direction: "rtl" }}
+            width={`${(charWidth + 2) *
+              getMaxLineLength((symbol && symbol?.code) || "")}px`}
+          >
+            <Tooltip
+              aria-label="file path"
+              fontSize={11}
+              label={symbol.filePath.replace(projectInfo.root, "")}
+            >
+              {symbol.filePath.replace(projectInfo.root, "")}
+            </Tooltip>
+          </Text>
+        </Link>
+      </Flex>
     </Flex>
   );
 }

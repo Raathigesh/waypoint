@@ -88,6 +88,7 @@ function Search() {
             options: activeFileOptions
           }
         ]}
+        value={null}
         formatOptionLabel={formatOptionLabel}
         styles={customStyles}
         placeholder="Search"

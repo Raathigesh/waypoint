@@ -77,6 +77,7 @@ export default class SymbolsResolver {
         item.kind = obj.kind;
         item.name = obj.name;
         item.id = obj.id;
+        item.location = obj.location;
 
         return item;
       });

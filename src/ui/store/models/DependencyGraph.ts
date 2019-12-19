@@ -24,6 +24,16 @@ export const DependencyGraph = types
         name: symbol.name,
         filePath: symbol.filePath,
         kind: symbol.kind,
+        location: {
+          start: {
+            column: symbol?.location?.start?.column || 0,
+            line: symbol?.location?.start?.line || 0
+          },
+          end: {
+            column: symbol?.location?.end?.column || 0,
+            line: symbol?.location?.end?.line || 0
+          }
+        },
         markers: []
       });
 
@@ -122,6 +132,16 @@ export const DependencyGraph = types
             name: symbol.name,
             filePath: symbol.filePath || "",
             kind: symbol.kind,
+            location: {
+              start: {
+                column: symbol?.location?.start?.column || 0,
+                line: symbol?.location?.start?.line || 0
+              },
+              end: {
+                column: symbol?.location?.end?.column || 0,
+                line: symbol?.location?.end?.line || 0
+              }
+            },
             code,
             markers: (symbol.markers || []).map(marker => ({
               filePath: marker.filePath,
