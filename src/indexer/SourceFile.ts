@@ -179,7 +179,10 @@ export default class SourceFile {
       const referencePaths =
         path.scope.bindings[specifierPath.local.name].referencePaths;
       const defaultSpecifier: ImportSpecifier = {
-        name: specifierPath.local.name,
+        name:
+          ((specifierPath as any).imported &&
+            (specifierPath as any).imported.name) ||
+          specifierPath.local.name,
         references: referencePaths.map(referencePath => {
           return {
             location: referencePath.node.loc
