@@ -8,6 +8,8 @@ import Services from "./services";
 import { startApiServer } from "./api";
 import { Container } from "typedi";
 
+let isServerRunning = false;
+
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
     initialize(context);
@@ -27,7 +29,11 @@ async function initialize(context: vscode.ExtensionContext) {
     process.env.projectRoot = vscode.workspace.rootPath;
   }
 
-  await startApiServer();
+  if (!isServerRunning) {
+    await startApiServer();
+    isServerRunning = true;
+  }
+
   const uiMessenger = getUIMessenger();
   Services.forEach(Service => new Service(context, uiMessenger));
 
@@ -51,8 +57,8 @@ async function initialize(context: vscode.ExtensionContext) {
 
   const root = join(context.extensionPath, "icons");
   currentPanel.iconPath = {
-    dark: vscode.Uri.file(join(root, "icon-light.png")),
-    light: vscode.Uri.file(join(root, "icon-dark.png"))
+    dark: vscode.Uri.file(join(root, "bubbles.png")),
+    light: vscode.Uri.file(join(root, "bubbles.png"))
   };
 
   currentPanel.onDidDispose(

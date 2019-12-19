@@ -27,9 +27,22 @@
     "commands": [
       {
         "command": "insight.showPanel",
-        "title": "Toggle Insight panel"
+        "title": "Toggle Insight panel",
+        "icon": {
+          "dark": "./icons/bubbles.png",
+          "light": "./icons/bubbles.png"
+        }
       }
-    ]
+    ],
+    "menus": {
+      "editor/title": [
+        {
+          "command": "insight.showPanel",
+          "alt": "insight.showPanel",
+          "group": "navigation"
+        }
+      ]
+    }
   },
   "scripts": {
     "vscode:prepublish": "yarn run build",

@@ -2,14 +2,14 @@ import React, { useContext, useState } from "react";
 import Select from "react-select/async";
 import { Search as SearchIcon } from "react-feather";
 import { search, getSymbolsForActiveFile } from "ui/store/services/search";
-import { dependencyGraphStore } from "ui/store";
+import { dependencyGraphStore, appStore } from "ui/store";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { observer } from "mobx-react-lite";
 import { Box, Flex } from "@chakra-ui/core";
-import { Instance } from "mobx-state-tree";
 
 function Search() {
   const dependencyGraph = useContext(dependencyGraphStore);
+  const projectInfo = useContext(appStore);
   const [activeFileOptions, setActiveFileOptions] = useState<
     GqlSymbolInformation[]
   >([]);
@@ -37,7 +37,7 @@ function Search() {
       symbol: item
     }));
 
-    return [...resultOptions];
+    return resultOptions;
   };
 
   const customStyles = {
@@ -66,14 +66,14 @@ function Search() {
       <Flex>
         <Flex
           color="gray.800"
-          fontSize={13}
-          fontWeight={600}
+          fontSize={12}
+          fontWeight={500}
           marginRight="10px"
         >
           {item.value}
         </Flex>
-        <Flex fontSize={12} color="gray.600">
-          {item.path}
+        <Flex fontSize={11} color="gray.600">
+          {item.path.replace(projectInfo.root, "")}
         </Flex>
       </Flex>
     );
@@ -82,7 +82,12 @@ function Search() {
   return (
     <Flex width="100%">
       <Select
-        defaultOptions={activeFileOptions}
+        defaultOptions={[
+          {
+            label: "Symbols from the active file",
+            options: activeFileOptions
+          }
+        ]}
         formatOptionLabel={formatOptionLabel}
         styles={customStyles}
         placeholder="Search"

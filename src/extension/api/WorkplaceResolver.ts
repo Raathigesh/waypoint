@@ -1,6 +1,6 @@
 import { Resolver, Mutation, Arg, Query } from "type-graphql";
 const Conf = require("conf");
-import { Service, Inject } from "typedi";
+import { Service } from "typedi";
 
 @Resolver()
 @Service()

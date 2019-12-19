@@ -8,7 +8,7 @@ import { setPathMap } from "./services/config";
 import { Connections } from "./models/Connections";
 import { App } from "./models/app";
 
-const app = App.create({ separator: "" });
+const app = App.create({ separator: "", root: "" });
 const pathMap = PathMap.create();
 export const pathMapStore = createContext(pathMap);
 

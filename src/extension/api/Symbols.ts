@@ -1,28 +1,15 @@
-import {
-  Arg,
-  Mutation,
-  Query,
-  Resolver,
-  Subscription,
-  Root,
-  Args
-} from "type-graphql";
-import { ContainerInstance, Service, Inject } from "typedi";
+import { Arg, Mutation, Query, Resolver, Args } from "type-graphql";
+import { ContainerInstance, Service } from "typedi";
 import Indexer from "indexer/Indexer";
 import Project from "indexer/Project";
-import { pubSub } from "common/pubSub";
 import { Status } from "./Status";
 import { SearchResult } from "../../entities/SearchResult";
-import {
-  GqlSymbolInformation,
-  GqlMarkers
-} from "entities/GqlSymbolInformation";
-import { WorkspaceSymbolResponse } from "./types";
-import { GetReferencesArgs } from "./GetReferenceArgs";
+import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import ESModuleItem from "indexer/ESModuleItem";
 import { ReIndexArgs } from "./ReIndexArgs";
 import { sep } from "path";
 import * as vscode from "vscode";
+import { ProjectInfo } from "entities/GqlProjectInfo";
 
 @Service()
 @Resolver(SearchResult)
@@ -34,7 +21,9 @@ export default class SymbolsResolver {
     private readonly indexer: Indexer
   ) {
     vscode.window.onDidChangeActiveTextEditor(e => {
-      this.activeEditorPath = e?.document.fileName;
+      if (e) {
+        this.activeEditorPath = e.document.fileName;
+      }
     });
   }
 
@@ -69,9 +58,12 @@ export default class SymbolsResolver {
     return this.indexer.status;
   }
 
-  @Query(returns => String)
-  public separator() {
-    return sep;
+  @Query(returns => ProjectInfo)
+  public project() {
+    const info = new ProjectInfo();
+    info.separator = sep;
+    info.root = process.env.projectRoot || "";
+    return info;
   }
 
   @Mutation(returns => SearchResult)

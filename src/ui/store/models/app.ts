@@ -1,15 +1,17 @@
 import { types, flow, applySnapshot } from "mobx-state-tree";
-import { getSeparator } from "../services";
+import { getProjectInfo } from "../services";
+import { ProjectInfo } from "entities/GqlProjectInfo";
 
 export const App = types
   .model("App", {
-    separator: types.string
+    separator: types.string,
+    root: types.string
   })
-
   .actions(self => {
     const afterCreate = flow(function*() {
-      const separator = yield getSeparator();
-      self.separator = separator;
+      const project: ProjectInfo = yield getProjectInfo();
+      self.separator = project.separator;
+      self.root = project.root;
     });
 
     return { afterCreate };

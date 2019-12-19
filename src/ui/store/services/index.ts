@@ -1,16 +1,20 @@
 import gql from "graphql-tag";
 import { sendQuery, sendMutation } from "ui/util/graphql";
 import { PathMapItem } from "extension/api/ReIndexArgs";
+import { ProjectInfo } from "entities/GqlProjectInfo";
 
-export async function getSeparator() {
+export async function getProjectInfo() {
   const query = gql`
-    query Separator {
-      separator
+    query Project {
+      project {
+        separator
+        root
+      }
     }
   `;
 
-  const result = await sendQuery<{ separator: string }>(query, {});
-  return result.separator;
+  const result = await sendQuery<{ project: ProjectInfo }>(query, {});
+  return result.project;
 }
 
 export async function indexerStatus() {
