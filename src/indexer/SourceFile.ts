@@ -168,6 +168,7 @@ export default class SourceFile {
       console.log("found path ", absoluteImportPath);
     } catch (e) {
       console.log("Path not resolved ", importPath);
+      return;
     }
 
     const importDeclaration: ImportStatement = {
