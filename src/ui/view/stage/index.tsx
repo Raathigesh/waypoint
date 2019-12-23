@@ -31,8 +31,8 @@ function Stage() {
 
   const handleMouseMove = (e: any) => {
     if (shouldMove.current && element.current) {
-      const deltaLeft = e.clientX - initialClick.current.x;
-      const deltaTop = e.clientY - initialClick.current.y;
+      const deltaLeft = initialClick.current.x - e.clientX;
+      const deltaTop = initialClick.current.y - e.clientY;
       const previousMarginLeft = element.current.scrollLeft;
       const previousMarginTop = element.current.scrollTop;
 

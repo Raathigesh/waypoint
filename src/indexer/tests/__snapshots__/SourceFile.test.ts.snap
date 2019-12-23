@@ -89,7 +89,7 @@ Array [
         "name": "getItems",
       },
       Object {
-        "filePath": "project/query/items",
+        "filePath": "root/store/Root.js",
         "location": Object {
           "end": Object {
             "column": 36,
@@ -141,29 +141,6 @@ Array [
               "start": Position {
                 "column": 16,
                 "line": 7,
-              },
-            },
-          },
-        ],
-      },
-    ],
-  },
-  Object {
-    "path": "project/query/items",
-    "specifiers": Array [
-      Object {
-        "name": "getInStockCount",
-        "references": Array [
-          Object {
-            "location": SourceLocation {
-              "end": Position {
-                "column": 36,
-                "line": 8,
-              },
-              "identifierName": "getInStockCount",
-              "start": Position {
-                "column": 21,
-                "line": 8,
               },
             },
           },

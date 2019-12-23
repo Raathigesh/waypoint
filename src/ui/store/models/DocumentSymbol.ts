@@ -4,7 +4,8 @@ import { DocumentLocation } from "./DocumentLocation";
 export const Marker = types.model("Marker", {
   filePath: types.string,
   name: types.string,
-  location: types.maybeNull(DocumentLocation)
+  location: types.maybeNull(DocumentLocation),
+  color: types.string
 });
 
 export const DocumentSymbol = types.model("DocumentSymbol", {
@@ -14,5 +15,6 @@ export const DocumentSymbol = types.model("DocumentSymbol", {
   kind: types.string,
   code: types.maybeNull(types.string),
   location: types.maybeNull(DocumentLocation),
-  markers: types.array(Marker)
+  markers: types.array(Marker),
+  color: types.maybe(types.string)
 });

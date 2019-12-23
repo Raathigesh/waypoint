@@ -1,9 +1,6 @@
 import { types, flow, Instance } from "mobx-state-tree";
 import { DocumentSymbol, Marker } from "./DocumentSymbol";
-import {
-  GqlSymbolInformation,
-  GqlMarkers
-} from "entities/GqlSymbolInformation";
+import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { getMarkers, getCode } from "../services/search";
 
 const NodeLink = types.model("NodeLink", {
@@ -53,12 +50,10 @@ export const DependencyGraph = types
         symbol.filePath,
         symbol.name
       );
-
       const symbolModel = getSymbolById(symbol.id);
       if (!symbolModel) {
         return;
       }
-
       (symbolWithMakers.markers || []).forEach(reference => {
         symbolModel.markers.push(
           Marker.create({
@@ -73,7 +68,8 @@ export const DependencyGraph = types
                 column: reference?.location?.end?.column || 0,
                 line: reference?.location?.end?.line || 0
               }
-            }
+            },
+            color: "gray"
           })
         );
       });
@@ -88,7 +84,6 @@ export const DependencyGraph = types
       let symbol: Instance<typeof DocumentSymbol> | undefined = getSymbolById(
         id
       );
-
       if (!symbol) {
         return;
       }
@@ -99,13 +94,12 @@ export const DependencyGraph = types
           marker.location.start.column <= column &&
           marker.location.end.column >= column
       );
-
       if (clickedMarker) {
         const symbol: GqlSymbolInformation = yield getMarkers(
           clickedMarker.filePath,
           clickedMarker.name
         );
-
+        clickedMarker.color = "red";
         if (self.links.get(id)) {
           self.links.set(id, [
             ...(self.links.get(id) || []),
@@ -124,7 +118,6 @@ export const DependencyGraph = types
         }
 
         const code = yield getCode(symbol.filePath, symbol.id);
-
         self.otherSymbols.set(
           symbol.id,
           DocumentSymbol.create({
@@ -155,8 +148,10 @@ export const DependencyGraph = types
                   column: marker?.location?.end?.column || 0,
                   line: marker?.location?.end?.line || 0
                 }
-              }
-            }))
+              },
+              color: "gray"
+            })),
+            color: "red"
           })
         );
       }
@@ -164,12 +159,10 @@ export const DependencyGraph = types
 
     const removeNode = (id: string) => {
       const linksToRemove = [id];
-
       if (self.currentSymbol && self.currentSymbol?.id === id) {
         self.currentSymbol = null;
         return;
       }
-
       while (linksToRemove.length !== 0) {
         const linkToRemove = linksToRemove.pop();
         if (linkToRemove) {
@@ -185,56 +178,4 @@ export const DependencyGraph = types
     };
 
     return { setCurrentSymbol, fetchMarkers, addBubble, removeNode };
-  })
-  .views(self => {
-    const getSymbolById = (link: Instance<typeof NodeLink>) => {
-      if (self.currentSymbol && self.currentSymbol.id === link.target) {
-        return self.currentSymbol;
-      }
-      return self.otherSymbols.get(link.target);
-    };
-
-    const getGraphColumns = () => {
-      const results: Array<Array<Instance<typeof DocumentSymbol>>> = [];
-
-      let currentColumnItems: Instance<typeof NodeLink>[] = [];
-      let nextColumnItems: Instance<typeof NodeLink>[] = [];
-
-      let nodes: Instance<typeof DocumentSymbol>[] = [];
-
-      if (!self.currentSymbol) {
-        return;
-      }
-
-      const itemLinks = self.links.get(self.currentSymbol.id) || [];
-      currentColumnItems = currentColumnItems.concat(
-        itemLinks.sort((a, b) => b.line - a.line)
-      );
-
-      while (currentColumnItems.length !== 0) {
-        const link = currentColumnItems.pop();
-        if (link) {
-          const symbol = getSymbolById(link);
-          if (symbol) {
-            nodes.push(symbol);
-
-            const links = self.links.get(symbol.id) || [];
-            nextColumnItems = nextColumnItems.concat(links);
-          }
-        }
-
-        if (currentColumnItems.length === 0) {
-          results.push(nodes);
-          currentColumnItems = currentColumnItems.concat(
-            nextColumnItems.sort((a, b) => b.line - a.line)
-          );
-          nextColumnItems = [];
-          nodes = [];
-        }
-      }
-
-      return results;
-    };
-
-    return { getGraphColumns };
   });
