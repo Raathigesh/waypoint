@@ -1,9 +1,9 @@
 {
-  "name": "insight",
-  "displayName": "Insight",
-  "description": "Know your app better",
+  "name": "js-bubbles",
+  "displayName": "JSBubbles",
+  "description": "Re-imagining reading JavaScript in VSCode",
   "publisher": "raathigeshan",
-  "version": "0.22.0",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.33.0"
   },
@@ -27,7 +27,7 @@
     "commands": [
       {
         "command": "insight.showPanel",
-        "title": "Toggle Insight panel",
+        "title": "Toggle JSBubbles panel",
         "icon": {
           "dark": "./icons/bubbles.png",
           "light": "./icons/bubbles.png"
