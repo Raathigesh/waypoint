@@ -42,7 +42,7 @@ function Code({ symbol, charWidth }: Props) {
     return `${str}
 
     .${marker.className} {
-      background-color: ${marker.color};
+      background-color: ${marker.color || "#eaeaea"};
       pointer-events: all;
       position: absolute;
       cursor: pointer;

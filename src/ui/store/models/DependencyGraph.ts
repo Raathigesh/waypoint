@@ -12,9 +12,21 @@ export const DependencyGraph = types
   .model("DependencyGraph", {
     currentSymbol: types.maybeNull(DocumentSymbol),
     otherSymbols: types.map(DocumentSymbol),
-    links: types.map(types.array(NodeLink))
+    links: types.map(types.array(NodeLink)),
+    colors: types.array(types.string),
+    currentColorIndex: types.number
   })
   .actions(self => {
+    const getNextColor = () => {
+      const nextColor = self.colors[self.currentColorIndex];
+      if (self.currentColorIndex === self.colors.length - 1) {
+        self.currentColorIndex = 0;
+      } else {
+        self.currentColorIndex += 1;
+      }
+      return nextColor;
+    };
+
     const setCurrentSymbol = flow(function*(symbol: GqlSymbolInformation) {
       self.currentSymbol = DocumentSymbol.create({
         id: symbol.id,
@@ -69,7 +81,7 @@ export const DependencyGraph = types
                 line: reference?.location?.end?.line || 0
               }
             },
-            color: "gray"
+            color: ""
           })
         );
       });
@@ -99,7 +111,10 @@ export const DependencyGraph = types
           clickedMarker.filePath,
           clickedMarker.name
         );
-        clickedMarker.color = "red";
+
+        const nextColor = getNextColor();
+
+        clickedMarker.color = nextColor;
         if (self.links.get(id)) {
           self.links.set(id, [
             ...(self.links.get(id) || []),
@@ -149,9 +164,9 @@ export const DependencyGraph = types
                   line: marker?.location?.end?.line || 0
                 }
               },
-              color: "gray"
+              color: ""
             })),
-            color: "red"
+            color: nextColor
           })
         );
       }
