@@ -1,19 +1,21 @@
 require("module-alias/register");
 import * as vscode from "vscode";
 import ContentProvider from "./ContentProvider";
-import { join, resolve } from "path";
-import gql from "graphql-tag";
+import { join } from "path";
 import { getUIMessenger } from "common/messaging/ui";
+import { Container } from "typedi";
 import Services from "./services";
 import { startApiServer } from "./api";
-import { Container } from "typedi";
 
 let isServerRunning = false;
 
 export function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand("insight.showPanel", () => {
-    initialize(context);
-  });
+  let disposable = vscode.commands.registerCommand(
+    "js-bubbles.showPanel",
+    () => {
+      initialize(context);
+    }
+  );
 
   if (process.env.dev) {
     initialize(context);
@@ -44,8 +46,8 @@ async function initialize(context: vscode.ExtensionContext) {
   outputChannel.show();
 
   currentPanel = vscode.window.createWebviewPanel(
-    "insight",
-    "Code bubbles",
+    "js-bubbles",
+    "JS bubbles",
     vscode.ViewColumn.Two,
     {
       enableScripts: true,

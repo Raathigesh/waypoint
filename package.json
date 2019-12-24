@@ -26,7 +26,7 @@
   "contributes": {
     "commands": [
       {
-        "command": "insight.showPanel",
+        "command": "js-bubbles.showPanel",
         "title": "Toggle JSBubbles panel",
         "icon": {
           "dark": "./icons/bubbles.png",
@@ -37,8 +37,8 @@
     "menus": {
       "editor/title": [
         {
-          "command": "insight.showPanel",
-          "alt": "insight.showPanel",
+          "command": "js-bubbles.showPanel",
+          "alt": "js-bubbles.showPanel",
           "group": "navigation"
         }
       ]

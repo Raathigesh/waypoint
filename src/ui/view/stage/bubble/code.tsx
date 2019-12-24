@@ -56,6 +56,8 @@ function Code({ symbol, charWidth }: Props) {
 
   return (
     <Rnd
+      onDragStart={() => dependencyGraph.setIsBubbleDragging(true)}
+      onDragStop={() => dependencyGraph.setIsBubbleDragging(false)}
       default={
         {
           x: 0,

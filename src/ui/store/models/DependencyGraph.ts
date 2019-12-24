@@ -14,7 +14,8 @@ export const DependencyGraph = types
     otherSymbols: types.map(DocumentSymbol),
     links: types.map(types.array(NodeLink)),
     colors: types.array(types.string),
-    currentColorIndex: types.number
+    currentColorIndex: types.number,
+    isBubbleDragging: types.boolean
   })
   .actions(self => {
     const getNextColor = () => {
@@ -192,5 +193,15 @@ export const DependencyGraph = types
       }
     };
 
-    return { setCurrentSymbol, fetchMarkers, addBubble, removeNode };
+    const setIsBubbleDragging = (flag: boolean) => {
+      self.isBubbleDragging = flag;
+    };
+
+    return {
+      setCurrentSymbol,
+      fetchMarkers,
+      addBubble,
+      removeNode,
+      setIsBubbleDragging
+    };
   });

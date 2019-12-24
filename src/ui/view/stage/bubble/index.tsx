@@ -20,7 +20,7 @@ function Bubble() {
     <Flex marginTop="15px" alignItems="flex-start">
       {currentSymbol && <Code symbol={currentSymbol} charWidth={charWidth} />}
       {[...otherSymbols.entries()].map(([, sym]) => (
-        <Code symbol={sym} charWidth={charWidth} />
+        <Code key={sym.id} symbol={sym} charWidth={charWidth} />
       ))}
     </Flex>
   );

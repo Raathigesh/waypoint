@@ -24,7 +24,8 @@ const dependencyGraph = DependencyGraph.create({
     "#0BC5EA",
     "#b794f4",
     "#f687b3"
-  ]
+  ],
+  isBubbleDragging: false
 });
 export const dependencyGraphStore = createContext(dependencyGraph);
 export const indexerStatusStore = createContext(

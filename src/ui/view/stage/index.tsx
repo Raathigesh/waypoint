@@ -2,7 +2,7 @@ import React, { useState, useLayoutEffect, useRef, useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { Flex } from "@chakra-ui/core";
 import Bubble from "./bubble";
-import { connectionStore } from "ui/store";
+import { connectionStore, dependencyGraphStore } from "ui/store";
 import Connections from "./connections";
 
 function Stage() {
@@ -10,6 +10,7 @@ function Stage() {
   const shouldMove: any = useRef(false);
   const element: any = useRef(null);
   const connection = useContext(connectionStore);
+  const dependencyGraph = useContext(dependencyGraphStore);
 
   const handleMouseDown = (e: any) => {
     initialClick.current = {
@@ -30,7 +31,11 @@ function Stage() {
   };
 
   const handleMouseMove = (e: any) => {
-    if (shouldMove.current && element.current) {
+    if (
+      shouldMove.current &&
+      element.current &&
+      !dependencyGraph.isBubbleDragging
+    ) {
       const deltaLeft = initialClick.current.x - e.clientX;
       const deltaTop = initialClick.current.y - e.clientY;
       const previousMarginLeft = element.current.scrollLeft;
