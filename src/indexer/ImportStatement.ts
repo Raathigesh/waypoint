@@ -1,5 +1,3 @@
-import ESModuleItem from "./ESModuleItem";
-
 export interface ImportSpecifier {
   name: string;
   references: {

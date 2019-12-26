@@ -1,21 +1,24 @@
 const recursiveReadDir = require("recursive-readdir");
 const fuzzysort = require("fuzzysort");
 import { promisify } from "util";
-const nanoid = require("nanoid");
 import { Service } from "typedi";
 import Project from "./Project";
 import SourceFile from "./SourceFile";
 import { getFileType } from "common/utils/file";
 import ESModuleItem from "./ESModuleItem";
 import { readFile } from "fs";
+import { findAbsoluteFilePathWhichExists } from "./fileResolver";
+import { dirname } from "path";
 
 @Service()
 export default class Indexer {
   public files: { [path: string]: SourceFile } = {};
   public status: "none" | "indexed" | "indexing" = "none";
+  public project: Project | undefined;
 
   public async parse(project: Project) {
     this.status = "indexing";
+    this.project = project;
 
     const files = await this.readProjectFiles(project.root);
 
@@ -70,6 +73,33 @@ export default class Indexer {
   public getSymbolWithMarkers(path: string, name: string) {
     const file = this.files[path];
     const symbol = file.symbols.find(symbol => symbol.name === name);
+
+    if (!symbol && this.project) {
+      let actualSymbolName = name;
+      const exportStatement = file.exportStatements.find(s => {
+        const specifier = s.specifiers.find(
+          specifier => specifier.exported === name
+        );
+        if (specifier) {
+          actualSymbolName = specifier?.local;
+        }
+        return specifier;
+      });
+
+      if (exportStatement) {
+        const pathOfTheFile = exportStatement.path;
+        const absolutePath = findAbsoluteFilePathWhichExists(
+          this.project?.root,
+          dirname(path),
+          pathOfTheFile,
+          this.project.pathAlias
+        );
+        const actualFile = this.files[absolutePath];
+        return actualFile.symbols.find(
+          symbol => symbol.name === actualSymbolName
+        );
+      }
+    }
     return symbol;
   }
 

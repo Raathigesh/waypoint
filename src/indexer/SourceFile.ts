@@ -5,7 +5,8 @@ import {
   TypeAlias,
   SourceLocation,
   Identifier,
-  Program
+  Program,
+  ExportNamedDeclaration
 } from "babel-types";
 import { readFile } from "fs";
 import { promisify } from "util";
@@ -17,14 +18,16 @@ import { getFileType } from "common/utils/file";
 import ImportStatement, { ImportSpecifier } from "./ImportStatement";
 import ESModuleItem from "./ESModuleItem";
 import { ImportDeclaration } from "@babel/types";
-import { resolve, isAbsolute, dirname } from "path";
+import { dirname } from "path";
 import { findAbsoluteFilePathWhichExists } from "./fileResolver";
 import { Location } from "entities/Location";
+import ExportStatement from "./ExportStatement";
 
 export default class SourceFile {
   public path: string = "";
   public symbols: ESModuleItem[] = [];
   public importStatements: ImportStatement[] = [];
+  public exportStatements: ExportStatement[] = [];
   public programScope: Scope | undefined;
 
   public async parse(
@@ -56,6 +59,9 @@ export default class SourceFile {
         },
         ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
           this.extractImport(path, pathAliasMap, root);
+        },
+        ExportNamedDeclaration: (path: NodePath<ExportNamedDeclaration>) => {
+          this.extractExportNamedDeclaration(path);
         }
       });
       this.linkLocalSymbols();
@@ -89,6 +95,21 @@ export default class SourceFile {
   private extractTypeAlias(path: NodePath<TypeAlias>) {
     const name = path.node.id.name;
     this.createSymbol(name, path.node.type, path.node.loc);
+  }
+
+  private extractExportNamedDeclaration(
+    path: NodePath<ExportNamedDeclaration>
+  ) {
+    if (path.node.source && path.node.specifiers.length) {
+      const exportStatement: ExportStatement = {
+        path: path.node.source.value,
+        specifiers: path.node.specifiers.map(specifier => ({
+          local: specifier.local.name,
+          exported: specifier.exported.name
+        }))
+      };
+      this.exportStatements.push(exportStatement);
+    }
   }
 
   private createSymbol(name: string, kind: string, location: SourceLocation) {
