@@ -102,7 +102,6 @@ function Search() {
         }}
         onChange={({ symbol }: { symbol: GqlSymbolInformation }) => {
           dependencyGraph.setCurrentSymbol(symbol);
-          dependencyGraph.fetchMarkers(symbol);
         }}
       />
     </Flex>

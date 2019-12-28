@@ -7,18 +7,12 @@ import { getCharWidth } from "ui/util/view";
 
 function Bubble() {
   const dependencyGraph = useContext(dependencyGraphStore);
-  const currentSymbol = dependencyGraph.currentSymbol;
-  const otherSymbols = dependencyGraph.otherSymbols;
-
-  if (!currentSymbol) {
-    return null;
-  }
+  const otherSymbols = dependencyGraph.symbols;
 
   const charWidth = getCharWidth();
 
   return (
     <Flex marginTop="15px" alignItems="flex-start">
-      {currentSymbol && <Code symbol={currentSymbol} charWidth={charWidth} />}
       {[...otherSymbols.entries()].map(([, sym]) => (
         <Code key={sym.id} symbol={sym} charWidth={charWidth} />
       ))}

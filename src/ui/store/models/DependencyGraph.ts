@@ -10,8 +10,7 @@ const NodeLink = types.model("NodeLink", {
 
 export const DependencyGraph = types
   .model("DependencyGraph", {
-    currentSymbol: types.maybeNull(DocumentSymbol),
-    otherSymbols: types.map(DocumentSymbol),
+    symbols: types.map(DocumentSymbol),
     links: types.map(types.array(NodeLink)),
     colors: types.array(types.string),
     currentColorIndex: types.number,
@@ -29,7 +28,31 @@ export const DependencyGraph = types
     };
 
     const setCurrentSymbol = flow(function*(symbol: GqlSymbolInformation) {
-      self.currentSymbol = DocumentSymbol.create({
+      const symbolWithMakers: GqlSymbolInformation = yield getMarkers(
+        symbol.filePath,
+        symbol.name
+      );
+
+      const markers = (symbolWithMakers.markers || []).map(marker =>
+        Marker.create({
+          filePath: marker.filePath,
+          name: marker.name,
+          location: {
+            start: {
+              column: marker?.location?.start?.column || 0,
+              line: marker?.location?.start?.line || 0
+            },
+            end: {
+              column: marker?.location?.end?.column || 0,
+              line: marker?.location?.end?.line || 0
+            }
+          },
+          color: ""
+        })
+      );
+
+      const code = yield getCode(symbol.filePath, symbol.id);
+      const documentSymbol = DocumentSymbol.create({
         id: symbol.id,
         name: symbol.name,
         filePath: symbol.filePath,
@@ -44,49 +67,15 @@ export const DependencyGraph = types
             line: symbol?.location?.end?.line || 0
           }
         },
-        markers: []
+        markers,
+        code
       });
-
-      const code = yield getCode(symbol.filePath, symbol.id);
-      self.currentSymbol.code = code;
+      self.symbols.set(symbol.id, documentSymbol);
     });
 
     const getSymbolById = (id: string) => {
-      if (self.currentSymbol && self.currentSymbol.id === id) {
-        return self.currentSymbol;
-      }
-      return self.otherSymbols.get(id);
+      return self.symbols.get(id);
     };
-
-    const fetchMarkers = flow(function*(symbol: GqlSymbolInformation) {
-      const symbolWithMakers: GqlSymbolInformation = yield getMarkers(
-        symbol.filePath,
-        symbol.name
-      );
-      const symbolModel = getSymbolById(symbol.id);
-      if (!symbolModel) {
-        return;
-      }
-      (symbolWithMakers.markers || []).forEach(reference => {
-        symbolModel.markers.push(
-          Marker.create({
-            filePath: reference.filePath,
-            name: reference.name,
-            location: {
-              start: {
-                column: reference?.location?.start?.column || 0,
-                line: reference?.location?.start?.line || 0
-              },
-              end: {
-                column: reference?.location?.end?.column || 0,
-                line: reference?.location?.end?.line || 0
-              }
-            },
-            color: ""
-          })
-        );
-      });
-    });
 
     const addBubble = flow(function*(
       id: string,
@@ -136,7 +125,7 @@ export const DependencyGraph = types
         }
 
         const code = yield getCode(symbol.filePath, symbol.id);
-        self.otherSymbols.set(
+        self.symbols.set(
           symbol.id,
           DocumentSymbol.create({
             id: symbol.id,
@@ -179,14 +168,10 @@ export const DependencyGraph = types
 
     const removeNode = (id: string) => {
       const linksToRemove = [id];
-      if (self.currentSymbol && self.currentSymbol?.id === id) {
-        self.currentSymbol = null;
-        return;
-      }
       while (linksToRemove.length !== 0) {
         const linkToRemove = linksToRemove.pop();
         if (linkToRemove) {
-          self.otherSymbols.delete(linkToRemove);
+          self.symbols.delete(linkToRemove);
 
           const connections = self.links.get(linkToRemove);
           connections?.forEach(connection => {
@@ -203,7 +188,6 @@ export const DependencyGraph = types
 
     return {
       setCurrentSymbol,
-      fetchMarkers,
       addBubble,
       removeNode,
       setIsBubbleDragging
