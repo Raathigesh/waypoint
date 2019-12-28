@@ -126,7 +126,6 @@ function Code({ symbol, charWidth }: Props) {
                   symbol.id,
                   row,
                   column,
-                  markerElement[0].getBoundingClientRect().top,
                   markerElement[0].getBoundingClientRect().x,
                   markerElement[0].getBoundingClientRect().y
                 );

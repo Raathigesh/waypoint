@@ -1,10 +1,10 @@
 import { types, flow, Instance } from "mobx-state-tree";
+import * as nanoid from "nanoid";
 import { DocumentSymbol, Marker } from "./DocumentSymbol";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { getMarkers, getCode } from "../services/search";
 
 const NodeLink = types.model("NodeLink", {
-  line: types.number,
   target: types.string
 });
 
@@ -35,6 +35,7 @@ export const DependencyGraph = types
 
       const markers = (symbolWithMakers.markers || []).map(marker =>
         Marker.create({
+          id: nanoid(),
           filePath: marker.filePath,
           name: marker.name,
           location: {
@@ -81,7 +82,6 @@ export const DependencyGraph = types
       id: string,
       line: number,
       column: number,
-      top: number,
       x: number,
       y: number
     ) {
@@ -111,14 +111,12 @@ export const DependencyGraph = types
           self.links.set(id, [
             ...(self.links.get(id) || []),
             NodeLink.create({
-              line: top,
               target: symbol.id
             })
           ]);
         } else {
           self.links.set(id, [
             NodeLink.create({
-              line: top,
               target: symbol.id
             })
           ]);
@@ -143,7 +141,12 @@ export const DependencyGraph = types
               }
             },
             code,
+            createdForMarker: {
+              markerId: clickedMarker.id,
+              symbolId: id
+            },
             markers: (symbol.markers || []).map(marker => ({
+              id: nanoid(),
               filePath: marker.filePath,
               name: marker.name,
               location: {
@@ -171,6 +174,24 @@ export const DependencyGraph = types
       while (linksToRemove.length !== 0) {
         const linkToRemove = linksToRemove.pop();
         if (linkToRemove) {
+          const symbolToRemove = getSymbolById(linkToRemove);
+
+          if (symbolToRemove && symbolToRemove.createdForMarker) {
+            const parentSymbol = getSymbolById(
+              symbolToRemove.createdForMarker.symbolId
+            );
+
+            if (parentSymbol) {
+              const markerOfParent = parentSymbol.markers.find(
+                marker =>
+                  marker.id === symbolToRemove.createdForMarker?.markerId
+              );
+              if (markerOfParent) {
+                markerOfParent.color = "";
+              }
+            }
+          }
+
           self.symbols.delete(linkToRemove);
 
           const connections = self.links.get(linkToRemove);
