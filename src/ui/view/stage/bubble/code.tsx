@@ -10,7 +10,7 @@ import { Rnd } from "react-rnd";
 import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 import { css, Global } from "@emotion/core";
 import { X } from "react-feather";
-import { openFile } from "ui/EventBus";
+import { openFile } from "ui/store/services/file";
 
 const getMaxLineLength = (code: string) =>
   Math.max(...code.split("\n").map(line => line.length));

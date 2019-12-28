@@ -6,8 +6,6 @@ import {
 } from "urql";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 
-declare var PRODUCTION: boolean;
-
 let WS_URL = "ws://localhost:4545";
 let HTTP_URL = "http://localhost:4545";
 

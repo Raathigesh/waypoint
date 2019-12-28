@@ -2,13 +2,12 @@ import React, { useContext, useEffect, Fragment } from "react";
 import { observer } from "mobx-react-lite";
 import { Flex, IconButton, useDisclosure } from "@chakra-ui/core";
 import Search from "./view/search";
-import { dependencyGraphStore, indexerStatusStore } from "./store";
+import { indexerStatusStore } from "./store";
 import Welcome from "./view/welcome";
 import Preference from "./view/preference";
 import Stage from "./view/stage";
 
 function App() {
-  const dependencyGraph = useContext(dependencyGraphStore);
   const indexerStatus = useContext(indexerStatusStore);
   const { isOpen, onOpen, onClose } = useDisclosure();
   useEffect(() => {
