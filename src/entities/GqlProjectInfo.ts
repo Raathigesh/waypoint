@@ -1,7 +1,7 @@
 import { ObjectType, Field } from "type-graphql";
 
 @ObjectType()
-export class ProjectInfo {
+export class GqlProjectInfo {
   @Field({ nullable: true })
   separator: string = "";
 

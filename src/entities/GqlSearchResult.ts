@@ -2,7 +2,7 @@ import { ObjectType, Field } from "type-graphql";
 import { GqlSymbolInformation } from "./GqlSymbolInformation";
 
 @ObjectType()
-export class SearchResult {
+export class GqlSearchResult {
   @Field(returns => [GqlSymbolInformation], { nullable: true })
   items: Array<GqlSymbolInformation> = [];
 

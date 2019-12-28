@@ -14,13 +14,13 @@ const nanoid = require("nanoid");
 import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import { NodePath, Scope } from "babel-traverse";
-import { getFileType } from "common/utils/file";
+import { getFileType } from "indexer/util";
 import ImportStatement, { ImportSpecifier } from "./ImportStatement";
 import ESModuleItem from "./ESModuleItem";
 import { ImportDeclaration } from "@babel/types";
 import { dirname } from "path";
 import { findAbsoluteFilePathWhichExists } from "./fileResolver";
-import { Location } from "entities/Location";
+import { GqlLocation } from "entities/GqlLocation";
 import ExportStatement from "./ExportStatement";
 
 export default class SourceFile {
@@ -228,7 +228,7 @@ export default class SourceFile {
     });
   }
 
-  private isInLocation(locationA: Location, locationB: Location) {
+  private isInLocation(locationA: GqlLocation, locationB: GqlLocation) {
     const {
       start: locAStart = { line: 0, column: 0 },
       end: locAEnd = { line: 0, column: 0 }
@@ -256,7 +256,10 @@ export default class SourceFile {
     return isStartWithIn && isEndWithIn;
   }
 
-  private adjustLocation(functionLocation: Location, markerLocation: Location) {
+  private adjustLocation(
+    functionLocation: GqlLocation,
+    markerLocation: GqlLocation
+  ) {
     const {
       start: functionStart = { line: 0, column: 0 },
       end: functionEnd = { line: 0, column: 0 }
@@ -267,7 +270,7 @@ export default class SourceFile {
       end: markerEnd = { line: 0, column: 0 }
     } = markerLocation;
 
-    const newLocation: Location = {
+    const newLocation: GqlLocation = {
       start: {
         line: markerStart.line - functionStart.line,
         column: markerStart.column

@@ -1,6 +1,5 @@
-import { TempFileHandler } from "./TempFileHandler";
 import { WindowHandler } from "./WindowHandler";
 
-const Services = [TempFileHandler, WindowHandler];
+const Services = [WindowHandler];
 
 export default Services;

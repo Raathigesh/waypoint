@@ -2,17 +2,16 @@ import { Arg, Mutation, Query, Resolver, Args } from "type-graphql";
 import { ContainerInstance, Service } from "typedi";
 import Indexer from "indexer/Indexer";
 import Project from "indexer/Project";
-import { Status } from "./Status";
-import { SearchResult } from "../../entities/SearchResult";
+import { GqlSearchResult } from "../../../entities/GqlSearchResult";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import ESModuleItem from "indexer/ESModuleItem";
 import { ReIndexArgs } from "./ReIndexArgs";
 import { sep } from "path";
 import * as vscode from "vscode";
-import { ProjectInfo } from "entities/GqlProjectInfo";
+import { GqlProjectInfo } from "entities/GqlProjectInfo";
 
 @Service()
-@Resolver(SearchResult)
+@Resolver(GqlSearchResult)
 export default class SymbolsResolver {
   private activeEditorPath: string | undefined;
 
@@ -27,9 +26,9 @@ export default class SymbolsResolver {
     });
   }
 
-  @Query(returns => SearchResult)
+  @Query(returns => GqlSearchResult)
   results() {
-    return new SearchResult();
+    return new GqlSearchResult();
   }
 
   @Mutation(returns => String)
@@ -50,7 +49,7 @@ export default class SymbolsResolver {
       pathAlias
     };
     await this.indexer.parse(project);
-    return Status.OK;
+    return "OK";
   }
 
   @Query(returns => String)
@@ -58,18 +57,18 @@ export default class SymbolsResolver {
     return this.indexer.status;
   }
 
-  @Query(returns => ProjectInfo)
+  @Query(returns => GqlProjectInfo)
   public project() {
-    const info = new ProjectInfo();
+    const info = new GqlProjectInfo();
     info.separator = sep;
     info.root = process.env.projectRoot || "";
     return info;
   }
 
-  @Mutation(returns => SearchResult)
+  @Mutation(returns => GqlSearchResult)
   public async search(@Arg("query") query: string) {
     try {
-      const result = new SearchResult();
+      const result = new GqlSearchResult();
       const items = this.indexer.search(query);
       result.items = items.map(({ obj }: { obj: ESModuleItem }) => {
         const item = new GqlSymbolInformation();
@@ -83,7 +82,7 @@ export default class SymbolsResolver {
       });
       return result;
     } catch (e) {
-      const result = new SearchResult();
+      const result = new GqlSearchResult();
       result.errorMessage = e.stack;
       return result;
     }

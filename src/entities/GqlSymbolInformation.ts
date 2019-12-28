@@ -1,10 +1,10 @@
 import { ObjectType, Field } from "type-graphql";
-import { Location } from "./Location";
+import { GqlLocation } from "./GqlLocation";
 
 @ObjectType()
 export class GqlMarkers {
-  @Field(returns => Location, { nullable: true })
-  location?: Location;
+  @Field(returns => GqlLocation, { nullable: true })
+  location?: GqlLocation;
 
   @Field({ nullable: true })
   filePath: string = "";
@@ -27,8 +27,8 @@ export class GqlSymbolInformation {
   @Field(returns => String, { nullable: true })
   kind: any | null = null;
 
-  @Field(returns => Location, { nullable: true })
-  location?: Location;
+  @Field(returns => GqlLocation, { nullable: true })
+  location?: GqlLocation;
 
   @Field({ nullable: true })
   code: string = "";

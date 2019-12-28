@@ -3,9 +3,9 @@ import { buildSchema } from "type-graphql";
 import { Container } from "typedi";
 import "reflect-metadata";
 import { pubSub } from "common/pubSub";
-import SymbolsResolver from "./Symbols";
+import SymbolsResolver from "./symbol-resolver";
 import MessageResolver from "common/messaging/resolvers/MessageResolver";
-import WorkplaceResolver from "./WorkplaceResolver";
+import WorkplaceResolver from "./ConfigResolver";
 
 export async function getSchema() {
   try {

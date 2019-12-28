@@ -4,7 +4,7 @@ import { promisify } from "util";
 import { Service } from "typedi";
 import Project from "./Project";
 import SourceFile from "./SourceFile";
-import { getFileType } from "common/utils/file";
+import { getFileType } from "indexer/util";
 import ESModuleItem from "./ESModuleItem";
 import { readFile } from "fs";
 import { findAbsoluteFilePathWhichExists } from "./fileResolver";

@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 import { sendQuery, sendMutation } from "ui/util/graphql";
-import { PathMapItem } from "extension/api/ReIndexArgs";
-import { ProjectInfo } from "entities/GqlProjectInfo";
+import { PathMapItem } from "extension/api/symbol-resolver/ReIndexArgs";
+import { GqlProjectInfo } from "entities/GqlProjectInfo";
 
 export async function getProjectInfo() {
   const query = gql`
@@ -13,7 +13,7 @@ export async function getProjectInfo() {
     }
   `;
 
-  const result = await sendQuery<{ project: ProjectInfo }>(query, {});
+  const result = await sendQuery<{ project: GqlProjectInfo }>(query, {});
   return result.project;
 }
 

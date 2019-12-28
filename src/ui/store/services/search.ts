@@ -1,6 +1,6 @@
 import gql from "graphql-tag";
 import { sendMutation, sendQuery } from "ui/util/graphql";
-import { SearchResult } from "entities/SearchResult";
+import { GqlSearchResult } from "entities/GqlSearchResult";
 import {
   GqlMarkers,
   GqlSymbolInformation
@@ -31,7 +31,7 @@ export async function search(query: string) {
     }
   `;
 
-  const results = await sendMutation<{ search: SearchResult }>(mutation, {
+  const results = await sendMutation<{ search: GqlSearchResult }>(mutation, {
     query
   });
   return {

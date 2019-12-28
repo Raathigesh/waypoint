@@ -1,6 +1,6 @@
 import { types, flow, applySnapshot } from "mobx-state-tree";
 import { getProjectInfo } from "../services";
-import { ProjectInfo } from "entities/GqlProjectInfo";
+import { GqlProjectInfo } from "entities/GqlProjectInfo";
 
 export const App = types
   .model("App", {
@@ -9,7 +9,7 @@ export const App = types
   })
   .actions(self => {
     const afterCreate = flow(function*() {
-      const project: ProjectInfo = yield getProjectInfo();
+      const project: GqlProjectInfo = yield getProjectInfo();
       self.separator = project.separator;
       self.root = project.root;
     });

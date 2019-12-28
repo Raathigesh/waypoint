@@ -4,7 +4,7 @@ import { Service } from "typedi";
 
 @Resolver()
 @Service()
-export default class WorkplaceResolver {
+export default class ConfigResolver {
   private conf = new Conf({
     projectName: "Insight",
     projectVersion: 1
