@@ -16,5 +16,7 @@ export const DocumentSymbol = types.model("DocumentSymbol", {
   code: types.maybeNull(types.string),
   location: types.maybeNull(DocumentLocation),
   markers: types.array(Marker),
-  color: types.maybe(types.string)
+  color: types.maybe(types.string),
+  x: types.maybe(types.number),
+  y: types.maybe(types.number)
 });

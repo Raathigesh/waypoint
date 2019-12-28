@@ -92,7 +92,9 @@ export const DependencyGraph = types
       id: string,
       line: number,
       column: number,
-      top: number
+      top: number,
+      x: number,
+      y: number
     ) {
       let symbol: Instance<typeof DocumentSymbol> | undefined = getSymbolById(
         id
@@ -167,7 +169,9 @@ export const DependencyGraph = types
               },
               color: ""
             })),
-            color: nextColor
+            color: nextColor,
+            x,
+            y
           })
         );
       }

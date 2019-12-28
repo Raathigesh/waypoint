@@ -1,9 +1,9 @@
-import React, { useContext, useRef, useLayoutEffect, useState } from "react";
-import { Flex, IconButton, Link, Text, Tooltip } from "@chakra-ui/core";
+import React, { useContext, useRef, useState } from "react";
+import { Flex, Link, Text, Tooltip } from "@chakra-ui/core";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-tomorrow";
-import { dependencyGraphStore, connectionStore, appStore } from "ui/store";
+import { dependencyGraphStore, appStore } from "ui/store";
 import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
 import { Rnd } from "react-rnd";
@@ -60,8 +60,8 @@ function Code({ symbol, charWidth }: Props) {
       onDragStop={() => dependencyGraph.setIsBubbleDragging(false)}
       default={
         {
-          x: 0,
-          y: 0
+          x: symbol.x || 0,
+          y: symbol.y || 0
         } as any
       }
       dragGrid={[5, 5]}
@@ -71,7 +71,7 @@ function Code({ symbol, charWidth }: Props) {
         marginRight="55px"
         marginBottom="25px"
         ref={ref}
-        zIndex={1}
+        zIndex={3}
         padding="10px"
         backgroundColor="white"
         flexDirection="column"
@@ -126,7 +126,9 @@ function Code({ symbol, charWidth }: Props) {
                   symbol.id,
                   row,
                   column,
-                  markerElement[0].getBoundingClientRect().top
+                  markerElement[0].getBoundingClientRect().top,
+                  markerElement[0].getBoundingClientRect().x,
+                  markerElement[0].getBoundingClientRect().y
                 );
               }
             }}

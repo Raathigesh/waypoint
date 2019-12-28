@@ -2,14 +2,12 @@ import React, { useState, useLayoutEffect, useRef, useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { Flex } from "@chakra-ui/core";
 import Bubble from "./bubble";
-import { connectionStore, dependencyGraphStore } from "ui/store";
-import Connections from "./connections";
+import { dependencyGraphStore } from "ui/store";
 
 function Stage() {
   const initialClick: any = useRef(null);
   const shouldMove: any = useRef(false);
   const element: any = useRef(null);
-  const connection = useContext(connectionStore);
   const dependencyGraph = useContext(dependencyGraphStore);
 
   const handleMouseDown = (e: any) => {
@@ -23,10 +21,6 @@ function Stage() {
   const handleMouseUp = () => {
     if (element.current) {
     }
-    connection.addRelative(
-      element.current.scrollLeft,
-      element.current.scrollTop
-    );
     shouldMove.current = false;
   };
 
@@ -62,7 +56,6 @@ function Stage() {
     >
       <Flex position="relative">
         <Bubble />
-        <Connections size={{ height: "100%", width: "100%" }} />
       </Flex>
     </Flex>
   );
