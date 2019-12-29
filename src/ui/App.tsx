@@ -4,7 +4,7 @@ import "react-tippy/dist/tippy.css";
 import { Provider } from "urql";
 import { ThemeProvider as ChakraProvider, CSSReset } from "@chakra-ui/core";
 import { client } from "./graphql-client";
-import Search from "./search";
+import View from "./view";
 import lightTheme from "./theme";
 import { VSCodeStyleOverride } from "./view/VSCodeStyleOverride";
 
@@ -15,7 +15,7 @@ function App() {
         <ChakraProvider theme={lightTheme}>
           <CSSReset />
           <VSCodeStyleOverride />
-          <Search />
+          <View />
         </ChakraProvider>
       </Provider>
     </Fragment>

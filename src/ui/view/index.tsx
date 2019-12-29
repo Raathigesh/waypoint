@@ -1,11 +1,11 @@
 import React, { useContext, useEffect, Fragment } from "react";
 import { observer } from "mobx-react-lite";
 import { Flex, IconButton, useDisclosure } from "@chakra-ui/core";
-import Search from "./view/search";
-import { indexerStatusStore } from "./store";
-import Welcome from "./view/welcome";
-import Preference from "./view/preference";
-import Stage from "./view/stage";
+import Search from "./SearchBar";
+import { indexerStatusStore } from "../store";
+import Welcome from "./welcome";
+import Preference from "./preference";
+import Stage from "./stage";
 
 function App() {
   const indexerStatus = useContext(indexerStatusStore);
