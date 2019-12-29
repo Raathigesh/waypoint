@@ -2,7 +2,7 @@
 <img height="180px" src="./docs/assets/bubbles.png">
 <br />
 <br />
-<a href="https://github.com/Raathigesh/majestic/actions">
+<a href="https://github.com/Raathigesh/JSBubbles/actions">
   <img src="https://img.shields.io/github/workflow/status/Raathigesh/JSBubbles/production-build?style=flat-square" />
 </a>
 <img src="https://img.shields.io/github/license/Raathigesh/JSBubbles.svg?style=flat-square" />
