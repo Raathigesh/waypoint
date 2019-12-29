@@ -5,8 +5,8 @@ import App from "./App";
 render(<App />, document.getElementById("root"));
 
 if ((module as any).hot) {
-  (module as any).hot.accept("./app", () => {
-    const NextApp = require("./app").default;
+  (module as any).hot.accept("./App", () => {
+    const NextApp = require("./App").default;
     render(<NextApp />, document.getElementById("root"));
   });
 }
