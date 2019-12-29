@@ -11,7 +11,10 @@ import {
   DrawerFooter,
   Button,
   Flex,
-  IconButton
+  IconButton,
+  Divider,
+  Heading,
+  Text
 } from "@chakra-ui/core";
 import { pathMapStore, indexerStatusStore } from "ui/store";
 import { Coffee } from "react-feather";
@@ -37,49 +40,57 @@ function Preference({ isOpen, onClose }: Props) {
         <DrawerHeader>Preference</DrawerHeader>
 
         <DrawerBody>
-          {pathMap.items.map(item => {
-            return (
-              <Flex key={item.id}>
-                <Input
-                  value={item.alias}
-                  placeholder="Alias"
-                  size="sm"
-                  onChange={(e: any) =>
-                    handleUpdate(item.id, e.target.value, item.path)
-                  }
-                />
-                <Input
-                  value={item.path}
-                  placeholder="Path"
-                  size="sm"
-                  onChange={(e: any) =>
-                    handleUpdate(item.id, item.alias, e.target.value)
-                  }
-                />
-                <IconButton
-                  aria-label="Search database"
-                  size="sm"
-                  icon="close"
-                  onClick={() => pathMap.remove(item.id)}
-                />
-              </Flex>
-            );
-          })}
-
+          <Heading size="sm">Import path resolution</Heading>
+          <Text>Remap your module alias</Text>
+          <Flex flexGrow={1} flexDirection="column">
+            {pathMap.items.map(item => {
+              return (
+                <Flex key={item.id} alignItems="center" marginBottom="5px">
+                  <Input
+                    value={item.alias}
+                    placeholder="Alias"
+                    size="sm"
+                    marginRight="5px"
+                    onChange={(e: any) =>
+                      handleUpdate(item.id, e.target.value, item.path)
+                    }
+                  />
+                  <Input
+                    value={item.path}
+                    placeholder="Path"
+                    size="sm"
+                    onChange={(e: any) =>
+                      handleUpdate(item.id, item.alias, e.target.value)
+                    }
+                  />
+                  <IconButton
+                    marginLeft="5px"
+                    aria-label="Search database"
+                    size="xs"
+                    icon="close"
+                    onClick={() => pathMap.remove(item.id)}
+                  />
+                </Flex>
+              );
+            })}
+          </Flex>
+          <Flex justifyContent="flex-end" marginTop="5px" marginBottom="5px">
+            <Button
+              rightIcon="plus-square"
+              variant="outline"
+              size="xs"
+              onClick={() => pathMap.addNewItem("", "")}
+            >
+              Add another
+            </Button>
+          </Flex>
+          <Divider />
+          <Heading size="sm">Re-indexer</Heading>
+          <Text>Run the code indexer</Text>
           <Button
-            rightIcon="plus-square"
-            variantColor="teal"
-            variant="outline"
-            size="xs"
-            onClick={() => pathMap.addNewItem("", "")}
-          >
-            Add another
-          </Button>
-          <Button
+            marginTop="5px"
             leftIcon={Coffee}
-            variantColor="pink"
             variant="outline"
-            size="sm"
             width="180px"
             onClick={() => indexerStatus.initiateIndexing()}
           >

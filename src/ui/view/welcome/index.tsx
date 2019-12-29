@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Flex, Button, Text, Progress, Link } from "@chakra-ui/core";
+import { Flex, Button, Text, Progress, Link, Image } from "@chakra-ui/core";
 import { Coffee } from "react-feather";
 import { observer } from "mobx-react-lite";
 import { IndexerStatus } from "ui/store/models/IndexerStatus";
@@ -19,14 +19,14 @@ function Welcome({ indexerStatus, onOpenPreference }: Props) {
   if (indexerStatus.status === "none") {
     content = (
       <Fragment>
-        <Text marginBottom="20px" fontWeight={400} fontSize={20}>
+        <Text marginBottom="20px" fontWeight={400} fontSize={15}>
           Please index your project to get started
         </Text>
         <Button
           leftIcon={Coffee}
-          variantColor="pink"
-          variant="solid"
+          variant="outline"
           width="180px"
+          variantColor="blue"
           onClick={() => indexerStatus.initiateIndexing()}
         >
           Start Indexing
@@ -44,16 +44,9 @@ function Welcome({ indexerStatus, onOpenPreference }: Props) {
           fontSize={20}
           textAlign="center"
         >
-          Indexing in Progress
+          Indexing in progress
         </Text>
-        <Progress
-          color="pink"
-          size="sm"
-          value={100}
-          width="100%"
-          isAnimated
-          hasStripe
-        />
+        <Progress size="sm" value={100} width="100%" isAnimated hasStripe />
       </Fragment>
     );
   }
@@ -61,6 +54,7 @@ function Welcome({ indexerStatus, onOpenPreference }: Props) {
   return (
     <Flex justifyContent="center" alignItems="center" flexGrow={1}>
       <Flex flexDirection="column" alignItems="center">
+        <Image src={require("../../assets/Js Bubbles logo.png")} />
         {content}
       </Flex>
     </Flex>

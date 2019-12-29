@@ -1,6 +1,6 @@
 {
   "name": "js-bubbles",
-  "displayName": "JSBubbles",
+  "displayName": "JS Bubbles",
   "description": "Re-imagining reading JavaScript in VSCode",
   "publisher": "raathigeshan",
   "version": "0.1.0",
@@ -27,7 +27,7 @@
     "commands": [
       {
         "command": "js-bubbles.showPanel",
-        "title": "Toggle JSBubbles panel",
+        "title": "Toggle JS Bubbles panel",
         "icon": {
           "dark": "./icons/bubbles.png",
           "light": "./icons/bubbles.png"

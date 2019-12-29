@@ -9,6 +9,7 @@ import { ReIndexArgs } from "./ReIndexArgs";
 import { sep } from "path";
 import * as vscode from "vscode";
 import { GqlProjectInfo } from "entities/GqlProjectInfo";
+import { existsSync } from "fs";
 
 @Service()
 @Resolver(GqlSearchResult)
@@ -20,7 +21,7 @@ export default class SymbolsResolver {
     private readonly indexer: Indexer
   ) {
     vscode.window.onDidChangeActiveTextEditor(e => {
-      if (e) {
+      if (e && existsSync(e.document.fileName)) {
         this.activeEditorPath = e.document.fileName;
       }
     });
