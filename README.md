@@ -1,4 +1,6 @@
-## JSBubbles
+<div align="center">
+<img height="180px" src="./docs/assets/bubbles.png">
+</div>
 
 JSBubbles is a VSCode extension which makes it easy to find and read JavaScript without switching back and forth between multiple files.
 
