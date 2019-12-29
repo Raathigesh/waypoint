@@ -37,3 +37,7 @@ JSBubbles is inspired by [Code bubbles](http://www.andrewbragdon.com/codebubbles
 - Once your add a symbol to the stage, you can click on the highlighted markers to open other connecting symbols.
 - You can also move the symbols on the stage around as you prefer.
 - Closing a symbol will also close all the other symbols connected to it.
+
+## Contributing
+
+Have a look at our [contribution guide](docs/contributing.md).
