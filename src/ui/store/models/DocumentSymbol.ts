@@ -9,21 +9,30 @@ export const Marker = types.model("Marker", {
   color: types.string
 });
 
-export const DocumentSymbol = types.model("DocumentSymbol", {
-  id: types.string,
-  name: types.string,
-  filePath: types.string,
-  kind: types.string,
-  code: types.maybeNull(types.string),
-  location: types.maybeNull(DocumentLocation),
-  markers: types.array(Marker),
-  color: types.maybe(types.string),
-  createdForMarker: types.maybe(
-    types.model({
-      markerId: types.string,
-      symbolId: types.string
-    })
-  ),
-  x: types.maybe(types.number),
-  y: types.maybe(types.number)
-});
+export const DocumentSymbol = types
+  .model("DocumentSymbol", {
+    id: types.string,
+    name: types.string,
+    filePath: types.string,
+    kind: types.string,
+    code: types.maybeNull(types.string),
+    location: types.maybeNull(DocumentLocation),
+    markers: types.array(Marker),
+    color: types.maybe(types.string),
+    createdForMarker: types.maybe(
+      types.model({
+        markerId: types.string,
+        symbolId: types.string
+      })
+    ),
+    x: types.maybe(types.number),
+    y: types.maybe(types.number)
+  })
+  .actions(self => {
+    const setPosition = (x: number, y: number) => {
+      self.x = x;
+      self.y = y;
+    };
+
+    return { setPosition };
+  });

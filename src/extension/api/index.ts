@@ -6,6 +6,7 @@ import { pubSub } from "common/pubSub";
 import SymbolsResolver from "./symbol-resolver";
 import MessageResolver from "common/messaging/resolvers/MessageResolver";
 import WorkplaceResolver from "./ConfigResolver";
+import { initializeStaticRoutes } from "./static-files";
 
 export async function getSchema() {
   try {
@@ -19,10 +20,10 @@ export async function getSchema() {
   }
 }
 
-const port = 4545;
-export async function startApiServer() {
+export async function startApiServer(port: number) {
   const schema: any = await getSchema();
   const server = new GraphQLServer({ schema });
+  initializeStaticRoutes(server.express, port);
 
   return new Promise((resolve, reject) => {
     server

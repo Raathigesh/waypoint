@@ -3,12 +3,15 @@ const webpack = require("webpack");
 const path = require("path");
 
 module.exports = env => ({
-  entry: "./src/ui/index.tsx",
+  entry: {
+    ui: "./src/ui/index.tsx"
+    // "editor.worker": "monaco-editor/esm/vs/editor/editor.worker.js",
+    // "ts.worker": "monaco-editor/esm/vs/language/typescript/ts.worker"
+  },
   mode: env.production ? "production" : "development",
   output: {
     path: path.resolve(__dirname, "./out/ui"),
-    filename: "ui.bundle.js",
-    publicPath: "http://localhost:9000/"
+    filename: "[name].bundle.js"
   },
   resolve: {
     extensions: [".mjs", ".ts", ".tsx", ".js", ".jsx"],
@@ -50,6 +53,10 @@ module.exports = env => ({
         use: ["style-loader", "css-loader"]
       },
       {
+        test: /\.ttf$/,
+        use: ["file-loader"]
+      },
+      {
         test: /\.(graphql|gql)$/,
         exclude: /node_modules/,
         loader: "graphql-tag/loader"
@@ -66,6 +73,9 @@ module.exports = env => ({
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       PRODUCTION: env.production === true
+    }),
+    new webpack.optimize.LimitChunkCountPlugin({
+      maxChunks: 1
     })
   ]
 });

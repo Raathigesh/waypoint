@@ -7,7 +7,12 @@ import { onSnapshot } from "mobx-state-tree";
 import { setPathMap } from "./services/config";
 import { App } from "./models/app";
 
-const app = App.create({ separator: "", root: "" });
+const app = App.create({
+  separator: "",
+  root: "",
+  fontFamily: "",
+  fontSize: 0
+});
 const pathMap = PathMap.create();
 export const pathMapStore = createContext(pathMap);
 

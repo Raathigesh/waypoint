@@ -7,4 +7,10 @@ export class GqlProjectInfo {
 
   @Field({ nullable: true })
   root: string = "";
+
+  @Field({ nullable: true })
+  fontFamily: string = "";
+
+  @Field({ nullable: true })
+  fontSize: number = 0;
 }

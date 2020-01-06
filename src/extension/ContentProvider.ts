@@ -20,7 +20,7 @@ export default class ContentProvider {
       `;
   }
 
-  getProdContent(context: ExtensionContext) {
+  getProdContent(context: ExtensionContext, port: number) {
     const unBundleDiskPath = Uri.file(
       join(context.extensionPath, "out", "ui", "ui.bundle.js")
     );
@@ -37,17 +37,17 @@ export default class ContentProvider {
   <body>
     <div id="root">
     </div>
-    <script src="${unBundlePath}" type="text/javascript"></script>
+    <script src="http://localhost:${port}/ui.bundle.js" type="text/javascript"></script>
   </body>
 </html>
     `;
   }
 
-  getContent(context: ExtensionContext) {
+  getContent(context: ExtensionContext, port: number) {
     if (process.env.dev) {
       return this.getDevServerContent();
     }
 
-    return this.getProdContent(context);
+    return this.getProdContent(context, port);
   }
 }

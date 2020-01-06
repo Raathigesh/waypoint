@@ -17,6 +17,14 @@ export const DependencyGraph = types
     isBubbleDragging: types.boolean
   })
   .actions(self => {
+    const refs: {
+      [key: string]: {
+        x: number;
+        y: number;
+        ref: any;
+      };
+    } = {};
+
     const getNextColor = () => {
       const nextColor = self.colors[self.currentColorIndex];
       if (self.currentColorIndex === self.colors.length - 1) {
@@ -207,10 +215,44 @@ export const DependencyGraph = types
       self.isBubbleDragging = flag;
     };
 
+    const moveSymbols = (deltaX: number, deltaY: number) => {
+      console.log("movign symbols");
+      Object.entries(refs).forEach(([id, data]) => {
+        const nextX = data.x + deltaX;
+        const nextY = data.y + deltaY;
+
+        data.x = nextX;
+        data.y = nextY;
+
+        data.ref.current.style.transform = `translate(${nextX}px, ${nextY}px)`;
+      });
+    };
+
+    const setSymbolRef = (id: string, ref: any, x: number, y: number) => {
+      refs[id] = {
+        x,
+        y,
+        ref
+      };
+    };
+
+    const setRefPosition = (id: string, x: number, y: number) => {
+      if (refs[id]) {
+        refs[id].x = x;
+        refs[id].y = y;
+      }
+    };
+
+    const getRefs = () => refs;
+
     return {
       setCurrentSymbol,
       addBubble,
       removeNode,
-      setIsBubbleDragging
+      setIsBubbleDragging,
+      moveSymbols,
+      setSymbolRef,
+      setRefPosition,
+      getRefs
     };
   });

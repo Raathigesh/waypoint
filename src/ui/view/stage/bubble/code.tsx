@@ -1,8 +1,9 @@
-import React, { useContext, useRef, useState } from "react";
-import { Flex, Link, Text, Tooltip } from "@chakra-ui/core";
-import AceEditor from "react-ace";
-import "ace-builds/src-noconflict/mode-javascript";
-import "ace-builds/src-noconflict/theme-tomorrow";
+import React, { useContext, useRef, useState, useEffect } from "react";
+import { Flex, Link, Text, Tooltip, Icon } from "@chakra-ui/core";
+import { editor } from "monaco-editor";
+import MonacoEditor from "react-monaco-editor";
+import "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution";
+import "monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution";
 import { dependencyGraphStore, appStore } from "ui/store";
 import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
@@ -11,6 +12,8 @@ import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 import { css, Global } from "@emotion/core";
 import { X } from "react-feather";
 import { openFile } from "ui/store/services/file";
+import LazyTheme from "monaco-themes/themes/LAZY.json";
+import Draggable from "./Dragabble";
 
 const getMaxLineLength = (code: string) =>
   Math.max(...code.split("\n").map(line => line.length));
@@ -24,7 +27,8 @@ function Code({ symbol, charWidth }: Props) {
   const dependencyGraph = useContext(dependencyGraphStore);
   const projectInfo = useContext(appStore);
   const ref: any = useRef(null);
-  const [isMouseOver, setIsMouseOver] = useState(false);
+  const editorRef: any = useRef(null);
+  const handle: any = useRef(null);
 
   const markers = symbol?.markers.map(marker => ({
     startRow: marker.location?.start.line || 0,
@@ -43,8 +47,6 @@ function Code({ symbol, charWidth }: Props) {
 
     .${marker.className} {
       background-color: ${marker.color || "#eaeaea"};
-      pointer-events: all;
-      position: absolute;
       cursor: pointer;
     }
 
@@ -54,17 +56,72 @@ function Code({ symbol, charWidth }: Props) {
     `;
   }, "");
 
-  return (
-    <Rnd
-      onDragStart={() => dependencyGraph.setIsBubbleDragging(true)}
-      onDragStop={() => dependencyGraph.setIsBubbleDragging(false)}
-      default={
-        {
-          x: symbol.x || 0,
-          y: symbol.y || 0
-        } as any
+  const handleEditorWillMount = (monaco: any) => {
+    monaco.editor.defineTheme("lazy", LazyTheme);
+    monaco.editor.setTheme("lazy");
+  };
+
+  const handleEditorDidMount = (editor: editor.ICodeEditor, monaco: any) => {
+    const decorators = symbol?.markers.map(marker => ({
+      range: new monaco.Range(
+        (marker.location?.start.line || 0) + 1,
+        (marker.location?.start.column || 0) + 1,
+        (marker.location?.end.line || 0) + 1,
+        (marker.location?.end.column || 0) + 1
+      ),
+      options: {
+        inlineClassName: `marker-${symbol.id}-${marker.location?.start.line ||
+          0}-${marker.location?.start.column || 0}-${marker.location?.end
+          .line || 0}-${marker.location?.end.column || 0}`
       }
-      dragGrid={[5, 5]}
+    }));
+
+    editor.deltaDecorations([], decorators);
+
+    editor.onMouseDown((e: any) => {
+      const row = e.target.range.startLineNumber - 1;
+      const column = e.target.range.startColumn - 1;
+
+      const clickedMaker = markers.find(
+        marker =>
+          marker.startRow >= row &&
+          marker.endRow <= row &&
+          marker.startCol <= column &&
+          marker.endCol >= column
+      );
+
+      const markerElement = document.getElementsByClassName(
+        clickedMaker?.className || ""
+      );
+
+      if (markerElement[0]) {
+        console.log(
+          "Marker loc",
+          markerElement[0].getBoundingClientRect().x,
+          markerElement[0].getBoundingClientRect().y
+        );
+        console.log(e.event.posx, e.event.posy);
+        dependencyGraph.addBubble(
+          symbol.id,
+          row,
+          column,
+          markerElement[0].getBoundingClientRect().x,
+          markerElement[0].getBoundingClientRect().y
+        );
+      }
+    });
+  };
+
+  return (
+    <Draggable
+      x={symbol.x || 0}
+      y={symbol.y || 0}
+      handle={handle}
+      id={symbol.id}
+      onStart={() => dependencyGraph.setIsBubbleDragging(true)}
+      onEnd={(x: number, y: number) => {
+        dependencyGraph.setIsBubbleDragging(false);
+      }}
     >
       <Flex
         position="relative"
@@ -72,79 +129,69 @@ function Code({ symbol, charWidth }: Props) {
         marginBottom="25px"
         ref={ref}
         zIndex={3}
-        padding="10px"
         backgroundColor="white"
         flexDirection="column"
         borderRadius="5px"
         border={`1px solid ${symbol.color}`}
-        boxShadow="box-shadow:
+        boxShadow="
       0 0px 1.5px rgba(0, 0, 0, 0.028),
       0 0px 5.1px rgba(0, 0, 0, 0.042),
       0 0px 23px rgba(0, 0, 0, 0.07)
     "
-        onMouseEnter={() => setIsMouseOver(true)}
-        onMouseLeave={() => setIsMouseOver(false)}
       >
+        <Flex
+          cursor="pointer"
+          alignItems="center"
+          backgroundColor="gray.100"
+          justifyContent="flex-end"
+          borderRadius="5px 0px 0px 0px"
+        >
+          <Flex
+            ref={handle}
+            cursor="move"
+            className="handle"
+            width="100%"
+            height="15px"
+          />
+          <X
+            size="15px"
+            onClick={e => {
+              dependencyGraph.removeNode(symbol.id);
+              e.stopPropagation();
+            }}
+          />
+        </Flex>
         <Flex flexDirection="column">
           <Global
             styles={css`
               ${cssString}
             `}
           />
-          <AceEditor
-            readOnly
-            mode="javascript"
-            highlightActiveLine={false}
-            showGutter={false}
-            style={{ padding: "5px" }}
-            theme="tomorrow"
+          <MonacoEditor
+            ref={editorRef}
             width={`${(charWidth + 2) *
               getMaxLineLength((symbol && symbol?.code) || "")}px`}
-            onChange={() => {}}
-            value={(symbol && symbol?.code) || ""}
-            name="UNIQUE_ID_OF_DIV"
-            editorProps={{ $blockScrolling: true }}
-            maxLines={Infinity}
-            markers={markers}
-            onCursorChange={(selection, e) => {
-              const row = selection.cursor.row;
-              const column = selection.cursor.column;
-              const clickedMaker = markers.find(
-                marker =>
-                  marker.startRow >= row &&
-                  marker.endRow <= row &&
-                  marker.startCol <= column &&
-                  marker.endCol >= column
-              );
-
-              const markerElement = document.getElementsByClassName(
-                clickedMaker?.className || ""
-              );
-
-              if (markerElement[0]) {
-                dependencyGraph.addBubble(
-                  symbol.id,
-                  row,
-                  column,
-                  markerElement[0].getBoundingClientRect().x,
-                  markerElement[0].getBoundingClientRect().y
-                );
+            height={(symbol.code || "").split("\n").length * 20}
+            language="javascript"
+            editorWillMount={handleEditorWillMount}
+            editorDidMount={handleEditorDidMount}
+            value={symbol.code}
+            options={{
+              readOnly: true,
+              lineNumbers: "off",
+              fontFamily: projectInfo.fontFamily,
+              fontSize: projectInfo.fontSize,
+              minimap: {
+                enabled: false
               }
             }}
           />
-          {isMouseOver && (
-            <Flex position="absolute" right="10px" cursor="pointer">
-              <X
-                size="10px"
-                onClick={() => dependencyGraph.removeNode(symbol.id)}
-              />
-            </Flex>
-          )}
         </Flex>
         <Flex>
           <Link
             fontSize={11}
             whiteSpace="nowrap"
+            padding="3px"
             onClick={() => {
               console.log(symbol);
               openFile(symbol.filePath, symbol.location as any);
@@ -167,7 +214,7 @@ function Code({ symbol, charWidth }: Props) {
           </Link>
         </Flex>
       </Flex>
-    </Rnd>
+    </Draggable>
   );
 }
 

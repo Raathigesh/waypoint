@@ -8,6 +8,7 @@ import Services from "./services";
 import { startApiServer } from "./api";
 
 let isServerRunning = false;
+const port = 4545;
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand(
@@ -32,7 +33,7 @@ async function initialize(context: vscode.ExtensionContext) {
   }
 
   if (!isServerRunning) {
-    await startApiServer();
+    await startApiServer(port);
     isServerRunning = true;
   }
 
@@ -55,7 +56,7 @@ async function initialize(context: vscode.ExtensionContext) {
     }
   );
 
-  currentPanel.webview.html = contentProvider.getContent(context);
+  currentPanel.webview.html = contentProvider.getContent(context, port);
 
   const root = join(context.extensionPath, "icons");
   currentPanel.iconPath = {

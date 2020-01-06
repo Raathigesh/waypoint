@@ -54,7 +54,7 @@ function Welcome({ indexerStatus, onOpenPreference }: Props) {
   return (
     <Flex justifyContent="center" alignItems="center" flexGrow={1}>
       <Flex flexDirection="column" alignItems="center">
-        <Image src={require("../../assets/Js Bubbles logo.png")} />
+        <Image src={require("../../assets/JsBubblesLogo.png")} />
         {content}
       </Flex>
     </Flex>

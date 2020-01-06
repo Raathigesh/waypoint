@@ -63,6 +63,10 @@ export default class SymbolsResolver {
     const info = new GqlProjectInfo();
     info.separator = sep;
     info.root = process.env.projectRoot || "";
+    info.fontFamily =
+      vscode.workspace.getConfiguration("editor").get("fontFamily") || "";
+    info.fontSize =
+      vscode.workspace.getConfiguration("editor").get("fontSize") || 0;
     return info;
   }
 

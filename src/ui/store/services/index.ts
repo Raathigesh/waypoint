@@ -9,6 +9,8 @@ export async function getProjectInfo() {
       project {
         separator
         root
+        fontFamily
+        fontSize
       }
     }
   `;

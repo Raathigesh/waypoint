@@ -8,9 +8,14 @@ function Stage() {
   const initialClick: any = useRef(null);
   const shouldMove: any = useRef(false);
   const element: any = useRef(null);
+  const internalElement: any = useRef(null);
   const dependencyGraph = useContext(dependencyGraphStore);
 
   const handleMouseDown = (e: any) => {
+    if (e.target !== internalElement.current) {
+      return;
+    }
+
     initialClick.current = {
       x: e.clientX,
       y: e.clientY
@@ -32,12 +37,7 @@ function Stage() {
     ) {
       const deltaLeft = initialClick.current.x - e.clientX;
       const deltaTop = initialClick.current.y - e.clientY;
-      const previousMarginLeft = element.current.scrollLeft;
-      const previousMarginTop = element.current.scrollTop;
-
-      element.current.scrollLeft = previousMarginLeft + deltaLeft;
-      element.current.scrollTop = previousMarginTop + deltaTop;
-
+      dependencyGraph.moveSymbols(-deltaLeft, -deltaTop);
       initialClick.current.x = e.clientX;
       initialClick.current.y = e.clientY;
     }
@@ -49,12 +49,16 @@ function Stage() {
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
-      width="100vw"
       cursor={shouldMove ? "move" : "inherit"}
       height="calc(100vh - 100px)"
       overflow="auto"
     >
-      <Flex position="relative">
+      <Flex
+        className="background"
+        ref={internalElement}
+        position="relative"
+        flexGrow={1}
+      >
         <Bubble />
       </Flex>
     </Flex>
