@@ -114,10 +114,8 @@ function Code({ symbol, charWidth }: Props) {
 
   return (
     <Draggable
-      x={symbol.x || 0}
-      y={symbol.y || 0}
+      symbol={symbol}
       handle={handle}
-      id={symbol.id}
       onStart={() => dependencyGraph.setIsBubbleDragging(true)}
       onEnd={(x: number, y: number) => {
         dependencyGraph.setIsBubbleDragging(false);

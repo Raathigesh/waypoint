@@ -1,10 +1,10 @@
 import React, { useRef, useEffect, useContext } from "react";
 import { dependencyGraphStore } from "ui/store";
+import { Instance } from "mobx-state-tree";
+import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 
 interface Props {
-  x: number;
-  y: number;
-  id: string;
+  symbol: Instance<typeof DocumentSymbol>;
   handle: any;
   children: any;
   onEnd: any;
@@ -12,9 +12,7 @@ interface Props {
 }
 
 export default function Draggable({
-  id,
-  x,
-  y,
+  symbol,
   children,
   handle,
   onStart,
@@ -22,70 +20,62 @@ export default function Draggable({
 }: Props) {
   const dependencyGraph = useContext(dependencyGraphStore);
   const container = useRef(null);
+  let positionOnMouseDown = { x: 0, y: 0 };
+  let intermediatePosition = { x: 0, y: 0 };
 
-  let initialPos = { x: 0, y: 0 };
-  let position = { x: 0, y: 0 };
-
-  const getPosition = (event: any) => {
+  const getPositionFromEvent = (event: any) => {
     return {
-      x: event.clientX, //- this.initialPos.left,
-      y: event.clientY //- this.initialPos.top
+      x: event.clientX,
+      y: event.clientY
     };
+  };
+
+  const onMouseDown = (event: any) => {
+    onStart();
+    positionOnMouseDown = getPositionFromEvent(event);
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+    event.stopPropagation();
+  };
+
+  const onMouseMove = (event: any) => {
+    const position = getPositionFromEvent(event);
+    update(position.x, position.y);
+    event.preventDefault();
   };
 
   const onMouseUp = (event: any) => {
     document.removeEventListener("mousemove", onMouseMove);
     document.removeEventListener("mouseup", onMouseUp);
-    const pos = getPosition(event);
-    onEnd(pos.x, pos.y);
-    dependencyGraph.setRefPosition(id, pos.x, pos.y);
-    event.preventDefault();
-  };
-
-  const onMouseDown = (event: any) => {
-    onStart();
-    initialPos = getPosition(event);
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseup", onMouseUp);
-
-    event.stopPropagation();
-  };
-
-  const onMouseMove = (event: any) => {
-    const pos = getPosition(event);
-    update(pos.x, pos.y);
-    initialPos = {
-      x: pos.x,
-      y: pos.y
-    };
+    const position = getPositionFromEvent(event);
+    onEnd(position.x, position.y);
+    symbol.setPosition(intermediatePosition.x, intermediatePosition.y);
     event.preventDefault();
   };
 
   const update = (x: number, y: number) => {
-    const relX = x - initialPos.x;
-    const relY = y - initialPos.y;
-    const finalX = position.x + relX;
-    const finalY = position.y + relY;
+    const relX = x - positionOnMouseDown.x;
+    const relY = y - positionOnMouseDown.y;
+    const finalX = (symbol.x || 0) + relX;
+    const finalY = (symbol.y || 0) + relY;
     if (container.current) {
       (container.current as any).style.transform = `translate(${finalX}px, ${finalY}px)`;
     }
-    position = { x: finalX, y: finalY };
+    intermediatePosition = { x: finalX, y: finalY };
   };
 
   useEffect(() => {
-    dependencyGraph.setSymbolRef(id, container, x, y);
-    update(x, y);
+    symbol.setRef(container);
     handle.current.addEventListener("mousedown", onMouseDown);
-
     return () => handle.current.removeEventListener("mousedown", onMouseDown);
-  }, [x, y]);
+  }, []);
 
   return (
     <div
       style={{
         display: "inline-block",
         position: "absolute",
-        transform: `translate(${x}px, ${y}px)`
+        transform: `translate(${symbol.x}px, ${symbol.y}px)`
       }}
       ref={container}
       onClick={e => e.stopPropagation()}

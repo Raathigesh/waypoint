@@ -24,9 +24,8 @@ function Stage() {
   };
 
   const handleMouseUp = () => {
-    if (element.current) {
-    }
     shouldMove.current = false;
+    dependencyGraph.finalizePosition();
   };
 
   const handleMouseMove = (e: any) => {
