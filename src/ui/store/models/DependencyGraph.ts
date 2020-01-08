@@ -52,7 +52,7 @@ export const DependencyGraph = types
         })
       );
 
-      const code = yield getCode(symbol.filePath, symbol.id);
+      const code: string = yield getCode(symbol.filePath, symbol.id);
       const documentSymbol = DocumentSymbol.create({
         id: symbol.id,
         name: symbol.name,
@@ -122,50 +122,50 @@ export const DependencyGraph = types
           ]);
         }
 
-        const code = yield getCode(symbol.filePath, symbol.id);
-        self.symbols.set(
-          symbol.id,
-          DocumentSymbol.create({
-            id: symbol.id,
-            name: symbol.name,
-            filePath: symbol.filePath || "",
-            kind: symbol.kind,
+        const code: string = yield getCode(symbol.filePath, symbol.id);
+        const symbolForBubble = DocumentSymbol.create({
+          id: symbol.id,
+          name: symbol.name,
+          filePath: symbol.filePath || "",
+          kind: symbol.kind,
+          location: {
+            start: {
+              column: symbol?.location?.start?.column || 0,
+              line: symbol?.location?.start?.line || 0
+            },
+            end: {
+              column: symbol?.location?.end?.column || 0,
+              line: symbol?.location?.end?.line || 0
+            }
+          },
+          code,
+          createdForMarker: {
+            markerId: clickedMarker.id,
+            symbolId: id
+          },
+          markers: (symbol.markers || []).map(marker => ({
+            id: nanoid(),
+            filePath: marker.filePath,
+            name: marker.name,
             location: {
               start: {
-                column: symbol?.location?.start?.column || 0,
-                line: symbol?.location?.start?.line || 0
+                column: marker?.location?.start?.column || 0,
+                line: marker?.location?.start?.line || 0
               },
               end: {
-                column: symbol?.location?.end?.column || 0,
-                line: symbol?.location?.end?.line || 0
+                column: marker?.location?.end?.column || 0,
+                line: marker?.location?.end?.line || 0
               }
             },
-            code,
-            createdForMarker: {
-              markerId: clickedMarker.id,
-              symbolId: id
-            },
-            markers: (symbol.markers || []).map(marker => ({
-              id: nanoid(),
-              filePath: marker.filePath,
-              name: marker.name,
-              location: {
-                start: {
-                  column: marker?.location?.start?.column || 0,
-                  line: marker?.location?.start?.line || 0
-                },
-                end: {
-                  column: marker?.location?.end?.column || 0,
-                  line: marker?.location?.end?.line || 0
-                }
-              },
-              color: ""
-            })),
-            color: nextColor,
-            x,
-            y
-          })
-        );
+            color: ""
+          })),
+          color: nextColor,
+          x,
+          y
+        });
+        symbolForBubble.setPosition(x, y);
+
+        self.symbols.set(symbol.id, symbolForBubble);
       }
     });
 

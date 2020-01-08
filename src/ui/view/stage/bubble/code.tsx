@@ -95,12 +95,6 @@ function Code({ symbol, charWidth }: Props) {
       );
 
       if (markerElement[0]) {
-        console.log(
-          "Marker loc",
-          markerElement[0].getBoundingClientRect().x,
-          markerElement[0].getBoundingClientRect().y
-        );
-        console.log(e.event.posx, e.event.posy);
         dependencyGraph.addBubble(
           symbol.id,
           row,

@@ -52,12 +52,7 @@ function Stage() {
       height="calc(100vh - 100px)"
       overflow="auto"
     >
-      <Flex
-        className="background"
-        ref={internalElement}
-        position="relative"
-        flexGrow={1}
-      >
+      <Flex ref={internalElement} position="relative" flexGrow={1}>
         <Bubble />
       </Flex>
     </Flex>

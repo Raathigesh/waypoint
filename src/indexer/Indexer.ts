@@ -47,6 +47,16 @@ export default class Indexer {
     }
   }
 
+  public indexFile(path: string) {
+    if (!this.project) {
+      return;
+    }
+
+    const sourceFile = new SourceFile();
+    this.files[path] = sourceFile;
+    sourceFile.parse(path, this.project.pathAlias, this.project.root);
+  }
+
   public search(query: string) {
     try {
       const results: ESModuleItem[] = [];

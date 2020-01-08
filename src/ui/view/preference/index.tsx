@@ -96,6 +96,15 @@ function Preference({ isOpen, onClose }: Props) {
           >
             Start Indexing
           </Button>
+          <Divider />
+          <Heading size="sm">Font size</Heading>
+          <Text>Change the font size of the text</Text>
+          <Input
+            value={""}
+            placeholder="Font size"
+            size="sm"
+            onChange={(e: any) => {}}
+          />
         </DrawerBody>
 
         <DrawerFooter>

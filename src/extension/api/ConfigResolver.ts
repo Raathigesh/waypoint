@@ -24,4 +24,19 @@ export default class ConfigResolver {
   public getPathMap() {
     return this.conf.get(this.getKeyForPathMaps()) || "";
   }
+
+  getKeyForFontSize() {
+    return "fontsize";
+  }
+
+  @Mutation(returns => String)
+  public setFontSize(@Arg("value") value: string) {
+    this.conf.set(this.getKeyForFontSize(), value);
+    return "";
+  }
+
+  @Query(returns => String)
+  public getFontSize() {
+    return this.conf.get(this.getKeyForFontSize()) || "";
+  }
 }

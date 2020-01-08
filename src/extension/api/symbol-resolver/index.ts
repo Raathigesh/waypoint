@@ -25,6 +25,9 @@ export default class SymbolsResolver {
         this.activeEditorPath = e.document.fileName;
       }
     });
+    vscode.workspace.onDidSaveTextDocument(e => {
+      indexer.indexFile(e.fileName);
+    });
   }
 
   @Query(returns => GqlSearchResult)
