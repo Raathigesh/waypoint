@@ -7,7 +7,6 @@ import "monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution"
 import { dependencyGraphStore, appStore } from "ui/store";
 import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
-import { Rnd } from "react-rnd";
 import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 import { css, Global } from "@emotion/core";
 import { X } from "react-feather";
@@ -46,7 +45,8 @@ function Code({ symbol, charWidth }: Props) {
     return `${str}
 
     .${marker.className} {
-      background-color: ${marker.color || "#eaeaea"};
+      border: 1px solid ${marker.color || "#eaeaea"};
+      border-radius: 2px;
       cursor: pointer;
     }
 
@@ -124,7 +124,6 @@ function Code({ symbol, charWidth }: Props) {
         backgroundColor="white"
         flexDirection="column"
         borderRadius="5px"
-        border={`1px solid ${symbol.color}`}
         boxShadow="
       0 0px 1.5px rgba(0, 0, 0, 0.028),
       0 0px 5.1px rgba(0, 0, 0, 0.042),
@@ -132,21 +131,23 @@ function Code({ symbol, charWidth }: Props) {
     "
       >
         <Flex
-          cursor="pointer"
+          cursor="grab"
           alignItems="center"
-          backgroundColor="gray.100"
+          backgroundColor={symbol.color || "rgba(0, 0, 0, 0.028)"}
           justifyContent="flex-end"
-          borderRadius="5px 0px 0px 0px"
+          borderRadius="5px 5px 0px 0px"
+          padding="3px"
         >
           <Flex
             ref={handle}
-            cursor="move"
+            cursor="grab"
             className="handle"
             width="100%"
             height="15px"
           />
           <X
-            size="15px"
+            cursor="pointer"
+            size="12px"
             onClick={e => {
               dependencyGraph.removeNode(symbol.id);
               e.stopPropagation();

@@ -39,10 +39,10 @@ export async function setFontSize(fontSize: string) {
 export async function getFontSize() {
   const query = gql`
     query {
-      setFontSize
+      getFontSize
     }
   `;
 
-  const result = await sendQuery<{ setFontSize: string }>(query, {});
-  return result.setFontSize;
+  const result = await sendQuery<{ getFontSize: string }>(query, {});
+  return result.getFontSize;
 }

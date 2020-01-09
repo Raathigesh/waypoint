@@ -21,9 +21,11 @@ function Stage() {
       y: e.clientY
     };
     shouldMove.current = true;
+    element.current.style.userSelect = "none";
   };
 
   const handleMouseUp = () => {
+    element.current.style.userSelect = "inherit";
     shouldMove.current = false;
     dependencyGraph.finalizePosition();
   };

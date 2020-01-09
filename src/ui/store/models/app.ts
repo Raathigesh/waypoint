@@ -1,6 +1,7 @@
 import { types, flow, applySnapshot } from "mobx-state-tree";
 import { getProjectInfo } from "../services";
 import { GqlProjectInfo } from "entities/GqlProjectInfo";
+import { setFontSize, getFontSize } from "../services/config";
 
 export const App = types
   .model("App", {
@@ -12,11 +13,17 @@ export const App = types
   .actions(self => {
     const afterCreate = flow(function*() {
       const project: GqlProjectInfo = yield getProjectInfo();
+      const fontSize = yield getFontSize();
       self.separator = project.separator;
       self.root = project.root;
       self.fontFamily = project.fontFamily;
-      self.fontSize = project.fontSize;
+      self.fontSize = Number(fontSize) || project.fontSize;
     });
 
-    return { afterCreate };
+    const changeFontSize = (fontSize: number) => {
+      self.fontSize = fontSize;
+      setFontSize((fontSize || 0).toString());
+    };
+
+    return { afterCreate, changeFontSize };
   });

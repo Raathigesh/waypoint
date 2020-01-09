@@ -16,7 +16,7 @@ import {
   Heading,
   Text
 } from "@chakra-ui/core";
-import { pathMapStore, indexerStatusStore } from "ui/store";
+import { pathMapStore, indexerStatusStore, appStore } from "ui/store";
 import { Coffee } from "react-feather";
 
 interface Props {
@@ -26,6 +26,7 @@ interface Props {
 
 function Preference({ isOpen, onClose }: Props) {
   const pathMap = useContext(pathMapStore);
+  const app = useContext(appStore);
   const indexerStatus = useContext(indexerStatusStore);
 
   const handleUpdate = (id: string, alias: string, path: string) => {
@@ -100,10 +101,13 @@ function Preference({ isOpen, onClose }: Props) {
           <Heading size="sm">Font size</Heading>
           <Text>Change the font size of the text</Text>
           <Input
-            value={""}
+            value={app.fontSize}
             placeholder="Font size"
             size="sm"
-            onChange={(e: any) => {}}
+            type="number"
+            onChange={(e: any) => {
+              app.changeFontSize(Number(e.target.value));
+            }}
           />
         </DrawerBody>
 
