@@ -3,6 +3,9 @@ import * as nanoid from "nanoid";
 import { DocumentSymbol, Marker } from "./DocumentSymbol";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { getMarkers, getCode } from "../services/search";
+import { File } from "./File";
+import { getFile } from "../services/file";
+import { GqlFile } from "entities/GqlFile";
 
 const NodeLink = types.model("NodeLink", {
   target: types.string
@@ -11,6 +14,7 @@ const NodeLink = types.model("NodeLink", {
 export const DependencyGraph = types
   .model("DependencyGraph", {
     symbols: types.map(DocumentSymbol),
+    files: types.map(File),
     links: types.map(types.array(NodeLink)),
     colors: types.array(types.string),
     currentColorIndex: types.number,
@@ -203,6 +207,10 @@ export const DependencyGraph = types
       }
     };
 
+    const removeFile = (path: string) => {
+      self.files.delete(path);
+    };
+
     const setIsBubbleDragging = (flag: boolean) => {
       self.isBubbleDragging = flag;
     };
@@ -217,6 +225,16 @@ export const DependencyGraph = types
           symbol.tempY = nextY;
         }
       });
+
+      self.files.forEach(file => {
+        if (file) {
+          const nextX = (file.tempX || 0) + deltaX;
+          const nextY = (file.tempY || 0) + deltaY;
+          (file.ref as any).current.style.transform = `translate(${nextX}px, ${nextY}px)`;
+          file.tempX = nextX;
+          file.tempY = nextY;
+        }
+      });
     };
 
     const finalizePosition = () => {
@@ -225,12 +243,43 @@ export const DependencyGraph = types
       });
     };
 
+    const addFile = flow(function*(filePath: string) {
+      const gqlFile: GqlFile = yield getFile(filePath);
+
+      self.files.set(
+        filePath,
+        File.create({
+          filePath: gqlFile.filePath,
+          symbols: gqlFile.symbols.map(symbol =>
+            DocumentSymbol.create({
+              id: symbol.id,
+              name: symbol.name,
+              filePath: symbol.filePath || "",
+              kind: symbol.kind,
+              location: {
+                start: {
+                  column: symbol?.location?.start?.column || 0,
+                  line: symbol?.location?.start?.line || 0
+                },
+                end: {
+                  column: symbol?.location?.end?.column || 0,
+                  line: symbol?.location?.end?.line || 0
+                }
+              }
+            })
+          )
+        })
+      );
+    });
+
     return {
       setCurrentSymbol,
       addBubble,
       removeNode,
       setIsBubbleDragging,
       moveSymbols,
-      finalizePosition
+      finalizePosition,
+      addFile,
+      removeFile
     };
   });

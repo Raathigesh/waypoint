@@ -10,6 +10,7 @@ import { sep } from "path";
 import * as vscode from "vscode";
 import { GqlProjectInfo } from "entities/GqlProjectInfo";
 import { existsSync } from "fs";
+import { GqlFile } from "entities/GqlFile";
 
 @Service()
 @Resolver(GqlSearchResult)
@@ -96,6 +97,11 @@ export default class SymbolsResolver {
     }
   }
 
+  @Mutation(returns => [String])
+  public async searchFile(@Arg("query") query: string) {
+    return this.indexer.searchFile(query).map((item: any) => item.target);
+  }
+
   @Query(returns => GqlSymbolInformation)
   public async getSymbolWithMarkers(
     @Arg("path") path: string,
@@ -131,6 +137,25 @@ export default class SymbolsResolver {
         });
     }
     return [];
+  }
+
+  @Query(returns => GqlFile)
+  public async getFile(@Arg("path") path: string) {
+    const gqlFile = new GqlFile();
+    const file = this.indexer.files[path];
+    if (file) {
+      gqlFile.filePath = path;
+      gqlFile.symbols = file.symbols.map(symbol => {
+        const item = new GqlSymbolInformation();
+        item.filePath = symbol.path;
+        item.kind = symbol.kind;
+        item.name = symbol.name;
+        item.id = symbol.id;
+        return item;
+      });
+    }
+
+    return gqlFile;
   }
 
   @Query(returns => String)

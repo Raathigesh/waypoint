@@ -1,4 +1,10 @@
-import React, { useContext, useRef, useState, useEffect } from "react";
+import React, {
+  useContext,
+  useRef,
+  useState,
+  useEffect,
+  Fragment
+} from "react";
 import { Flex, Link, Text, Tooltip, Icon } from "@chakra-ui/core";
 import { editor } from "monaco-editor";
 import MonacoEditor from "react-monaco-editor";
@@ -9,7 +15,7 @@ import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
 import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 import { css, Global } from "@emotion/core";
-import { X } from "react-feather";
+import { X, Minimize2, Maximize2 } from "react-feather";
 import { openFile } from "ui/store/services/file";
 import LazyTheme from "monaco-themes/themes/LAZY.json";
 import Draggable from "./Dragabble";
@@ -28,6 +34,7 @@ function Code({ symbol, charWidth }: Props) {
   const ref: any = useRef(null);
   const editorRef: any = useRef(null);
   const handle: any = useRef(null);
+  const [collapsed, setCollapsed] = useState(false);
 
   const markers = symbol?.markers.map(marker => ({
     startRow: marker.location?.start.line || 0,
@@ -143,8 +150,31 @@ function Code({ symbol, charWidth }: Props) {
             cursor="grab"
             className="handle"
             width="100%"
-            height="15px"
-          />
+            marginLeft="5px"
+            fontSize="13px"
+          >
+            {symbol.name}
+          </Flex>
+          {!collapsed && (
+            <Minimize2
+              cursor="pointer"
+              size="12px"
+              onClick={e => {
+                setCollapsed(true);
+                e.stopPropagation();
+              }}
+            />
+          )}
+          {collapsed && (
+            <Maximize2
+              cursor="pointer"
+              size="12px"
+              onClick={e => {
+                setCollapsed(false);
+                e.stopPropagation();
+              }}
+            />
+          )}
           <X
             cursor="pointer"
             size="12px"
@@ -154,58 +184,62 @@ function Code({ symbol, charWidth }: Props) {
             }}
           />
         </Flex>
-        <Flex flexDirection="column">
-          <Global
-            styles={css`
-              ${cssString}
-            `}
-          />
-          <MonacoEditor
-            ref={editorRef}
-            width={`${(charWidth + 2) *
-              getMaxLineLength((symbol && symbol?.code) || "")}px`}
-            height={(symbol.code || "").split("\n").length * 20}
-            language="javascript"
-            editorWillMount={handleEditorWillMount}
-            editorDidMount={handleEditorDidMount}
-            value={symbol.code}
-            options={{
-              readOnly: true,
-              lineNumbers: "off",
-              fontFamily: projectInfo.fontFamily,
-              fontSize: projectInfo.fontSize,
-              minimap: {
-                enabled: false
-              }
-            }}
-          />
-        </Flex>
-        <Flex>
-          <Link
-            fontSize={11}
-            whiteSpace="nowrap"
-            padding="3px"
-            onClick={() => {
-              console.log(symbol);
-              openFile(symbol.filePath, symbol.location as any);
-            }}
-          >
-            <Text
-              isTruncated
-              style={{ direction: "rtl" }}
-              width={`${(charWidth + 2) *
-                getMaxLineLength((symbol && symbol?.code) || "")}px`}
-            >
-              <Tooltip
-                aria-label="file path"
+        {!collapsed && (
+          <Fragment>
+            <Flex flexDirection="column">
+              <Global
+                styles={css`
+                  ${cssString}
+                `}
+              />
+              <MonacoEditor
+                ref={editorRef}
+                width={`${(charWidth + 2) *
+                  getMaxLineLength((symbol && symbol?.code) || "")}px`}
+                height={(symbol.code || "").split("\n").length * 20}
+                language="javascript"
+                editorWillMount={handleEditorWillMount}
+                editorDidMount={handleEditorDidMount}
+                value={symbol.code}
+                options={{
+                  readOnly: true,
+                  lineNumbers: "off",
+                  fontFamily: projectInfo.fontFamily,
+                  fontSize: projectInfo.fontSize,
+                  minimap: {
+                    enabled: false
+                  }
+                }}
+              />
+            </Flex>
+            <Flex>
+              <Link
                 fontSize={11}
-                label={symbol.filePath.replace(projectInfo.root, "")}
+                whiteSpace="nowrap"
+                padding="3px"
+                onClick={() => {
+                  console.log(symbol);
+                  openFile(symbol.filePath, symbol.location as any);
+                }}
               >
-                {symbol.filePath.replace(projectInfo.root, "")}
-              </Tooltip>
-            </Text>
-          </Link>
-        </Flex>
+                <Text
+                  isTruncated
+                  style={{ direction: "rtl" }}
+                  width={`${(charWidth + 2) *
+                    getMaxLineLength((symbol && symbol?.code) || "")}px`}
+                >
+                  <Tooltip
+                    aria-label="file path"
+                    fontSize={11}
+                    label={symbol.filePath.replace(projectInfo.root, "")}
+                  >
+                    {symbol.filePath.replace(projectInfo.root, "")}
+                  </Tooltip>
+                </Text>
+              </Link>
+            </Flex>
+          </Fragment>
+        )}
       </Flex>
     </Draggable>
   );

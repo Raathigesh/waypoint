@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, Fragment } from "react";
 import { observer } from "mobx-react-lite";
 import { Flex, IconButton, useDisclosure } from "@chakra-ui/core";
-import Search from "./SearchBar";
 import { indexerStatusStore } from "../store";
 import Welcome from "./welcome";
 import Preference from "./preference";
@@ -19,15 +18,16 @@ function App() {
       <Welcome indexerStatus={indexerStatus} onOpenPreference={onOpen} />
       {indexerStatus.status === "indexed" && (
         <Fragment>
-          <Flex width="100%" zIndex={5}>
-            <Search />
-            <IconButton
-              onClick={onOpen}
-              aria-label="Settings"
-              icon="settings"
-              marginLeft="10px"
-            />
-          </Flex>
+          <IconButton
+            position="fixed"
+            right="10px"
+            top="10px"
+            onClick={onOpen}
+            aria-label="Settings"
+            icon="settings"
+            marginLeft="10px"
+            zIndex={100}
+          />
 
           <Stage />
         </Fragment>

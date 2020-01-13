@@ -1,10 +1,13 @@
 import React, { useRef, useEffect, useContext } from "react";
 import { dependencyGraphStore } from "ui/store";
-import { Instance } from "mobx-state-tree";
-import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 
 interface Props {
-  symbol: Instance<typeof DocumentSymbol>;
+  symbol: {
+    setPosition: (x: number, y: number) => void;
+    setRef: (ref: any) => void;
+    x: number | undefined;
+    y: number | undefined;
+  };
   handle: any;
   children: any;
   onEnd: any;

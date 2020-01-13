@@ -3,6 +3,7 @@ import { observer } from "mobx-react-lite";
 import { Flex } from "@chakra-ui/core";
 import Bubble from "./bubble";
 import { dependencyGraphStore } from "ui/store";
+import SearchDialog from "../search";
 
 function Stage() {
   const initialClick: any = useRef(null);
@@ -50,13 +51,14 @@ function Stage() {
       onMouseDown={handleMouseDown}
       onMouseUp={handleMouseUp}
       onMouseMove={handleMouseMove}
-      cursor={shouldMove ? "move" : "inherit"}
-      height="calc(100vh - 100px)"
+      cursor={shouldMove ? "grab" : "inherit"}
+      height="calc(100vh)"
       overflow="auto"
     >
       <Flex ref={internalElement} position="relative" flexGrow={1}>
         <Bubble />
       </Flex>
+      <SearchDialog />
     </Flex>
   );
 }

@@ -80,6 +80,13 @@ export default class Indexer {
     }
   }
 
+  public searchFile(query: string) {
+    const filteredResults = fuzzysort.go(query, Object.keys(this.files), {
+      limit: 100
+    });
+    return filteredResults;
+  }
+
   public getSymbolWithMarkers(path: string, name: string) {
     const file = this.files[path];
     const symbol = file.symbols.find(symbol => symbol.name === name);

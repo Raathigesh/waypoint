@@ -6,7 +6,7 @@ import {
   GqlSymbolInformation
 } from "entities/GqlSymbolInformation";
 
-export async function search(query: string) {
+export async function searchSymbol(query: string) {
   const mutation = gql`
     mutation Search($query: String!) {
       search(query: $query) {
@@ -38,6 +38,19 @@ export async function search(query: string) {
     items: results.search.items,
     errorMessage: results.search.errorMessage
   };
+}
+
+export async function searchFile(query: string) {
+  const mutation = gql`
+    mutation SearchFile($query: String!) {
+      searchFile(query: $query)
+    }
+  `;
+
+  const results = await sendMutation<{ searchFile: string[] }>(mutation, {
+    query
+  });
+  return results.searchFile;
 }
 
 export async function getMarkers(path: string, name: string) {
