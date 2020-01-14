@@ -32,6 +32,14 @@
           "dark": "./icons/bubbles.png",
           "light": "./icons/bubbles.png"
         }
+      },
+      {
+        "command": "js-bubbles.addFile",
+        "title": "Add file to stage"
+      },
+      {
+        "command": "js-bubbles.addSymbol",
+        "title": "Add symbol to stage"
       }
     ],
     "menus": {
@@ -40,6 +48,16 @@
           "command": "js-bubbles.showPanel",
           "alt": "js-bubbles.showPanel",
           "group": "navigation"
+        }
+      ],
+      "editor/context": [
+        {
+          "command": "js-bubbles.addFile",
+          "alt": "js-bubbles.addFile"
+        },
+        {
+          "command": "js-bubbles.addSymbol",
+          "alt": "js-bubbles.addSymbol"
         }
       ]
     }

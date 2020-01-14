@@ -6,6 +6,7 @@ import { getUIMessenger } from "common/messaging/ui";
 import { Container } from "typedi";
 import Services from "./services";
 import { startApiServer } from "./api";
+import { pubSub } from "common/pubSub";
 
 let isServerRunning = false;
 const port = 4545;
@@ -18,10 +19,26 @@ export function activate(context: vscode.ExtensionContext) {
     }
   );
 
+  let disposableAddToStage = vscode.commands.registerCommand(
+    "js-bubbles.addFile",
+    e => {
+      pubSub.publish("js-bubbles.addFile", "js-bubbles.addFile");
+    }
+  );
+
+  let disposableAddSymbolToStage = vscode.commands.registerCommand(
+    "js-bubbles.addSymbol",
+    e => {
+      pubSub.publish("js-bubbles.addSymbol", "js-bubbles.addSymbol");
+    }
+  );
+
   if (process.env.dev) {
     initialize(context);
   }
   context.subscriptions.push(disposable);
+  context.subscriptions.push(disposableAddToStage);
+  context.subscriptions.push(disposableAddSymbolToStage);
 }
 
 export function deactivate() {}

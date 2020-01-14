@@ -1,4 +1,12 @@
-import { Arg, Mutation, Query, Resolver, Args } from "type-graphql";
+import {
+  Arg,
+  Mutation,
+  Query,
+  Resolver,
+  Args,
+  Subscription,
+  Root
+} from "type-graphql";
 import { ContainerInstance, Service } from "typedi";
 import Indexer from "indexer/Indexer";
 import Project from "indexer/Project";
@@ -11,11 +19,14 @@ import * as vscode from "vscode";
 import { GqlProjectInfo } from "entities/GqlProjectInfo";
 import { existsSync } from "fs";
 import { GqlFile } from "entities/GqlFile";
+import { pubSub } from "common/pubSub";
+import { GqlLocation } from "entities/GqlLocation";
 
 @Service()
 @Resolver(GqlSearchResult)
 export default class SymbolsResolver {
   private activeEditorPath: string | undefined;
+  private activeEditor: vscode.TextEditor | undefined;
 
   constructor(
     private readonly container: ContainerInstance,
@@ -24,6 +35,7 @@ export default class SymbolsResolver {
     vscode.window.onDidChangeActiveTextEditor(e => {
       if (e && existsSync(e.document.fileName)) {
         this.activeEditorPath = e.document.fileName;
+        this.activeEditor = e;
       }
     });
     vscode.workspace.onDidSaveTextDocument(e => {
@@ -140,6 +152,55 @@ export default class SymbolsResolver {
   }
 
   @Query(returns => GqlFile)
+  public async getActiveFile() {
+    const gqlFile = new GqlFile();
+    if (!this.activeEditorPath) {
+      return gqlFile;
+    }
+
+    const file = this.indexer.files[this.activeEditorPath];
+    if (file) {
+      gqlFile.filePath = file.path;
+      gqlFile.symbols = file.symbols.map(symbol => {
+        const item = new GqlSymbolInformation();
+        item.filePath = symbol.path;
+        item.kind = symbol.kind;
+        item.name = symbol.name;
+        item.id = symbol.id;
+        return item;
+      });
+    }
+
+    return gqlFile;
+  }
+
+  @Query(returns => GqlSymbolInformation)
+  public async getActiveSymbolForFile() {
+    const item = new GqlSymbolInformation();
+    if (this.activeEditorPath && this.activeEditor?.selection.active) {
+      const activeFile = this.indexer.files[this.activeEditorPath];
+      const location: GqlLocation = {
+        start: {
+          line: this.activeEditor?.selection.active.line,
+          column: this.activeEditor?.selection.active.character
+        },
+        end: {
+          line: this.activeEditor?.selection.active.line,
+          column: this.activeEditor?.selection.active.character
+        }
+      };
+      const symbol = activeFile.getSymbolInPosition(location);
+      if (symbol) {
+        item.filePath = symbol.path;
+        item.kind = symbol.kind;
+        item.name = symbol.name;
+        item.id = symbol.id;
+      }
+    }
+    return item;
+  }
+
+  @Query(returns => GqlFile)
   public async getFile(@Arg("path") path: string) {
     const gqlFile = new GqlFile();
     const file = this.indexer.files[path];
@@ -161,5 +222,12 @@ export default class SymbolsResolver {
   @Query(returns => String)
   public async getCode(@Arg("path") path: string, @Arg("id") id: string) {
     return this.indexer.getCode(path, id);
+  }
+
+  @Subscription(() => String, {
+    topics: ["js-bubbles.addFile", "js-bubbles.addSymbol"]
+  })
+  events(@Root() eventName: string) {
+    return eventName;
   }
 }

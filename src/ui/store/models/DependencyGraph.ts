@@ -243,11 +243,9 @@ export const DependencyGraph = types
       });
     };
 
-    const addFile = flow(function*(filePath: string) {
-      const gqlFile: GqlFile = yield getFile(filePath);
-
+    const addFileMap = (gqlFile: GqlFile) => {
       self.files.set(
-        filePath,
+        gqlFile.filePath,
         File.create({
           filePath: gqlFile.filePath,
           symbols: gqlFile.symbols.map(symbol =>
@@ -270,6 +268,11 @@ export const DependencyGraph = types
           )
         })
       );
+    };
+
+    const addFile = flow(function*(filePath: string) {
+      const gqlFile: GqlFile = yield getFile(filePath);
+      addFileMap(gqlFile);
     });
 
     return {
@@ -280,6 +283,7 @@ export const DependencyGraph = types
       moveSymbols,
       finalizePosition,
       addFile,
-      removeFile
+      removeFile,
+      addFileMap
     };
   });

@@ -70,6 +70,12 @@ export default class SourceFile {
     }
   }
 
+  public getSymbolInPosition(position: GqlLocation) {
+    return this.symbols.find(
+      sym => sym.location && this.isInLocation(sym.location, position)
+    );
+  }
+
   private extractFunctionDeclaration(path: NodePath<FunctionDeclaration>) {
     const name = path.node.id.name;
     this.createSymbol(name, path.node.type, path.node.loc);

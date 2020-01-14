@@ -2,6 +2,7 @@ import { pipe, subscribe } from "wonka";
 import { getClient } from "common/messaging/graphql";
 import { createRequest } from "urql";
 import { DocumentNode } from "graphql";
+import gql from "graphql-tag";
 
 export function sendQuery<T>(query: DocumentNode, variables: object) {
   const client = getClient(undefined);
@@ -36,4 +37,21 @@ export function sendMutation<T>(query: DocumentNode, variables: object) {
       })
     );
   });
+}
+
+export function listenToMessages<T>(callBack: (eventName: string) => void) {
+  const client = getClient(undefined);
+
+  const subscription = gql`
+    subscription {
+      events
+    }
+  `;
+
+  pipe(
+    client.executeSubscription(createRequest(subscription)) as any,
+    subscribe(({ data, error }: any) => {
+      callBack(data.events);
+    })
+  );
 }
