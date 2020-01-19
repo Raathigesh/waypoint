@@ -39,4 +39,19 @@ export default class ConfigResolver {
   public getFontSize() {
     return this.conf.get(this.getKeyForFontSize()) || "";
   }
+
+  getKeyForDirectories() {
+    return "directories";
+  }
+
+  @Mutation(returns => String)
+  public setDirectories(@Arg("value") value: string) {
+    this.conf.set(this.getKeyForDirectories(), value);
+    return "";
+  }
+
+  @Query(returns => String)
+  public getDirectories() {
+    return this.conf.get(this.getKeyForDirectories()) || "[]";
+  }
 }

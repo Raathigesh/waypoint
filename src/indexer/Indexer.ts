@@ -6,9 +6,9 @@ import Project from "./Project";
 import SourceFile from "./SourceFile";
 import { getFileType } from "indexer/util";
 import ESModuleItem from "./ESModuleItem";
-import { readFile } from "fs";
+import { readFile, Stats } from "fs";
 import { findAbsoluteFilePathWhichExists } from "./fileResolver";
-import { dirname } from "path";
+import { dirname, join } from "path";
 
 @Service()
 export default class Indexer {
@@ -161,18 +161,28 @@ export default class Indexer {
   }
 
   private async readProjectFiles(root: string) {
-    return new Promise<string[]>((resolve, reject) => {
-      recursiveReadDir(
-        root,
-        ["**/node_modules/**"],
-        (err: Error, files: string[]) => {
+    if (this.project) {
+      const indexableDirectories = this.project.directories.map(directory =>
+        join(this.project?.root || "", directory)
+      );
+
+      function ignoreFunc(file: string, stats: Stats) {
+        return (
+          indexableDirectories.find(dir => file.includes(dir)) === undefined
+        );
+      }
+
+      return new Promise<string[]>((resolve, reject) => {
+        recursiveReadDir(root, [ignoreFunc], (err: Error, files: string[]) => {
           if (err) {
             reject(err);
           } else {
             resolve(files);
           }
-        }
-      );
-    });
+        });
+      });
+    }
+
+    return [];
   }
 }

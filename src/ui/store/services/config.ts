@@ -46,3 +46,26 @@ export async function getFontSize() {
   const result = await sendQuery<{ getFontSize: string }>(query, {});
   return result.getFontSize;
 }
+
+export async function setDirectories(directories: string[]) {
+  const query = gql`
+    mutation SetDirectories($value: String!) {
+      setDirectories(value: $value)
+    }
+  `;
+
+  await sendMutation(query, {
+    value: JSON.stringify(directories)
+  });
+}
+
+export async function getDirectories() {
+  const query = gql`
+    query {
+      getDirectories
+    }
+  `;
+
+  const result = await sendQuery<{ getDirectories: string }>(query, {});
+  return JSON.parse(result.getDirectories) as string[];
+}

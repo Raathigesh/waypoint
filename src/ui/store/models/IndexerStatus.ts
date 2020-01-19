@@ -1,6 +1,7 @@
 import { types, flow, getEnv } from "mobx-state-tree";
 import { indexerStatus, startIndexing } from "../services";
 import { PathMap } from "./PathMap";
+import { App } from "./app";
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const IndexerStatus = types
@@ -26,10 +27,12 @@ export const IndexerStatus = types
     const initiateIndexing = flow(function*() {
       const env: {
         pathMap: typeof PathMap.Type;
+        app: typeof App.Type;
       } = getEnv(self);
 
       startIndexing(
-        env.pathMap.items.map(item => ({ alias: item.alias, path: item.path }))
+        env.pathMap.items.map(item => ({ alias: item.alias, path: item.path })),
+        [...env.app.directories.values()]
       );
       self.status = "indexing";
       pollForStatus();

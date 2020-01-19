@@ -49,7 +49,7 @@ export default class SymbolsResolver {
   }
 
   @Mutation(returns => String)
-  public async reindex(@Args() { items }: ReIndexArgs) {
+  public async reindex(@Args() { items, directories }: ReIndexArgs) {
     let pathAlias = {};
     if (items) {
       pathAlias = items.reduce(
@@ -63,7 +63,8 @@ export default class SymbolsResolver {
 
     const project: Project = {
       root: process.env.projectRoot || "",
-      pathAlias
+      pathAlias,
+      directories
     };
     await this.indexer.parse(project);
     return "OK";

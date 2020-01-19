@@ -41,6 +41,46 @@ function Preference({ isOpen, onClose }: Props) {
         <DrawerHeader>Preference</DrawerHeader>
 
         <DrawerBody>
+          <Heading size="sm">Directories to index</Heading>
+          <Text>Relative to workspace root</Text>
+          <Flex flexGrow={1} flexDirection="column">
+            {[...app.directories.entries()].map(([id, directory]) => {
+              return (
+                <Flex key={id} alignItems="center" marginBottom="5px">
+                  <Input
+                    value={directory}
+                    placeholder="Directory"
+                    size="sm"
+                    marginRight="5px"
+                    onKeyDown={(e: any) => e.stopPropagation()}
+                    onChange={(e: any) => {
+                      app.changeDirectory(id, e.target.value);
+                    }}
+                  />
+
+                  <IconButton
+                    marginLeft="5px"
+                    aria-label="Search database"
+                    size="xs"
+                    icon="close"
+                    onClick={() => app.removeDirectory(id)}
+                  />
+                </Flex>
+              );
+            })}
+          </Flex>
+          <Flex justifyContent="flex-end" marginTop="5px" marginBottom="5px">
+            <Button
+              rightIcon="plus-square"
+              variant="outline"
+              size="xs"
+              onClick={() => app.addDirectory("")}
+            >
+              Add another
+            </Button>
+          </Flex>
+          <Divider />
+
           <Heading size="sm">Import path resolution</Heading>
           <Text>Remap your module alias</Text>
           <Flex flexGrow={1} flexDirection="column">
@@ -86,6 +126,7 @@ function Preference({ isOpen, onClose }: Props) {
             </Button>
           </Flex>
           <Divider />
+
           <Heading size="sm">Re-indexer</Heading>
           <Text>Run the code indexer</Text>
           <Button

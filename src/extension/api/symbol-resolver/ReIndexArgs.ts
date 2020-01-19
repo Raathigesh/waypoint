@@ -13,4 +13,7 @@ export class PathMapItem {
 export class ReIndexArgs {
   @Field(type => [PathMapItem], { nullable: true })
   items?: PathMapItem[];
+
+  @Field(returns => [String], { nullable: true })
+  directories: string[] = [];
 }

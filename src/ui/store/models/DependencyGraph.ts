@@ -6,6 +6,7 @@ import { getMarkers, getCode } from "../services/search";
 import { File } from "./File";
 import { getFile } from "../services/file";
 import { GqlFile } from "entities/GqlFile";
+import { Note } from "./Note";
 
 const NodeLink = types.model("NodeLink", {
   target: types.string
@@ -15,6 +16,7 @@ export const DependencyGraph = types
   .model("DependencyGraph", {
     symbols: types.map(DocumentSymbol),
     files: types.map(File),
+    notes: types.map(Note),
     links: types.map(types.array(NodeLink)),
     colors: types.array(types.string),
     currentColorIndex: types.number,
@@ -235,6 +237,16 @@ export const DependencyGraph = types
           file.tempY = nextY;
         }
       });
+
+      self.notes.forEach(note => {
+        if (note) {
+          const nextX = (note.tempX || 0) + deltaX;
+          const nextY = (note.tempY || 0) + deltaY;
+          (note.ref as any).current.style.transform = `translate(${nextX}px, ${nextY}px)`;
+          note.tempX = nextX;
+          note.tempY = nextY;
+        }
+      });
     };
 
     const finalizePosition = () => {
@@ -275,6 +287,15 @@ export const DependencyGraph = types
       addFileMap(gqlFile);
     });
 
+    const addNote = () => {
+      const id = nanoid();
+      self.notes.set(id, Note.create({ id, x: 0, y: 0, color: "" }));
+    };
+
+    const removeNote = (id: string) => {
+      self.notes.delete(id);
+    };
+
     return {
       setCurrentSymbol,
       addBubble,
@@ -284,6 +305,8 @@ export const DependencyGraph = types
       finalizePosition,
       addFile,
       removeFile,
-      addFileMap
+      addFileMap,
+      addNote,
+      removeNote
     };
   });

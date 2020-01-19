@@ -1,247 +1,47 @@
-import React, {
-  useContext,
-  useRef,
-  useState,
-  useEffect,
-  Fragment
-} from "react";
-import { Flex, Link, Text, Tooltip, Icon } from "@chakra-ui/core";
-import { editor } from "monaco-editor";
-import MonacoEditor from "react-monaco-editor";
-import "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution";
-import "monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution";
+import React, { useContext } from "react";
 import { dependencyGraphStore, appStore } from "ui/store";
 import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
 import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
-import { css, Global } from "@emotion/core";
-import { X, Minimize2, Maximize2 } from "react-feather";
-import { openFile } from "ui/store/services/file";
-import LazyTheme from "monaco-themes/themes/LAZY.json";
-import Draggable from "./Dragabble";
+import Frame from "./Frame";
+import Symbol from "./symbol";
+import { getCharWidth } from "ui/util/view";
 
 const getMaxLineLength = (code: string) =>
   Math.max(...code.split("\n").map(line => line.length));
 
 interface Props {
   symbol: Instance<typeof DocumentSymbol>;
-  charWidth: number;
 }
 
-function Code({ symbol, charWidth }: Props) {
-  const dependencyGraph = useContext(dependencyGraphStore);
+function Code({ symbol }: Props) {
   const projectInfo = useContext(appStore);
-  const ref: any = useRef(null);
-  const editorRef: any = useRef(null);
-  const handle: any = useRef(null);
-  const [collapsed, setCollapsed] = useState(false);
-
-  const markers = symbol?.markers.map(marker => ({
-    startRow: marker.location?.start.line || 0,
-    startCol: marker.location?.start.column || 0,
-    endRow: marker.location?.end.line || 0,
-    endCol: marker.location?.end.column || 0,
-    className: `marker-${symbol.id}-${marker.location?.start.line || 0}-${marker
-      .location?.start.column || 0}-${marker.location?.end.line || 0}-${marker
-      .location?.end.column || 0}`,
-    type: "background",
-    color: marker.color
-  }));
-
-  const cssString = markers.reduce((str, marker) => {
-    return `${str}
-
-    .${marker.className} {
-      border: 1px solid ${marker.color || "#eaeaea"};
-      border-radius: 2px;
-      cursor: pointer;
-    }
-
-    .${marker.className}:hover {
-      background-color: #c2c2c2;
-    }
-    `;
-  }, "");
-
-  const handleEditorWillMount = (monaco: any) => {
-    monaco.editor.defineTheme("lazy", LazyTheme);
-    monaco.editor.setTheme("lazy");
-  };
-
-  const handleEditorDidMount = (editor: editor.ICodeEditor, monaco: any) => {
-    const decorators = symbol?.markers.map(marker => ({
-      range: new monaco.Range(
-        (marker.location?.start.line || 0) + 1,
-        (marker.location?.start.column || 0) + 1,
-        (marker.location?.end.line || 0) + 1,
-        (marker.location?.end.column || 0) + 1
-      ),
-      options: {
-        inlineClassName: `marker-${symbol.id}-${marker.location?.start.line ||
-          0}-${marker.location?.start.column || 0}-${marker.location?.end
-          .line || 0}-${marker.location?.end.column || 0}`
-      }
-    }));
-
-    editor.deltaDecorations([], decorators);
-
-    editor.onMouseDown((e: any) => {
-      const row = e.target.range.startLineNumber - 1;
-      const column = e.target.range.startColumn - 1;
-
-      const clickedMaker = markers.find(
-        marker =>
-          marker.startRow >= row &&
-          marker.endRow <= row &&
-          marker.startCol <= column &&
-          marker.endCol >= column
-      );
-
-      const markerElement = document.getElementsByClassName(
-        clickedMaker?.className || ""
-      );
-
-      if (markerElement[0]) {
-        dependencyGraph.addBubble(
-          symbol.id,
-          row,
-          column,
-          markerElement[0].getBoundingClientRect().x,
-          markerElement[0].getBoundingClientRect().y
-        );
-      }
-    });
-  };
+  const charWidth = getCharWidth(projectInfo.fontSize, projectInfo.fontFamily);
+  const dependencyGraph = useContext(dependencyGraphStore);
+  const width =
+    (charWidth + 2) * getMaxLineLength((symbol && symbol?.code) || "");
+  const height = (symbol.code || "").split("\n").length * 20;
 
   return (
-    <Draggable
-      symbol={symbol}
-      handle={handle}
-      onStart={() => dependencyGraph.setIsBubbleDragging(true)}
-      onEnd={(x: number, y: number) => {
+    <Frame
+      title={symbol.name}
+      x={symbol.x || 0}
+      y={symbol.y || 0}
+      headerColor={symbol.color || "rgba(0, 0, 0, 0.028)"}
+      onEnd={() => {
         dependencyGraph.setIsBubbleDragging(false);
       }}
+      onStart={() => dependencyGraph.setIsBubbleDragging(true)}
+      onRemove={() => {
+        dependencyGraph.removeNode(symbol.id);
+      }}
+      setPosition={symbol.setPosition}
+      setRef={symbol.setRef}
+      width={width + 10}
+      height={height + 50}
     >
-      <Flex
-        position="relative"
-        marginRight="55px"
-        marginBottom="25px"
-        ref={ref}
-        zIndex={3}
-        backgroundColor="white"
-        flexDirection="column"
-        borderRadius="5px"
-        boxShadow="
-      0 0px 1.5px rgba(0, 0, 0, 0.028),
-      0 0px 5.1px rgba(0, 0, 0, 0.042),
-      0 0px 23px rgba(0, 0, 0, 0.07)
-    "
-      >
-        <Flex
-          cursor="grab"
-          alignItems="center"
-          backgroundColor={symbol.color || "rgba(0, 0, 0, 0.028)"}
-          justifyContent="flex-end"
-          borderRadius="5px 5px 0px 0px"
-          padding="3px"
-        >
-          <Flex
-            ref={handle}
-            cursor="grab"
-            className="handle"
-            width="100%"
-            marginLeft="5px"
-            fontSize="13px"
-          >
-            {symbol.name}
-          </Flex>
-          {!collapsed && (
-            <Minimize2
-              cursor="pointer"
-              size="12px"
-              onClick={e => {
-                setCollapsed(true);
-                e.stopPropagation();
-              }}
-            />
-          )}
-          {collapsed && (
-            <Maximize2
-              cursor="pointer"
-              size="12px"
-              onClick={e => {
-                setCollapsed(false);
-                e.stopPropagation();
-              }}
-            />
-          )}
-          <X
-            cursor="pointer"
-            size="12px"
-            onClick={e => {
-              dependencyGraph.removeNode(symbol.id);
-              e.stopPropagation();
-            }}
-          />
-        </Flex>
-        {!collapsed && (
-          <Fragment>
-            <Flex flexDirection="column">
-              <Global
-                styles={css`
-                  ${cssString}
-                `}
-              />
-              <MonacoEditor
-                ref={editorRef}
-                width={`${(charWidth + 2) *
-                  getMaxLineLength((symbol && symbol?.code) || "")}px`}
-                height={(symbol.code || "").split("\n").length * 20}
-                language="javascript"
-                editorWillMount={handleEditorWillMount}
-                editorDidMount={handleEditorDidMount}
-                value={symbol.code}
-                options={{
-                  readOnly: true,
-                  lineNumbers: "off",
-                  fontFamily: projectInfo.fontFamily,
-                  fontSize: projectInfo.fontSize,
-                  minimap: {
-                    enabled: false
-                  }
-                }}
-              />
-            </Flex>
-            <Flex>
-              <Link
-                fontSize={11}
-                whiteSpace="nowrap"
-                padding="3px"
-                onClick={() => {
-                  console.log(symbol);
-                  openFile(symbol.filePath, symbol.location as any);
-                }}
-              >
-                <Text
-                  isTruncated
-                  style={{ direction: "rtl" }}
-                  width={`${(charWidth + 2) *
-                    getMaxLineLength((symbol && symbol?.code) || "")}px`}
-                >
-                  <Tooltip
-                    aria-label="file path"
-                    fontSize={11}
-                    label={symbol.filePath.replace(projectInfo.root, "")}
-                  >
-                    {symbol.filePath.replace(projectInfo.root, "")}
-                  </Tooltip>
-                </Text>
-              </Link>
-            </Flex>
-          </Fragment>
-        )}
-      </Flex>
-    </Draggable>
+      <Symbol symbol={symbol} />
+    </Frame>
   );
 }
 

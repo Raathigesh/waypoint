@@ -1,27 +1,27 @@
 import React, { useRef, useEffect, useContext } from "react";
-import { dependencyGraphStore } from "ui/store";
+import { observer } from "mobx-react-lite";
 
 interface Props {
-  symbol: {
-    setPosition: (x: number, y: number) => void;
-    setRef: (ref: any) => void;
-    x: number | undefined;
-    y: number | undefined;
-  };
+  setPosition: (x: number, y: number) => void;
+  setRef: (ref: any) => void;
+  x: number | undefined;
+  y: number | undefined;
   handle: any;
   children: any;
   onEnd: any;
   onStart: any;
 }
 
-export default function Draggable({
-  symbol,
+function Draggable({
+  setPosition,
+  setRef,
+  x,
+  y,
   children,
   handle,
   onStart,
   onEnd
 }: Props) {
-  const dependencyGraph = useContext(dependencyGraphStore);
   const container = useRef(null);
   let positionOnMouseDown = { x: 0, y: 0 };
   let intermediatePosition = { x: 0, y: 0 };
@@ -52,15 +52,15 @@ export default function Draggable({
     document.removeEventListener("mouseup", onMouseUp);
     const position = getPositionFromEvent(event);
     onEnd(position.x, position.y);
-    symbol.setPosition(intermediatePosition.x, intermediatePosition.y);
+    setPosition(intermediatePosition.x, intermediatePosition.y);
     event.preventDefault();
   };
 
-  const update = (x: number, y: number) => {
-    const relX = x - positionOnMouseDown.x;
-    const relY = y - positionOnMouseDown.y;
-    const finalX = (symbol.x || 0) + relX;
-    const finalY = (symbol.y || 0) + relY;
+  const update = (mouseX: number, mouseY: number) => {
+    const relX = mouseX - positionOnMouseDown.x;
+    const relY = mouseY - positionOnMouseDown.y;
+    const finalX = (x || 0) + relX;
+    const finalY = (y || 0) + relY;
     if (container.current) {
       (container.current as any).style.transform = `translate(${finalX}px, ${finalY}px)`;
     }
@@ -68,17 +68,17 @@ export default function Draggable({
   };
 
   useEffect(() => {
-    symbol.setRef(container);
+    setRef(container);
     handle.current.addEventListener("mousedown", onMouseDown);
     return () => handle.current.removeEventListener("mousedown", onMouseDown);
-  }, []);
+  }, [x, y]);
 
   return (
     <div
       style={{
         display: "inline-block",
         position: "absolute",
-        transform: `translate(${symbol.x}px, ${symbol.y}px)`
+        transform: `translate(${x}px, ${y}px)`
       }}
       ref={container}
       onClick={e => e.stopPropagation()}
@@ -87,3 +87,5 @@ export default function Draggable({
     </div>
   );
 }
+
+export default Draggable;
