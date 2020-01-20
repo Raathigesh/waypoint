@@ -198,6 +198,7 @@ const Note = ({ note }: Props) => {
       setRef={note.setRef}
       height={500}
       width={600}
+      zIndex={2}
     >
       <Global
         styles={css`
@@ -258,10 +259,10 @@ const Note = ({ note }: Props) => {
           }}
         >
           <Editable
-            style={{ height: "100%" }}
+            style={{ height: "100%", minWidth: "500px" }}
             renderElement={renderElement}
             onKeyDown={onKeyDown}
-            placeholder="Enter some text..."
+            placeholder="Start typing... You can @mention other symbols on the stage..."
           />
           {target && symbols.length > 0 && (
             <Portal>
@@ -271,7 +272,7 @@ const Note = ({ note }: Props) => {
                   top: "-9999px",
                   left: "-9999px",
                   position: "absolute",
-                  zIndex: 1,
+                  zIndex: 4,
                   padding: "3px",
                   background: "white",
                   borderRadius: "4px",
@@ -371,9 +372,10 @@ const MentionElement = observer(({ attributes, children, element }: any) => {
 
 const initialValue = [
   {
+    type: "paragraph",
     children: [
       {
-        text: "Start typing"
+        text: ""
       }
     ]
   }

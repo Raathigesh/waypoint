@@ -3,6 +3,7 @@ import { Flex, Button, Text, Progress, Link, Image } from "@chakra-ui/core";
 import { Coffee } from "react-feather";
 import { observer } from "mobx-react-lite";
 import { IndexerStatus } from "ui/store/models/IndexerStatus";
+import image from "../../assets/JsBubblesLogo.png";
 
 interface Props {
   indexerStatus: typeof IndexerStatus.Type;
@@ -54,7 +55,7 @@ function Welcome({ indexerStatus, onOpenPreference }: Props) {
   return (
     <Flex justifyContent="center" alignItems="center" flexGrow={1}>
       <Flex flexDirection="column" alignItems="center">
-        <Image src={require("../../assets/JsBubblesLogo.png")} />
+        <img src={image} />
         {content}
       </Flex>
     </Flex>

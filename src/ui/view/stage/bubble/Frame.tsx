@@ -1,9 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Flex } from "@chakra-ui/core";
-import { observer } from "mobx-react-lite";
 import { X, Minimize2, Maximize2 } from "react-feather";
 import { Resizable } from "re-resizable";
-import Draggable from "./Dragabble";
 
 interface Props {
   title: string;
@@ -18,6 +16,7 @@ interface Props {
   onEnd: any;
   onStart: any;
   onRemove: any;
+  zIndex?: number;
 }
 
 function Frame({
@@ -32,17 +31,70 @@ function Frame({
   onEnd,
   onStart,
   onRemove,
-  children
+  children,
+  zIndex
 }: Props) {
-  const ref: any = useRef(null);
   const [collapsed, setCollapsed] = useState(false);
   const handle: any = useRef(null);
+  const container = useRef(null);
+  let positionOnMouseDown = { x: 0, y: 0 };
+  let intermediatePosition = { x: 0, y: 0 };
+
+  const getPositionFromEvent = (event: any) => {
+    return {
+      x: event.clientX,
+      y: event.clientY
+    };
+  };
+
+  const onMouseDown = (event: any) => {
+    onStart();
+    positionOnMouseDown = getPositionFromEvent(event);
+    document.addEventListener("mousemove", onMouseMove);
+    document.addEventListener("mouseup", onMouseUp);
+    event.stopPropagation();
+  };
+
+  const onMouseMove = (event: any) => {
+    const position = getPositionFromEvent(event);
+    update(position.x, position.y);
+    event.preventDefault();
+  };
+
+  const onMouseUp = (event: any) => {
+    document.removeEventListener("mousemove", onMouseMove);
+    document.removeEventListener("mouseup", onMouseUp);
+    const position = getPositionFromEvent(event);
+    onEnd(position.x, position.y);
+    setPosition(intermediatePosition.x, intermediatePosition.y);
+    event.preventDefault();
+  };
+
+  const update = (mouseX: number, mouseY: number) => {
+    const relX = mouseX - positionOnMouseDown.x;
+    const relY = mouseY - positionOnMouseDown.y;
+    const finalX = (x || 0) + relX;
+    const finalY = (y || 0) + relY;
+    if (container.current) {
+      (container.current as any).style.transform = `translate(${finalX}px, ${finalY}px)`;
+    }
+    intermediatePosition = { x: finalX, y: finalY };
+  };
+
+  useEffect(() => {
+    setRef(container);
+    if (handle.current) {
+      handle.current.addEventListener("mousedown", onMouseDown);
+    }
+
+    return () =>
+      handle.current &&
+      handle.current.removeEventListener("mousedown", onMouseDown);
+  }, [x, y, collapsed]);
 
   const content = (
     <Flex
       position="relative"
-      ref={ref}
-      zIndex={3}
       backgroundColor="white"
       flexDirection="column"
       borderRadius="5px"
@@ -105,25 +157,30 @@ function Frame({
   );
 
   return (
-    <Draggable
-      setPosition={setPosition}
-      setRef={setRef}
-      x={x}
-      y={y}
-      onEnd={onEnd}
-      onStart={onStart}
-      handle={handle}
+    <div
+      style={{
+        display: "inline-block",
+        position: "absolute",
+        transform: `translate(${x}px, ${y}px)`,
+        zIndex: zIndex || 3
+      }}
+      ref={container}
+      onClick={e => e.stopPropagation()}
     >
-      <Resizable
-        style={{ background: "white" }}
-        defaultSize={{
-          width: `${width || 300}px`,
-          height: `${height || 400}px`
-        }}
-      >
-        {content}
-      </Resizable>
-    </Draggable>
+      {collapsed ? (
+        content
+      ) : (
+        <Resizable
+          style={{ background: "white" }}
+          defaultSize={{
+            width: `${width || 300}px`,
+            height: `${height || 400}px`
+          }}
+        >
+          {content}
+        </Resizable>
+      )}
+    </div>
   );
 }
 

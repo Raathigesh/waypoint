@@ -12,3 +12,4 @@ declare module "*.gql" {
 declare module "nanoid";
 declare module "redux-persist/lib/integration/react";
 declare module "monaco-themes/themes/LAZY.json";
+declare module "*.png";

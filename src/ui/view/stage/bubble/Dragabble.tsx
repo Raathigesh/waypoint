@@ -69,9 +69,13 @@ function Draggable({
 
   useEffect(() => {
     setRef(container);
-    handle.current.addEventListener("mousedown", onMouseDown);
-    return () => handle.current.removeEventListener("mousedown", onMouseDown);
-  }, [x, y]);
+    console.log(handle);
+    if (handle) {
+      handle.addEventListener("mousedown", onMouseDown);
+    }
+
+    return () => handle && handle.removeEventListener("mousedown", onMouseDown);
+  }, [x, y, handle]);
 
   return (
     <div
