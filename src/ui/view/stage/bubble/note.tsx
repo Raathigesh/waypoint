@@ -7,7 +7,7 @@ import React, {
   useContext
 } from "react";
 import ReactDOM from "react-dom";
-import { Editor, Transforms, Range, createEditor, Point } from "slate";
+import { Editor, Transforms, Range, createEditor, Point, Node } from "slate";
 import { withHistory } from "slate-history";
 import {
   Slate,
@@ -15,7 +15,8 @@ import {
   ReactEditor,
   withReact,
   useSelected,
-  useFocused
+  useFocused,
+  useEditor
 } from "slate-react";
 import Frame from "./Frame";
 import { dependencyGraphStore } from "ui/store";
@@ -322,6 +323,7 @@ const insertMention = (editor: Editor, symbol: any) => {
 
 const Element = (props: any) => {
   const { attributes, children, element } = props;
+
   switch (element.type) {
     case "symbol":
       return <MentionElement {...props} />;
@@ -349,20 +351,36 @@ const Element = (props: any) => {
 };
 
 const MentionElement = observer(({ attributes, children, element }: any) => {
+  const editor = useEditor();
   const store = useContext(dependencyGraphStore);
-  const selected = useSelected();
-  const focused = useFocused();
   const symbol = store.symbols.get(element.symbol.id);
   return (
     <div {...attributes} contentEditable={false}>
       {symbol && (
         <Flex
+          flexDirection="column"
           position="relative"
           border="rgba(0, 0, 0, 0.028)"
           borderStyle="solid"
           borderRadius="5px"
         >
-          <Code symbol={symbol} />
+          <Flex
+            cursor="pointer"
+            fontSize="12px"
+            padding="5px"
+            backgroundColor="rgba(0, 0, 0, 0.028)"
+            onClick={() => {
+              const path = ReactEditor.findPath(editor, element);
+              Transforms.setNodes(
+                editor,
+                { collapsed: !element.collapsed },
+                { at: path }
+              );
+            }}
+          >
+            {symbol.name}
+          </Flex>
+          {!element.collapsed && <Code symbol={symbol} />}
         </Flex>
       )}
       {children}
