@@ -1,6 +1,22 @@
 import React, { useContext, useEffect, Fragment } from "react";
 import { observer } from "mobx-react-lite";
-import { Flex, IconButton, useDisclosure } from "@chakra-ui/core";
+import {
+  Flex,
+  IconButton,
+  useDisclosure,
+  Popover,
+  PopoverTrigger,
+  Button,
+  PopoverHeader,
+  PopoverContent,
+  PopoverArrow,
+  PopoverCloseButton,
+  PopoverBody,
+  PopoverFooter,
+  Box,
+  ButtonGroup,
+  Input
+} from "@chakra-ui/core";
 import { indexerStatusStore, dependencyGraphStore } from "../store";
 import Welcome from "./welcome";
 import Preference from "./preference";
@@ -41,6 +57,41 @@ function App() {
             marginLeft="10px"
             zIndex={100}
           />
+          <Popover placement="bottom" closeOnBlur={false}>
+            <PopoverTrigger>
+              <IconButton
+                variant="outline"
+                position="fixed"
+                right="110px"
+                top="10px"
+                aria-label="Copy link"
+                icon="link"
+                marginLeft="10px"
+                zIndex={100}
+              />
+            </PopoverTrigger>
+            <PopoverContent
+              zIndex={4}
+              color="white"
+              bg="blue.800"
+              borderColor="blue.800"
+            >
+              <PopoverHeader pt={4} fontWeight="bold" border="0">
+                Open this URL in the browser
+              </PopoverHeader>
+              <PopoverArrow />
+              <PopoverCloseButton />
+              <PopoverBody>
+                <Input
+                  color="blue.800"
+                  placeholder="small size"
+                  size="sm"
+                  borderRadius="3px"
+                  value="http://localhost:4545"
+                />
+              </PopoverBody>
+            </PopoverContent>
+          </Popover>
 
           <Stage />
         </Fragment>
