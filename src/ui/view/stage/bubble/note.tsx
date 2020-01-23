@@ -22,7 +22,7 @@ import Frame from "./Frame";
 import { dependencyGraphStore } from "ui/store";
 import { observer } from "mobx-react-lite";
 import Code from "./symbol";
-import { Instance } from "mobx-state-tree";
+import { Instance, clone } from "mobx-state-tree";
 import { Note as NoteModel } from "ui/store/models/Note";
 import { Flex } from "@chakra-ui/core";
 import { Global, css } from "@emotion/core";
@@ -130,7 +130,10 @@ const Note = ({ note }: Props) => {
   const [target, setTarget] = useState();
   const [index, setIndex] = useState(0);
   const [search, setSearch] = useState("");
-  const renderElement = useCallback(props => <Element {...props} />, []);
+  const renderElement = useCallback(
+    props => <Element {...props} note={note} />,
+    []
+  );
   const editor = useMemo(
     () => withShortcuts(withMentions(withReact(withHistory(createEditor())))),
     []
@@ -159,6 +162,10 @@ const Note = ({ note }: Props) => {
           case "Enter":
             event.preventDefault();
             Transforms.select(editor, target);
+            const symbol = store.symbols.get(symbols[index].id);
+            if (symbol) {
+              note.setSymbol(clone(symbol));
+            }
             insertMention(editor, symbols[index]);
             setTarget(null);
             break;
@@ -350,43 +357,45 @@ const Element = (props: any) => {
   }
 };
 
-const MentionElement = observer(({ attributes, children, element }: any) => {
-  const editor = useEditor();
-  const store = useContext(dependencyGraphStore);
-  const symbol = store.symbols.get(element.symbol.id);
-  return (
-    <div {...attributes} contentEditable={false}>
-      {symbol && (
-        <Flex
-          flexDirection="column"
-          position="relative"
-          border="rgba(0, 0, 0, 0.028)"
-          borderStyle="solid"
-          borderRadius="5px"
-        >
+const MentionElement = observer(
+  ({ attributes, children, element, note }: any) => {
+    const editor = useEditor();
+    const symbol = note.symbols.get(element.symbol.id);
+
+    return (
+      <div {...attributes} contentEditable={false}>
+        {symbol && (
           <Flex
-            cursor="pointer"
-            fontSize="12px"
-            padding="5px"
-            backgroundColor="rgba(0, 0, 0, 0.028)"
-            onClick={() => {
-              const path = ReactEditor.findPath(editor, element);
-              Transforms.setNodes(
-                editor,
-                { collapsed: !element.collapsed },
-                { at: path }
-              );
-            }}
+            flexDirection="column"
+            position="relative"
+            border="rgba(0, 0, 0, 0.028)"
+            borderStyle="solid"
+            borderRadius="5px"
           >
-            {symbol.name}
+            <Flex
+              cursor="pointer"
+              fontSize="12px"
+              padding="5px"
+              backgroundColor="rgba(0, 0, 0, 0.028)"
+              onClick={() => {
+                const path = ReactEditor.findPath(editor, element);
+                Transforms.setNodes(
+                  editor,
+                  { collapsed: !element.collapsed },
+                  { at: path }
+                );
+              }}
+            >
+              {symbol.name}
+            </Flex>
+            {!element.collapsed && <Code symbol={symbol} />}
           </Flex>
-          {!element.collapsed && <Code symbol={symbol} />}
-        </Flex>
-      )}
-      {children}
-    </div>
-  );
-});
+        )}
+        {children}
+      </div>
+    );
+  }
+);
 
 const initialValue = [
   {

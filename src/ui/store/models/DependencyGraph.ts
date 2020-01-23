@@ -85,19 +85,12 @@ export const DependencyGraph = types
     };
 
     const addBubble = flow(function*(
-      id: string,
+      symbol: Instance<typeof DocumentSymbol>,
       line: number,
       column: number,
       x: number,
       y: number
     ) {
-      let symbol: Instance<typeof DocumentSymbol> | undefined = getSymbolById(
-        id
-      );
-      if (!symbol) {
-        return;
-      }
-
       const clickedMarker = symbol.markers.find(
         marker =>
           marker.location?.start.line === line &&
@@ -111,7 +104,7 @@ export const DependencyGraph = types
         );
 
         const nextColor = getNextColor();
-
+        const id = symbol.id;
         clickedMarker.color = nextColor;
         if (self.links.get(id)) {
           self.links.set(id, [

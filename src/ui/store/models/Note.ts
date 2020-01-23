@@ -1,11 +1,13 @@
-import { types } from "mobx-state-tree";
+import { types, Instance } from "mobx-state-tree";
+import { DocumentSymbol } from "./DocumentSymbol";
 
 export const Note = types
   .model("Note", {
     id: types.string,
     color: types.maybe(types.string),
     x: types.maybe(types.number),
-    y: types.maybe(types.number)
+    y: types.maybe(types.number),
+    symbols: types.map(DocumentSymbol)
   })
   .volatile(self => ({
     ref: null,
@@ -22,5 +24,9 @@ export const Note = types
 
     const setRef = (ref: any) => (self.ref = ref);
 
-    return { setPosition, setRef };
+    const setSymbol = (symbol: Instance<typeof DocumentSymbol>) => {
+      self.symbols.set(symbol.id, symbol);
+    };
+
+    return { setPosition, setRef, setSymbol };
   });

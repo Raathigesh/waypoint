@@ -12,6 +12,11 @@ function Stage() {
   const internalElement: any = useRef(null);
   const dependencyGraph = useContext(dependencyGraphStore);
 
+  const hasBubbles =
+    dependencyGraph.symbols.size ||
+    dependencyGraph.notes.size ||
+    dependencyGraph.files.size;
+
   const handleMouseDown = (e: any) => {
     if (e.target !== internalElement.current) {
       return;
@@ -57,6 +62,16 @@ function Stage() {
     >
       <Flex ref={internalElement} position="relative" flexGrow={1}>
         <Bubble />
+        {!hasBubbles && (
+          <Flex
+            color="gray.300"
+            width="100%"
+            alignItems="center"
+            justifyContent="center"
+          >
+            Press . or / to open search window
+          </Flex>
+        )}
       </Flex>
       <SearchDialog />
     </Flex>

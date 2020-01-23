@@ -93,7 +93,7 @@ function Symbol({ symbol }: Props) {
 
       if (markerElement[0]) {
         dependencyGraph.addBubble(
-          symbol.id,
+          symbol,
           row,
           column,
           markerElement[0].getBoundingClientRect().x,
