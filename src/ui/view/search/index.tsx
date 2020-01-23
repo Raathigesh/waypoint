@@ -1,20 +1,11 @@
-import React, { useState, useEffect, useContext } from "react";
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  InputGroup,
-  Input,
-  InputRightElement,
-  Button,
-  Flex
-} from "@chakra-ui/core";
-import SymbolSearch from "./symbol";
+import React, { useState, useContext } from "react";
+import { Modal, ModalOverlay, ModalContent, Flex, Box } from "@chakra-ui/core";
+import Select from "react-select/async";
+import { Search as SearchIcon } from "react-feather";
 import { useKeyPress } from "ui/util/hooks";
 import { searchSymbol, searchFile } from "ui/store/services/search";
-import { dependencyGraphStore } from "ui/store";
+import { dependencyGraphStore, appStore } from "ui/store";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
-import FileResults from "./file";
 
 export interface SearchResult {
   value: string;
@@ -24,68 +15,102 @@ export interface SearchResult {
 }
 
 export default function SearchDialog() {
-  const [searchQuery, setSearchQuery] = useState("");
   const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const [isSymbolSearch, setIsSymbolSearch] = useState(true);
+  const [isFileSearch, setIsFileSearch] = useState(false);
+
   const dependencyGraph = useContext(dependencyGraphStore);
+  const projectInfo = useContext(appStore);
 
   useKeyPress(".", e => {
     e.preventDefault();
-    setIsSymbolSearch(true);
+    setIsFileSearch(false);
     setIsSearchOpen(true);
   });
 
   useKeyPress("/", e => {
     e.preventDefault();
-    setIsSymbolSearch(false);
     setIsSearchOpen(true);
+    setIsFileSearch(true);
   });
 
   useKeyPress("Escape", e => {
     setIsSearchOpen(false);
-    setSearchQuery("");
   });
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [fileResults, setFileResults] = useState<string[]>([]);
 
-  const search = async () => {
-    if (isSymbolSearch) {
-      const results = await searchSymbol(searchQuery);
-      setResults(
-        results.items.map(item => ({
-          value: item.name,
-          label: `${item.name} : ${item.filePath}`,
-          path: item.filePath,
-          symbol: item
-        }))
-      );
-    } else {
-      const results = await searchFile(searchQuery);
-      setFileResults(results);
-    }
-  };
-
-  useEffect(() => {
-    search();
-  }, [searchQuery]);
-
-  const handleOnSelection = (symbol?: GqlSymbolInformation) => {
-    if (symbol) {
-      dependencyGraph.setCurrentSymbol(symbol);
-    } else {
-      dependencyGraph.setCurrentSymbol(results[selectedIndex].symbol);
-    }
-    setSelectedIndex(0);
-    setSearchQuery("");
+  const handleOnSelection = (symbol: GqlSymbolInformation) => {
+    dependencyGraph.setCurrentSymbol(symbol);
     setIsSearchOpen(false);
   };
 
   const handleFileSelection = (path: string) => {
     dependencyGraph.addFile(path);
-    setSelectedIndex(0);
-    setSearchQuery("");
     setIsSearchOpen(false);
+  };
+
+  const promiseOptions = async (inputValue: string) => {
+    if (isFileSearch) {
+      const results = await searchFile(inputValue);
+      const fileOptions = results.map(item => ({
+        value: item,
+        label: item,
+        type: "file"
+      }));
+      return fileOptions;
+    }
+
+    const results = await searchSymbol(inputValue);
+
+    const resultOptions = results.items.map(item => ({
+      value: item.name,
+      label: `${item.name} : ${item.filePath}`,
+      path: item.filePath,
+      symbol: item
+    }));
+
+    return resultOptions;
+  };
+
+  const customStyles = {
+    container: (provided: any) => ({
+      ...provided,
+      width: "100%"
+    }),
+    control: (provided: any) => ({
+      ...provided,
+      borderColor: "inherit"
+    }),
+    menu: (provided: any) => ({
+      ...provided,
+      boxShadow: "none"
+    })
+  };
+
+  const SearchIconComponent = () => (
+    <Box marginRight={3}>
+      <SearchIcon size={14} />
+    </Box>
+  );
+
+  const formatOptionLabel = (item: any) => {
+    return (
+      <Flex>
+        <Flex
+          color="gray.800"
+          fontSize={12}
+          fontWeight={500}
+          marginRight="10px"
+        >
+          {item.type === "file"
+            ? item.value.replace(projectInfo.root, "")
+            : item.value}
+        </Flex>
+        {item.path && (
+          <Flex fontSize={11} color="gray.600">
+            {item.path.replace(projectInfo.root, "")}
+          </Flex>
+        )}
+      </Flex>
+    );
   };
 
   return (
@@ -97,58 +122,36 @@ export default function SearchDialog() {
     >
       <ModalOverlay />
       <ModalContent padding="10px" height="400px" borderRadius="3px">
-        <InputGroup size="md">
-          <Input
-            pr="4.5rem"
-            placeholder="Start typing"
-            value={searchQuery}
-            onChange={(e: any) => {
-              setSearchQuery(e.target.value);
-            }}
-            onKeyDown={(e: any) => {
-              if (e.keyCode == "40") {
-                const nextIndex =
-                  selectedIndex + 1 <= results.length - 1
-                    ? selectedIndex + 1
-                    : selectedIndex;
-                setSelectedIndex(nextIndex);
-              } else if (e.keyCode == "38") {
-                const nextIndex =
-                  selectedIndex - 1 > -1 ? selectedIndex - 1 : selectedIndex;
-                setSelectedIndex(nextIndex);
-              } else if (e.keyCode == "13") {
-                handleOnSelection(undefined);
-              }
-            }}
-          />
-          <InputRightElement width="5.5rem">
-            <Button
-              h="1.75rem"
-              size="sm"
-              onClick={() => {
-                setIsSymbolSearch(!isSymbolSearch);
-              }}
-            >
-              {isSymbolSearch ? "Symbol" : "File"}
-            </Button>
-          </InputRightElement>
-        </InputGroup>
-        <Flex marginTop="5px" overflowY="auto" overflowX="hidden">
-          {isSymbolSearch && (
-            <SymbolSearch
-              results={results}
-              selectedIndex={selectedIndex}
-              onSelection={handleOnSelection}
-            />
-          )}
-          {!isSymbolSearch && (
-            <FileResults
-              results={fileResults}
-              selectedIndex={selectedIndex}
-              onSelection={handleFileSelection}
-            />
-          )}
-        </Flex>
+        <Select
+          menuIsOpen
+          value={null}
+          formatOptionLabel={formatOptionLabel}
+          styles={customStyles}
+          placeholder="Search"
+          noOptionsMessage={() => "No symbols to display"}
+          isClearable
+          cacheOptions
+          loadOptions={promiseOptions}
+          components={{
+            DropdownIndicator: SearchIconComponent,
+            IndicatorSeparator: () => null
+          }}
+          onChange={({
+            symbol,
+            type,
+            value
+          }: {
+            symbol: GqlSymbolInformation;
+            type: string;
+            value: string;
+          }) => {
+            if (type === "file") {
+              handleFileSelection(value);
+            } else {
+              handleOnSelection(symbol);
+            }
+          }}
+        />
       </ModalContent>
     </Modal>
   );
