@@ -1,6 +1,6 @@
 import React, { useState, useLayoutEffect, useRef, useContext } from "react";
 import { observer } from "mobx-react-lite";
-import { Flex } from "@chakra-ui/core";
+import { Flex, Code } from "@chakra-ui/core";
 import Bubble from "./bubble";
 import { dependencyGraphStore } from "ui/store";
 import SearchDialog from "../search";
@@ -69,7 +69,8 @@ function Stage() {
             alignItems="center"
             justifyContent="center"
           >
-            Press . or / to open search window
+            Press <Code children=" Ctrl + f " /> or{" "}
+            <Code children=" Ctrl + Shift + f " /> to open search window
           </Flex>
         )}
       </Flex>

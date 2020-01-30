@@ -16,6 +16,7 @@ interface Props {
   onEnd: any;
   onStart: any;
   onRemove: any;
+  scroll?: boolean;
   zIndex?: number;
 }
 
@@ -32,6 +33,7 @@ function Frame({
   onStart,
   onRemove,
   children,
+  scroll,
   zIndex
 }: Props) {
   const [collapsed, setCollapsed] = useState(false);
@@ -152,7 +154,9 @@ function Frame({
           }}
         />
       </Flex>
-      {!collapsed && <Flex overflowY="auto">{children}</Flex>}
+      {!collapsed && (
+        <Flex overflowY={scroll ? "auto" : "hidden"}>{children}</Flex>
+      )}
     </Flex>
   );
 

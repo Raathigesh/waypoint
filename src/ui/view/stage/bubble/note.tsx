@@ -207,6 +207,7 @@ const Note = ({ note }: Props) => {
       height={500}
       width={600}
       zIndex={2}
+      scroll
     >
       <Global
         styles={css`

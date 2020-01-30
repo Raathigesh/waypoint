@@ -1,5 +1,12 @@
-import React, { useState, useContext } from "react";
-import { Modal, ModalOverlay, ModalContent, Flex, Box } from "@chakra-ui/core";
+import React, { useState, useContext, useRef, useEffect } from "react";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  Flex,
+  Box,
+  Button
+} from "@chakra-ui/core";
 import Select from "react-select/async";
 import { Search as SearchIcon } from "react-feather";
 import { useKeyPress } from "ui/util/hooks";
@@ -20,18 +27,33 @@ export default function SearchDialog() {
 
   const dependencyGraph = useContext(dependencyGraphStore);
   const projectInfo = useContext(appStore);
+  const initialRef = useRef();
 
-  useKeyPress(".", e => {
-    e.preventDefault();
-    setIsFileSearch(false);
-    setIsSearchOpen(true);
-  });
+  // If pressed key is our target key then set to true
+  function downHandler(e: any) {
+    if (e.key === "f" && e.ctrlKey) {
+      setIsFileSearch(false);
+      setIsSearchOpen(true);
+      if (!isSearchOpen) {
+        e.preventDefault();
+      }
+    } else if (e.key === "F" && e.ctrlKey && e.shiftKey) {
+      setIsFileSearch(true);
+      setIsSearchOpen(true);
+      if (!isSearchOpen) {
+        e.preventDefault();
+      }
+    }
+  }
 
-  useKeyPress("/", e => {
-    e.preventDefault();
-    setIsSearchOpen(true);
-    setIsFileSearch(true);
-  });
+  // Add event listeners
+  useEffect(() => {
+    window.addEventListener("keydown", downHandler);
+    // Remove event listeners on cleanup
+    return () => {
+      window.removeEventListener("keydown", downHandler);
+    };
+  }, [isSearchOpen]);
 
   useKeyPress("Escape", e => {
     setIsSearchOpen(false);
@@ -113,8 +135,11 @@ export default function SearchDialog() {
     );
   };
 
+  const title = isFileSearch ? "Search files" : "Search symbols";
+
   return (
     <Modal
+      initialFocusRef={initialRef as any}
       isOpen={isSearchOpen}
       onClose={() => setIsSearchOpen(false)}
       size="xl"
@@ -122,7 +147,22 @@ export default function SearchDialog() {
     >
       <ModalOverlay />
       <ModalContent padding="10px" height="400px" borderRadius="3px">
+        <Flex
+          fontSize="12px"
+          paddingBottom="10px"
+          justifyContent="space-between"
+        >
+          {title}
+          <Button
+            variant="outline"
+            size="xs"
+            onClick={() => setIsFileSearch(!isFileSearch)}
+          >
+            {isFileSearch ? "Symbol search" : "File search"}
+          </Button>
+        </Flex>
         <Select
+          ref={initialRef}
           menuIsOpen
           value={null}
           formatOptionLabel={formatOptionLabel}
