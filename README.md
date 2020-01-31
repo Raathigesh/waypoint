@@ -2,10 +2,6 @@
 <img height="180px" src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/bubbles.png">
 <br />
 <br />
-<a href="https://github.com/Raathigesh/JSBubbles/actions">
-  <img src="https://img.shields.io/github/workflow/status/Raathigesh/JSBubbles/production-build?style=flat-square" />
-</a>
-  
 <img src="https://img.shields.io/github/workflow/status/Raathigesh/JSBubbles/Production Build?style=flat-square" />
 <br />
 <br />
