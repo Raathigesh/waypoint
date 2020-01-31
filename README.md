@@ -11,9 +11,11 @@
 <br />
 </div>
 
+> This project is still in active development. Please check back later <3
+
 JSBubbles is a VSCode extension which makes it easy to find and read JavaScript without switching back and forth between multiple files.
 
-JSBubbles is inspired by [Code bubbles](http://www.andrewbragdon.com/codebubbles_site.asp) and few ideas of [the Light table IDE](https://www.chris-granger.com/2012/04/12/light-table-a-new-ide-concept/).
+JSBubbles is inspired by [Code bubbles](http://www.andrewbragdon.com/codebubbles_site.asp), few ideas of [the Light table IDE](https://www.chris-granger.com/2012/04/12/light-table-a-new-ide-concept/) and various other projects.
 
 ## Getting started
 
