@@ -3,6 +3,7 @@
 <br />
 <br />
 <img src="https://img.shields.io/github/workflow/status/Raathigesh/JSBubbles/Production Build?style=flat-square" />
+<img src="https://img.shields.io/visual-studio-marketplace/v/Raathigeshan.js-bubbles?color=green&style=flat-square" />
 <br />
 <br />
 <br />
