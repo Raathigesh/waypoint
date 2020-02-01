@@ -1,6 +1,12 @@
 <div align="center">
 <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/bubbles.png">
-<br />
+  
+<p align="center">
+  A <em>completely</em> customizable framework <br/>
+  for building rich text editors.
+</p>
+
+<br/>
 <img src="https://img.shields.io/github/workflow/status/Raathigesh/JSBubbles/Production Build?style=flat-square" />
 <img src="https://img.shields.io/visual-studio-marketplace/v/Raathigeshan.js-bubbles?color=green&style=flat-square" />
 <br />
