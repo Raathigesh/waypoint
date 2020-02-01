@@ -2,8 +2,8 @@
 <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/bubbles.png">
   
 <p align="center">
-  A <em>completely</em> customizable framework <br/>
-  for building rich text editors.
+  A VSCode extension for <em>navigating</em> and <em>understanding</em> <br/>
+  JavaScript codebases.
 </p>
 
 <br/>
