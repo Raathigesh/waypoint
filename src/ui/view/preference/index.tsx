@@ -14,10 +14,11 @@ import {
   IconButton,
   Divider,
   Heading,
-  Text
+  Text,
+  Code
 } from "@chakra-ui/core";
 import { pathMapStore, indexerStatusStore, appStore } from "ui/store";
-import { Coffee } from "react-feather";
+import { Coffee, Activity } from "react-feather";
 
 interface Props {
   isOpen?: boolean;
@@ -42,8 +43,10 @@ function Preference({ isOpen, onClose }: Props) {
 
         <DrawerBody>
           <Heading size="sm">Directories to index</Heading>
-          <Text>Relative to workspace root</Text>
-          <Flex flexGrow={1} flexDirection="column">
+          <Text fontSize="12px">
+            Path should be relative to the folder opened in VSCode
+          </Text>
+          <Flex flexGrow={1} flexDirection="column" marginTop="10px">
             {[...app.directories.entries()].map(([id, directory]) => {
               return (
                 <Flex key={id} alignItems="center" marginBottom="5px">
@@ -81,9 +84,14 @@ function Preference({ isOpen, onClose }: Props) {
           </Flex>
           <Divider />
 
-          <Heading size="sm">Import path resolution</Heading>
-          <Text>Remap your module alias</Text>
-          <Flex flexGrow={1} flexDirection="column">
+          <Heading size="sm">Module resolution mapping</Heading>
+          <Text fontSize="12px">
+            If you use custom module alias in your bundler, please add them
+            here. First value is the alias (e.g: <Code>components</Code>). The
+            second value is the relative path which points to the actual
+            directory (e.g: <Code fontSize="12px">./src/components</Code>).
+          </Text>
+          <Flex flexGrow={1} flexDirection="column" marginTop="10px">
             {pathMap.items.map(item => {
               return (
                 <Flex key={item.id} alignItems="center" marginBottom="5px">
@@ -128,10 +136,10 @@ function Preference({ isOpen, onClose }: Props) {
           <Divider />
 
           <Heading size="sm">Re-indexer</Heading>
-          <Text>Run the code indexer</Text>
+          <Text fontSize="12px">Run the code indexer</Text>
           <Button
-            marginTop="5px"
-            leftIcon={Coffee}
+            marginTop="10px"
+            leftIcon={Activity}
             variant="outline"
             width="180px"
             onClick={() => indexerStatus.initiateIndexing()}
@@ -140,12 +148,13 @@ function Preference({ isOpen, onClose }: Props) {
           </Button>
           <Divider />
           <Heading size="sm">Font size</Heading>
-          <Text>Change the font size of the text</Text>
+          <Text fontSize="12px">Change the font size of the text</Text>
           <Input
             value={app.fontSize}
             placeholder="Font size"
             size="sm"
             type="number"
+            marginTop="10px"
             onChange={(e: any) => {
               app.changeFontSize(Number(e.target.value));
             }}

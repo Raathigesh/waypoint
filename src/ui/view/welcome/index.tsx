@@ -1,6 +1,6 @@
 import React, { Fragment } from "react";
 import { Flex, Button, Text, Progress, Link, Image } from "@chakra-ui/core";
-import { Coffee } from "react-feather";
+import { Coffee, Settings, Activity } from "react-feather";
 import { observer } from "mobx-react-lite";
 import { IndexerStatus } from "ui/store/models/IndexerStatus";
 import image from "../../assets/JsBubblesLogo.png";
@@ -20,19 +20,35 @@ function Welcome({ indexerStatus, onOpenPreference }: Props) {
   if (indexerStatus.status === "none") {
     content = (
       <Fragment>
-        <Text marginBottom="20px" fontWeight={400} fontSize={15}>
-          Please index your project to get started
-        </Text>
-        <Button
-          leftIcon={Coffee}
-          variant="outline"
-          width="180px"
-          variantColor="blue"
-          onClick={() => indexerStatus.initiateIndexing()}
+        <Text
+          color="gray.700"
+          marginBottom="20px"
+          fontWeight={400}
+          fontSize={15}
         >
-          Start Indexing
-        </Button>
-        <Link onClick={onOpenPreference}>Configure path map</Link>
+          Please configure and index your project to get started
+        </Text>
+        <Flex>
+          <Button
+            leftIcon={Settings}
+            variant="outline"
+            width="180px"
+            variantColor="blue"
+            marginRight="15px"
+            onClick={onOpenPreference}
+          >
+            Configure project
+          </Button>
+          <Button
+            leftIcon={Activity}
+            variant="outline"
+            width="180px"
+            variantColor="blue"
+            onClick={() => indexerStatus.initiateIndexing()}
+          >
+            Start Indexing
+          </Button>
+        </Flex>
       </Fragment>
     );
   } else if (indexerStatus.status === "indexing") {
@@ -55,7 +71,7 @@ function Welcome({ indexerStatus, onOpenPreference }: Props) {
   return (
     <Flex justifyContent="center" alignItems="center" flexGrow={1}>
       <Flex flexDirection="column" alignItems="center">
-        <img src={image} />
+        <img src={image} width="250px" style={{ marginBottom: "20px" }} />
         {content}
       </Flex>
     </Flex>
