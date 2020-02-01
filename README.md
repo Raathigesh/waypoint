@@ -37,13 +37,13 @@ JSBubbles is inspired by [Code bubbles](http://www.andrewbragdon.com/codebubbles
 ### Features
 
 - **Fast symbol search** - Press `ctrl + f` to open the symbol search window. Search and select a symbol to bring to the stage.
-  <img src="./docs/assets/2-search-symbol.gif">
+  <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/2-search-symbol.gif">
 - **Open connected symbols** - Click on the markers in the bubble to open other connected symbols.
-  <img src="./docs/assets/3-connected-symbols.gif">
+  <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/3-connected-symbols.gif">
 - **Add symbol from a file** - Add symbol from file to stage.
-  <img src="./docs/assets/4-add-symbol-from-file.gif">
+  <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/4-add-symbol-from-file.gif">
 - **Take notes with a note bubble** - Add a note bubble and bring in other bubbles from the stage.
-  <img src="./docs/assets/5-add-note-bubble.gif">
+  <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/5-add-note-bubble.gif">
 
 <br/>
 
