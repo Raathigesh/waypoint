@@ -26,7 +26,6 @@ JSBubbles is inspired by [Code bubbles](http://www.andrewbragdon.com/codebubbles
 #### Configure and index your project
 
 - When you open the extension, you will be prompted to configure and index your project.
-  <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/1-welcome-screen.PNG">
 - Click on "Configure project" to open the Preference panel.
   - You have to add which folders to index
   - Also, if you use path alias (like Webpack's resolve rules), make sure to add those as well.
