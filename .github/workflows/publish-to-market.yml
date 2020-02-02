@@ -7,11 +7,6 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-        node-version: [10.x]
-
     steps:
       - uses: actions/checkout@v1
       - name: Use Node.js ${{ matrix.node-version }}
@@ -22,14 +17,11 @@ jobs:
         run: |
           yarn install
           yarn test
-        env:
-          CI: true
-  deploy:
-    runs-on: ubuntu-latest
-    steps:
       - uses: actions/checkout@v2
       - uses: lannonbr/vsce-action@master
         with:
           args: "publish -p $VSCE_TOKEN"
-        env:
+        env:          
+          CI: true
           VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+
