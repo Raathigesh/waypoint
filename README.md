@@ -14,7 +14,7 @@
 <br/>
 <br/>
 
-> This project is still in active development. Please check back later <3
+> 💡Feel free to try it out and give feedback and ideas.
 
 JSBubbles is a VSCode extension which makes it easy to find and read JavaScript without switching back and forth between multiple files.
 
