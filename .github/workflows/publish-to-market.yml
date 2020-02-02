@@ -1,7 +1,7 @@
 on:
   push:
     tags:
-    - '*'
+      - "*"
 name: Publish to market
 jobs:
   build:
@@ -19,8 +19,7 @@ jobs:
           yarn test
       - uses: lannonbr/vsce-action@master
         with:
-          args: "publish -p $VSCE_TOKEN"
-        env:          
+          args: "publish -p $VSCE_TOKEN --yarn"
+        env:
           CI: true
           VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
-
