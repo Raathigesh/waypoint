@@ -59,7 +59,15 @@ export default class Indexer {
 
   public search(query: string) {
     try {
-      const results: ESModuleItem[] = [];
+      const queryTokens = query.split(/(\s+)/);
+      let queryType = null;
+      let searchQuery = query;
+      if (queryTokens.length > 1) {
+        queryType = queryTokens[0];
+        searchQuery = queryTokens[1];
+      }
+
+      let results: ESModuleItem[] = [];
       Object.entries(this.files).forEach(([, file]) => {
         file.symbols.forEach(symbol => {
           results.push({
@@ -69,7 +77,17 @@ export default class Indexer {
         });
       });
 
-      const filteredResults = fuzzysort.go(query, results, {
+      if (queryType === "func") {
+        results = results.filter(item => item.kind === "FunctionDeclaration");
+      } else if (queryType === "type") {
+        results = results.filter(item => item.kind === "TypeAlias");
+      } else if (queryType === "var") {
+        results = results.filter(item => item.kind === "VariableDeclaration");
+      } else if (queryType === "class") {
+        results = results.filter(item => item.kind === "ClassDeclaration");
+      }
+
+      const filteredResults = fuzzysort.go(searchQuery, results, {
         key: "name",
         limit: 100
       });
