@@ -98,8 +98,8 @@ function Frame({
     <Flex
       position="relative"
       backgroundColor="white"
+      borderRadius="10px"
       flexDirection="column"
-      borderRadius="5px"
       height="100%"
       boxShadow="
 0 0px 1.5px rgba(0, 0, 0, 0.028),
@@ -166,7 +166,8 @@ function Frame({
         display: "inline-block",
         position: "absolute",
         transform: `translate(${x}px, ${y}px)`,
-        zIndex: zIndex || 3
+        zIndex: zIndex || 3,
+        borderRadius: "10px"
       }}
       ref={container}
       onClick={e => e.stopPropagation()}
@@ -175,7 +176,7 @@ function Frame({
         content
       ) : (
         <Resizable
-          style={{ background: "white" }}
+          style={{ background: "white", borderRadius: "10px" }}
           defaultSize={{
             width: `${width || 300}px`,
             height: `${height || 400}px`

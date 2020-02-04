@@ -21,15 +21,15 @@ export const pathMapStore = createContext(pathMap);
 const dependencyGraph = DependencyGraph.create({
   currentColorIndex: 0,
   colors: [
-    "#CBD5E0",
-    "#f56565",
-    "#FBD38D",
-    "#9ae6b4",
-    "#81E6D9",
-    "#4299e1",
-    "#0BC5EA",
-    "#b794f4",
-    "#f687b3"
+    "rgb(203, 213, 224, 0.3)",
+    "rgb(245, 101, 101, 0.3)",
+    "rgb(251, 211, 141, 0.3)",
+    "rgb(154, 230, 180, 0.3)",
+    "rgb(129, 230, 217, 0.3)",
+    "rgb(66, 153, 225, 0.3)",
+    "rgb(11, 197, 234, 0.3)",
+    "rgb(183, 148, 244, 0.3)",
+    "rgb(246, 135, 179, 0.3)"
   ],
   isBubbleDragging: false
 });

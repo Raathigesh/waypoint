@@ -38,7 +38,7 @@ function Code({ symbol }: Props) {
       setPosition={symbol.setPosition}
       setRef={symbol.setRef}
       width={width + 10}
-      height={height + 50}
+      height={Math.min(900, height + 50)}
     >
       <Symbol symbol={symbol} />
     </Frame>

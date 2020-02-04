@@ -42,13 +42,14 @@ function Symbol({ symbol }: Props) {
     return `${str}
 
     .${marker.className} {
-      border: 1px solid ${marker.color || "#eaeaea"};
+      background-color: ${marker.color || "rgb(234,234,234, 0.6)"};
+      border: 1px solid ${marker.color || "rgb(234,234,234, 0.3)"};
       border-radius: 2px;
       cursor: pointer;
     }
 
     .${marker.className}:hover {
-      background-color: #c2c2c2;
+      background-color: rgb(194,194,194, 0.3);
     }
     `;
   }, "");
@@ -138,14 +139,13 @@ function Symbol({ symbol }: Props) {
         <Link
           fontSize={11}
           whiteSpace="nowrap"
-          padding="3px"
+          paddingLeft="10px"
           onClick={() => {
             openFile(symbol.filePath, symbol.location as any);
           }}
         >
           <Text
             isTruncated
-            style={{ direction: "rtl" }}
             width={`${(charWidth + 2) *
               getMaxLineLength((symbol && symbol?.code) || "")}px`}
           >
