@@ -5,7 +5,7 @@ import { Service } from "typedi";
 import Project from "./Project";
 import SourceFile from "./SourceFile";
 import { getFileType } from "indexer/util";
-import ESModuleItem from "./ESModuleItem";
+import ESModuleItem, { Marker } from "./ESModuleItem";
 import { readFile, Stats } from "fs";
 import { findAbsoluteFilePathWhichExists } from "./fileResolver";
 import { dirname, join } from "path";
@@ -143,6 +143,29 @@ export default class Indexer {
     }
 
     return file.symbols;
+  }
+
+  public findReference(name: string, path: string) {
+    const markers: Marker[] = [];
+    Object.values(this.files).forEach(file => {
+      const symbols = file.symbols;
+      symbols.forEach(symbol => {
+        symbol.markers.forEach(marker => {
+          if (
+            marker.filePath === path &&
+            marker.name === name &&
+            symbol.location
+          ) {
+            markers.push({
+              name: symbol.name,
+              filePath: symbol.path,
+              location: symbol.location
+            });
+          }
+        });
+      });
+    });
+    return markers;
   }
 
   public async getCode(path: string, id: string) {

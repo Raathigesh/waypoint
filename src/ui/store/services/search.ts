@@ -140,3 +140,33 @@ export async function getCode(path: string, id: string) {
   });
   return results.getCode;
 }
+
+export async function getReferences(path: string, name: string) {
+  const query = gql`
+    query GetReferences($path: String!, $name: String!) {
+      getReferences(path: $path, name: $name) {
+        filePath
+        name
+        location {
+          start {
+            line
+            column
+          }
+          end {
+            line
+            column
+          }
+        }
+      }
+    }
+  `;
+
+  const results = await sendQuery<{
+    getReferences: GqlMarkers;
+  }>(query, {
+    path,
+    name
+  });
+
+  return results.getReferences;
+}

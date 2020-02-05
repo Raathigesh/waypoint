@@ -1,5 +1,5 @@
-import React, { useContext, useRef, Fragment } from "react";
-import { Flex, Link, Text, Tooltip } from "@chakra-ui/core";
+import React, { useContext, useRef, Fragment, useState } from "react";
+import { Flex, Link, Text, Tooltip, Button } from "@chakra-ui/core";
 import { editor } from "monaco-editor";
 import MonacoEditor from "react-monaco-editor";
 import "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution";
@@ -25,6 +25,7 @@ function Symbol({ symbol }: Props) {
   const projectInfo = useContext(appStore);
   const charWidth = getCharWidth(projectInfo.fontSize, projectInfo.fontFamily);
   const editorRef: any = useRef(null);
+  const [showReferences, setShowReferences] = useState(false);
 
   const markers = symbol?.markers.map(marker => ({
     startRow: marker.location?.start.line || 0,
@@ -109,33 +110,68 @@ function Symbol({ symbol }: Props) {
   const height = (symbol.code || "").split("\n").length * 20;
 
   return (
-    <Flex flexDirection="column">
+    <Flex flexDirection="column" flexGrow={1} justifyContent="space-between">
       <Flex flexDirection="column">
         <Global
           styles={css`
             ${cssString}
           `}
         />
-        <MonacoEditor
-          ref={editorRef}
-          width={width}
-          height={height}
-          language="javascript"
-          editorWillMount={handleEditorWillMount}
-          editorDidMount={handleEditorDidMount}
-          value={symbol.code}
-          options={{
-            readOnly: true,
-            lineNumbers: "off",
-            fontFamily: projectInfo.fontFamily,
-            fontSize: projectInfo.fontSize,
-            minimap: {
-              enabled: false
-            }
-          }}
-        />
+        {!showReferences && (
+          <MonacoEditor
+            ref={editorRef}
+            width={width}
+            height={height}
+            language="javascript"
+            editorWillMount={handleEditorWillMount}
+            editorDidMount={handleEditorDidMount}
+            value={symbol.code}
+            options={{
+              readOnly: true,
+              lineNumbers: "off",
+              fontFamily: projectInfo.fontFamily,
+              fontSize: projectInfo.fontSize,
+              minimap: {
+                enabled: false
+              }
+            }}
+          />
+        )}
+        {symbol.references && showReferences && (
+          <Flex flexDirection="column">
+            {symbol.references?.map(reference => {
+              return (
+                <Flex padding="10px" fontSize="12px">
+                  <Link
+                    fontSize={11}
+                    whiteSpace="nowrap"
+                    onClick={() => {
+                      openFile(reference.filePath, reference.location as any);
+                    }}
+                  >
+                    {reference.name} -{" "}
+                    {reference.filePath.replace(projectInfo.root, "")}
+                  </Link>
+                </Flex>
+              );
+            })}
+          </Flex>
+        )}
       </Flex>
-      <Flex>
+      <Flex alignItems="center">
+        <Button
+          size="xs"
+          variant="ghost"
+          fontSize="10px"
+          padding="5px"
+          marginLeft="5px"
+          onClick={() => {
+            setShowReferences(!showReferences);
+            symbol.fetchReferences();
+          }}
+        >
+          Show references
+        </Button>
         <Link
           fontSize={11}
           whiteSpace="nowrap"
@@ -144,11 +180,7 @@ function Symbol({ symbol }: Props) {
             openFile(symbol.filePath, symbol.location as any);
           }}
         >
-          <Text
-            isTruncated
-            width={`${(charWidth + 2) *
-              getMaxLineLength((symbol && symbol?.code) || "")}px`}
-          >
+          <Text isTruncated>
             <Tooltip
               aria-label="file path"
               fontSize={11}

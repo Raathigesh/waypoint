@@ -1,5 +1,8 @@
-import { types } from "mobx-state-tree";
+import { types, flow } from "mobx-state-tree";
+import * as nanoid from "nanoid";
 import { DocumentLocation } from "./DocumentLocation";
+import { getReferences } from "../services/search";
+import { GqlMarkers } from "entities/GqlSymbolInformation";
 
 export const Marker = types.model("Marker", {
   id: types.string,
@@ -18,6 +21,7 @@ export const DocumentSymbol = types
     code: types.maybeNull(types.string),
     location: types.maybeNull(DocumentLocation),
     markers: types.array(Marker),
+    references: types.array(Marker),
     color: types.maybe(types.string),
     createdForMarker: types.maybe(
       types.model({
@@ -43,5 +47,32 @@ export const DocumentSymbol = types
 
     const setRef = (ref: any) => (self.ref = ref);
 
-    return { setPosition, setRef };
+    const fetchReferences = flow(function*() {
+      self.references.clear();
+
+      const references = yield getReferences(self.filePath, self.name);
+
+      references.forEach((reference: GqlMarkers) => {
+        self.references?.push(
+          Marker.create({
+            id: nanoid(),
+            filePath: reference.filePath,
+            name: reference.name,
+            location: {
+              start: {
+                column: reference?.location?.start?.column || 0,
+                line: reference?.location?.start?.line || 0
+              },
+              end: {
+                column: reference?.location?.end?.column || 0,
+                line: reference?.location?.end?.line || 0
+              }
+            },
+            color: ""
+          })
+        );
+      });
+    });
+
+    return { setPosition, setRef, fetchReferences };
   });

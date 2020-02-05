@@ -11,7 +11,10 @@ import { ContainerInstance, Service } from "typedi";
 import Indexer from "indexer/Indexer";
 import Project from "indexer/Project";
 import { GqlSearchResult } from "../../../entities/GqlSearchResult";
-import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
+import {
+  GqlSymbolInformation,
+  GqlMarkers
+} from "entities/GqlSymbolInformation";
 import ESModuleItem from "indexer/ESModuleItem";
 import { ReIndexArgs } from "./ReIndexArgs";
 import { sep } from "path";
@@ -133,6 +136,15 @@ export default class SymbolsResolver {
     }
 
     return item;
+  }
+
+  @Query(returns => [GqlMarkers])
+  public async getReferences(
+    @Arg("path") path: string,
+    @Arg("name") name: string
+  ) {
+    const markers = this.indexer.findReference(name, path);
+    return markers;
   }
 
   @Query(returns => [GqlSymbolInformation])
