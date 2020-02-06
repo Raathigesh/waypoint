@@ -4,7 +4,7 @@ import { X, Minimize2, Maximize2 } from "react-feather";
 import { Resizable } from "re-resizable";
 
 interface Props {
-  title: string;
+  title: any;
   headerColor: string;
   setPosition: (x: number, y: number) => void;
   setRef: (ref: any) => void;
@@ -18,6 +18,7 @@ interface Props {
   onRemove: any;
   scroll?: boolean;
   zIndex?: number;
+  headerAction?: any;
 }
 
 function Frame({
@@ -34,7 +35,8 @@ function Frame({
   onRemove,
   children,
   scroll,
-  zIndex
+  zIndex,
+  headerAction
 }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const handle: any = useRef(null);
@@ -125,6 +127,7 @@ function Frame({
         >
           {title}
         </Flex>
+        {headerAction}
         {!collapsed && (
           <Minimize2
             cursor="pointer"
@@ -135,6 +138,7 @@ function Frame({
             }}
           />
         )}
+
         {collapsed && (
           <Maximize2
             cursor="pointer"

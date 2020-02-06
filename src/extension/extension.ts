@@ -66,7 +66,7 @@ async function initialize(context: vscode.ExtensionContext) {
   currentPanel = vscode.window.createWebviewPanel(
     "js-bubbles",
     "JS bubbles",
-    vscode.ViewColumn.Two,
+    vscode.ViewColumn.Beside,
     {
       enableScripts: true,
       retainContextWhenHidden: true

@@ -4,12 +4,15 @@ import { editor } from "monaco-editor";
 import MonacoEditor from "react-monaco-editor";
 import "monaco-editor/esm/vs/basic-languages/javascript/javascript.contribution";
 import "monaco-editor/esm/vs/basic-languages/typescript/typescript.contribution";
+import "monaco-editor/esm/vs/editor/contrib/bracketMatching/bracketMatching";
+import "monaco-editor/esm/vs/editor/contrib/folding/folding";
+import "monaco-editor/esm/vs/editor/contrib/wordHighlighter/wordHighlighter";
 import { dependencyGraphStore, appStore } from "ui/store";
 import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
 import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 import { css, Global } from "@emotion/core";
-import LazyTheme from "monaco-themes/themes/LAZY.json";
+import DawnTheme from "monaco-themes/themes/Tomorrow.json";
 import { openFile } from "ui/store/services/file";
 import { getCharWidth } from "ui/util/view";
 
@@ -56,8 +59,8 @@ function Symbol({ symbol }: Props) {
   }, "");
 
   const handleEditorWillMount = (monaco: any) => {
-    monaco.editor.defineTheme("lazy", LazyTheme);
-    monaco.editor.setTheme("lazy");
+    monaco.editor.defineTheme("dawn", DawnTheme);
+    monaco.editor.setTheme("dawn");
   };
 
   const handleEditorDidMount = (editor: editor.ICodeEditor, monaco: any) => {
@@ -157,39 +160,6 @@ function Symbol({ symbol }: Props) {
             })}
           </Flex>
         )}
-      </Flex>
-      <Flex alignItems="center">
-        <Button
-          size="xs"
-          variant="ghost"
-          fontSize="10px"
-          padding="5px"
-          marginLeft="5px"
-          onClick={() => {
-            setShowReferences(!showReferences);
-            symbol.fetchReferences();
-          }}
-        >
-          Show references
-        </Button>
-        <Link
-          fontSize={11}
-          whiteSpace="nowrap"
-          paddingLeft="10px"
-          onClick={() => {
-            openFile(symbol.filePath, symbol.location as any);
-          }}
-        >
-          <Text isTruncated>
-            <Tooltip
-              aria-label="file path"
-              fontSize={11}
-              label={symbol.filePath.replace(projectInfo.root, "")}
-            >
-              {symbol.filePath.replace(projectInfo.root, "")}
-            </Tooltip>
-          </Text>
-        </Link>
       </Flex>
     </Flex>
   );
