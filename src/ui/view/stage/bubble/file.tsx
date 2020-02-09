@@ -58,7 +58,9 @@ function FileBubble({ file }: Props) {
                 justifyContent="flex-start"
                 fontSize="12px"
                 height="30px"
-                onClick={() => dependencyGraph.setCurrentSymbol(sym as any)}
+                onClick={() =>
+                  dependencyGraph.setCurrentSymbol(sym.name, sym.filePath)
+                }
               >
                 {sym.name}
               </Button>

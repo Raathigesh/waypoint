@@ -1,4 +1,4 @@
-import { types, flow, Instance } from "mobx-state-tree";
+import { types, flow, Instance, onSnapshot, onPatch } from "mobx-state-tree";
 import * as nanoid from "nanoid";
 import { DocumentSymbol, Marker } from "./DocumentSymbol";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
@@ -7,6 +7,18 @@ import { File } from "./File";
 import { getFile } from "../services/file";
 import { GqlFile } from "entities/GqlFile";
 import { Note } from "./Note";
+import { getStageConfig } from "../services/config";
+
+export interface PersistableSymbol {
+  name: string;
+  path: string;
+  x: number | undefined;
+  y: number | undefined;
+}
+
+export interface PersistableStage {
+  symbols: PersistableSymbol[];
+}
 
 const NodeLink = types.model("NodeLink", {
   target: types.string
@@ -23,6 +35,18 @@ export const DependencyGraph = types
     isBubbleDragging: types.boolean
   })
   .actions(self => {
+    const afterCreate = flow(function*() {
+      const config: PersistableStage | null = yield getStageConfig();
+      if (config) {
+        config.symbols.forEach(symbol =>
+          setCurrentSymbol(symbol.name, symbol.path, {
+            x: symbol.x,
+            y: symbol.y
+          })
+        );
+      }
+    });
+
     const getNextColor = () => {
       const nextColor = self.colors[self.currentColorIndex];
       if (self.currentColorIndex === self.colors.length - 1) {
@@ -33,10 +57,14 @@ export const DependencyGraph = types
       return nextColor;
     };
 
-    const setCurrentSymbol = flow(function*(symbol: GqlSymbolInformation) {
+    const setCurrentSymbol = flow(function*(
+      name: string,
+      filePath: string,
+      attributes?: { x: number | undefined; y: number | undefined }
+    ) {
       const symbolWithMakers: GqlSymbolInformation = yield getMarkers(
-        symbol.filePath,
-        symbol.name
+        filePath,
+        name
       );
 
       const markers = (symbolWithMakers.markers || []).map(marker =>
@@ -58,26 +86,30 @@ export const DependencyGraph = types
         })
       );
 
-      const code: string = yield getCode(symbol.filePath, symbol.id);
+      const code: string = yield getCode(
+        symbolWithMakers.filePath,
+        symbolWithMakers.id
+      );
       const documentSymbol = DocumentSymbol.create({
-        id: symbol.id,
-        name: symbol.name,
-        filePath: symbol.filePath,
-        kind: symbol.kind,
+        id: symbolWithMakers.id,
+        name: symbolWithMakers.name,
+        filePath: symbolWithMakers.filePath,
+        kind: symbolWithMakers.kind,
         location: {
           start: {
-            column: symbol?.location?.start?.column || 0,
-            line: symbol?.location?.start?.line || 0
+            column: symbolWithMakers?.location?.start?.column || 0,
+            line: symbolWithMakers?.location?.start?.line || 0
           },
           end: {
-            column: symbol?.location?.end?.column || 0,
-            line: symbol?.location?.end?.line || 0
+            column: symbolWithMakers?.location?.end?.column || 0,
+            line: symbolWithMakers?.location?.end?.line || 0
           }
         },
         markers,
-        code
+        code,
+        ...(attributes || {})
       });
-      self.symbols.set(symbol.id, documentSymbol);
+      self.symbols.set(symbolWithMakers.id, documentSymbol);
     });
 
     const getSymbolById = (id: string) => {
@@ -290,6 +322,7 @@ export const DependencyGraph = types
     };
 
     return {
+      afterCreate,
       setCurrentSymbol,
       addBubble,
       removeNode,
@@ -302,4 +335,16 @@ export const DependencyGraph = types
       addNote,
       removeNote
     };
-  });
+  })
+  .views(self => ({
+    getPersistableJSON(): PersistableStage {
+      return {
+        symbols: [...self.symbols.values()].map(symbol => ({
+          name: symbol.name,
+          path: symbol.filePath,
+          x: symbol.x,
+          y: symbol.y
+        }))
+      };
+    }
+  }));

@@ -1,5 +1,6 @@
 import gql from "graphql-tag";
 import { sendQuery, sendMutation } from "ui/util/graphql";
+import { PersistableStage } from "../models/DependencyGraph";
 
 export async function setPathMap(pathMap: string) {
   const query = gql`
@@ -68,4 +69,29 @@ export async function getDirectories() {
 
   const result = await sendQuery<{ getDirectories: string }>(query, {});
   return JSON.parse(result.getDirectories) as string[];
+}
+
+export async function setStageConfig(stage: PersistableStage) {
+  const query = gql`
+    mutation SetStageConfig($value: String!) {
+      setStageConfig(value: $value)
+    }
+  `;
+
+  await sendMutation(query, {
+    value: JSON.stringify(stage)
+  });
+}
+
+export async function getStageConfig() {
+  const query = gql`
+    query {
+      getStageConfig
+    }
+  `;
+
+  const result = await sendQuery<{ getStageConfig: string }>(query, {});
+  return result.getStageConfig
+    ? (JSON.parse(result.getStageConfig) as PersistableStage)
+    : null;
 }

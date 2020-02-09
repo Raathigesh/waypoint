@@ -11,7 +11,7 @@ export function initializeStaticRoutes(express: any, port: number) {
     <head>
       <meta charset="utf-8">
       <meta content="ie=edge" http-equiv="x-ua-compatible">
-      <title>Fabulous</title>
+      <title>JS Bubbles</title>
     </head>
     <body>
       <div id="root">

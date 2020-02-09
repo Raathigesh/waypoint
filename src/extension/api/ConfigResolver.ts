@@ -54,4 +54,19 @@ export default class ConfigResolver {
   public getDirectories() {
     return this.conf.get(this.getKeyForDirectories()) || "[]";
   }
+
+  getKeyForStageConfig() {
+    return "stage";
+  }
+
+  @Mutation(returns => String)
+  public setStageConfig(@Arg("value") value: string) {
+    this.conf.set(this.getKeyForStageConfig(), value);
+    return "";
+  }
+
+  @Query(returns => String, { nullable: true })
+  public getStageConfig() {
+    return this.conf.get(this.getKeyForStageConfig()) || null;
+  }
 }

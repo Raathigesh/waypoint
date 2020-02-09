@@ -4,7 +4,7 @@ import { DependencyGraph } from "./models/DependencyGraph";
 import { IndexerStatus } from "./models/IndexerStatus";
 import { PathMap } from "./models/PathMap";
 import { onSnapshot } from "mobx-state-tree";
-import { setPathMap } from "./services/config";
+import { setPathMap, setStageConfig } from "./services/config";
 import { App } from "./models/app";
 import { listenToMessages } from "ui/util/graphql";
 import { getActiveFile, getActiveSymbolForFile } from "./services/file";
@@ -46,12 +46,17 @@ onSnapshot(
   }, 1000)
 );
 
+onSnapshot(dependencyGraph.symbols, () => {
+  const config = dependencyGraph.getPersistableJSON();
+  setStageConfig(config);
+});
+
 listenToMessages(async (event: string) => {
   if (event === "js-bubbles.addFile") {
     const gqlFile = await getActiveFile();
     dependencyGraph.addFileMap(gqlFile);
   } else if (event === "js-bubbles.addSymbol") {
     const symbol = await getActiveSymbolForFile();
-    dependencyGraph.setCurrentSymbol(symbol);
+    dependencyGraph.setCurrentSymbol(symbol.name, symbol.filePath);
   }
 });

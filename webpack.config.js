@@ -65,7 +65,7 @@ module.exports = env => ({
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "Delight",
+      title: "JS Bubbles",
       template: require("html-webpack-template"),
       appMountId: "root",
       inject: false

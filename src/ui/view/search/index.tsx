@@ -60,7 +60,7 @@ export default function SearchDialog() {
   });
 
   const handleOnSelection = (symbol: GqlSymbolInformation) => {
-    dependencyGraph.setCurrentSymbol(symbol);
+    dependencyGraph.setCurrentSymbol(symbol.name, symbol.filePath);
     setIsSearchOpen(false);
   };
 
