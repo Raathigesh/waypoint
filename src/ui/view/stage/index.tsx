@@ -4,6 +4,7 @@ import { Flex, Code } from "@chakra-ui/core";
 import Bubble from "./bubble";
 import { dependencyGraphStore } from "ui/store";
 import SearchDialog from "../search";
+import Outline from "../outline";
 
 function Stage() {
   const initialClick: any = useRef(null);
@@ -75,6 +76,7 @@ function Stage() {
         )}
       </Flex>
       <SearchDialog />
+      <Outline />
     </Flex>
   );
 }
