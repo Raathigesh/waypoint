@@ -60,7 +60,10 @@ export const DependencyGraph = types
     const setCurrentSymbol = flow(function*(
       name: string,
       filePath: string,
-      attributes?: { x: number | undefined; y: number | undefined }
+      attributes?: {
+        x: number | undefined;
+        y: number | undefined;
+      }
     ) {
       const symbolWithMakers: GqlSymbolInformation = yield getMarkers(
         filePath,
@@ -109,6 +112,10 @@ export const DependencyGraph = types
         code,
         ...(attributes || {})
       });
+      if (attributes) {
+        documentSymbol.setPosition(attributes?.x || 0, attributes.y || 0);
+      }
+
       self.symbols.set(symbolWithMakers.id, documentSymbol);
     });
 

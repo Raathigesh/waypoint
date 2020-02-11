@@ -127,36 +127,38 @@ function Frame({
         >
           {title}
         </Flex>
-        {headerAction}
-        {!collapsed && (
-          <Minimize2
-            cursor="pointer"
-            size="12px"
-            onClick={e => {
-              setCollapsed(true);
-              e.stopPropagation();
-            }}
-          />
-        )}
+        <Flex>
+          {headerAction}
+          {!collapsed && (
+            <Minimize2
+              cursor="pointer"
+              size="12px"
+              onClick={e => {
+                setCollapsed(true);
+                e.stopPropagation();
+              }}
+            />
+          )}
 
-        {collapsed && (
-          <Maximize2
+          {collapsed && (
+            <Maximize2
+              cursor="pointer"
+              size="12px"
+              onClick={e => {
+                setCollapsed(false);
+                e.stopPropagation();
+              }}
+            />
+          )}
+          <X
             cursor="pointer"
             size="12px"
             onClick={e => {
-              setCollapsed(false);
+              onRemove();
               e.stopPropagation();
             }}
           />
-        )}
-        <X
-          cursor="pointer"
-          size="12px"
-          onClick={e => {
-            onRemove();
-            e.stopPropagation();
-          }}
-        />
+        </Flex>
       </Flex>
       {!collapsed && (
         <Flex overflowY={scroll ? "auto" : "hidden"}>{children}</Flex>

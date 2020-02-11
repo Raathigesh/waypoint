@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, Fragment } from "react";
 import { dependencyGraphStore, appStore } from "ui/store";
 import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
@@ -7,7 +7,7 @@ import Frame from "./Frame";
 import Symbol from "./symbol";
 import { getCharWidth } from "ui/util/view";
 import { Flex, Box, Link } from "@chakra-ui/core";
-import { List } from "react-feather";
+import { List, File } from "react-feather";
 import ReferenceDialog from "ui/view/references";
 import { openFile } from "ui/store/services/file";
 
@@ -39,14 +39,7 @@ function Code({ symbol }: Props) {
         >
           {symbol.name}
           <Box fontSize="10px" marginLeft="10px">
-            <Link
-              onClick={(e: any) => {
-                e.stopPropagation();
-                openFile(symbol.filePath, symbol.location as any);
-              }}
-            >
-              {symbol.filePath.replace(projectInfo.root, "")}
-            </Link>
+            {symbol.filePath.replace(projectInfo.root, "")}
           </Box>
         </Flex>
       }
@@ -65,15 +58,25 @@ function Code({ symbol }: Props) {
       width={width + 10}
       height={Math.min(900, height + 50)}
       headerAction={
-        <List
-          cursor="pointer"
-          size="12px"
-          onClick={e => {
-            e.stopPropagation();
-            setIsReferenceOpen(true);
-            symbol.fetchReferences();
-          }}
-        />
+        <Fragment>
+          <List
+            cursor="pointer"
+            size="12px"
+            onClick={e => {
+              e.stopPropagation();
+              setIsReferenceOpen(true);
+              symbol.fetchReferences();
+            }}
+          />
+          <File
+            cursor="pointer"
+            size="12px"
+            onClick={e => {
+              e.stopPropagation();
+              openFile(symbol.filePath, symbol.location as any);
+            }}
+          />
+        </Fragment>
       }
     >
       <Symbol symbol={symbol} />
