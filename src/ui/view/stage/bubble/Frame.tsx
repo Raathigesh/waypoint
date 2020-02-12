@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from "react";
-import { Flex } from "@chakra-ui/core";
+import { Flex, Button } from "@chakra-ui/core";
 import { X, Minimize2, Maximize2 } from "react-feather";
 import { Resizable } from "re-resizable";
 
@@ -130,34 +130,42 @@ function Frame({
         <Flex>
           {headerAction}
           {!collapsed && (
-            <Minimize2
-              cursor="pointer"
-              size="12px"
+            <Button
+              size="xs"
+              variant="outline"
+              padding="3px"
               onClick={e => {
                 setCollapsed(true);
                 e.stopPropagation();
               }}
-            />
+            >
+              <Minimize2 cursor="pointer" size="12px" />
+            </Button>
           )}
-
           {collapsed && (
-            <Maximize2
-              cursor="pointer"
-              size="12px"
+            <Button
+              size="xs"
+              variant="outline"
+              padding="3px"
               onClick={e => {
                 setCollapsed(false);
                 e.stopPropagation();
               }}
-            />
+            >
+              <Maximize2 cursor="pointer" size="12px" />
+            </Button>
           )}
-          <X
-            cursor="pointer"
-            size="12px"
+          <Button
+            size="xs"
+            variant="outline"
+            padding="3px"
             onClick={e => {
               onRemove();
               e.stopPropagation();
             }}
-          />
+          >
+            <X cursor="pointer" size="12px" />
+          </Button>
         </Flex>
       </Flex>
       {!collapsed && (

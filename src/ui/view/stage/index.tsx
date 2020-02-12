@@ -1,6 +1,6 @@
 import React, { useState, useLayoutEffect, useRef, useContext } from "react";
 import { observer } from "mobx-react-lite";
-import { Flex, Code } from "@chakra-ui/core";
+import { Flex, Code, Box } from "@chakra-ui/core";
 import Bubble from "./bubble";
 import { dependencyGraphStore } from "ui/store";
 import SearchDialog from "../search";
@@ -65,13 +65,61 @@ function Stage() {
         <Bubble />
         {!hasBubbles && (
           <Flex
-            color="gray.300"
             width="100%"
             alignItems="center"
+            flexDirection="column"
             justifyContent="center"
           >
-            Press <Code children=" Ctrl + f " /> or{" "}
-            <Code children=" Ctrl + Shift + f " /> to open search window
+            <Flex
+              color="gray.500"
+              width="100%"
+              alignItems="center"
+              justifyContent="center"
+            >
+              Press{" "}
+              <Box
+                backgroundColor="gray.300"
+                paddingLeft="5px"
+                paddingRight="5px"
+                marginLeft="3px"
+                marginRight="3px"
+                borderRadius="5px"
+              >
+                Ctrl + f
+              </Box>
+              or{" "}
+              <Box
+                backgroundColor="gray.300"
+                paddingLeft="5px"
+                paddingRight="5px"
+                marginLeft="3px"
+                marginRight="3px"
+                borderRadius="5px"
+              >
+                Ctrl + Shift + f
+              </Box>
+              to open search window
+            </Flex>
+            <Flex
+              color="gray.500"
+              width="100%"
+              alignItems="center"
+              justifyContent="center"
+              marginTop="20px"
+            >
+              Press{" "}
+              <Box
+                backgroundColor="gray.300"
+                paddingLeft="5px"
+                paddingRight="5px"
+                marginLeft="3px"
+                marginRight="3px"
+                borderRadius="5px"
+              >
+                .
+              </Box>
+              to open stage outline window
+            </Flex>
           </Flex>
         )}
       </Flex>

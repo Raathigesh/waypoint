@@ -6,7 +6,7 @@ import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 import Frame from "./Frame";
 import Symbol from "./symbol";
 import { getCharWidth } from "ui/util/view";
-import { Flex, Box, Link } from "@chakra-ui/core";
+import { Flex, Box, Link, Button } from "@chakra-ui/core";
 import { List, File } from "react-feather";
 import ReferenceDialog from "ui/view/references";
 import { openFile } from "ui/store/services/file";
@@ -59,23 +59,29 @@ function Code({ symbol }: Props) {
       height={Math.min(900, height + 50)}
       headerAction={
         <Fragment>
-          <List
-            cursor="pointer"
-            size="12px"
+          <Button
+            size="xs"
+            variant="outline"
+            padding="3px"
             onClick={e => {
               e.stopPropagation();
               setIsReferenceOpen(true);
               symbol.fetchReferences();
             }}
-          />
-          <File
-            cursor="pointer"
-            size="12px"
+          >
+            <List cursor="pointer" size="12px" />
+          </Button>
+          <Button
+            size="xs"
+            variant="outline"
+            padding="3px"
             onClick={e => {
               e.stopPropagation();
               openFile(symbol.filePath, symbol.location as any);
             }}
-          />
+          >
+            <File cursor="pointer" size="12px" />
+          </Button>
         </Fragment>
       }
     >
