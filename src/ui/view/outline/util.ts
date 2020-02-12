@@ -56,17 +56,18 @@ function ensurePath(
 }
 
 export function constructTree(
+  rootPath: string,
   references: Instance<typeof DocumentSymbol>[],
   separator: string
 ): TreeNode {
   const tree: TreeNode = {
-    label: "root",
+    label: rootPath,
     path: "",
     type: "directory",
     children: []
   };
   references.forEach(item => {
-    const tokens = item.filePath.split(separator);
+    const tokens = item.filePath.replace(rootPath, "").split(separator);
     ensurePath(tree, item, tokens);
   });
 

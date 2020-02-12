@@ -18,6 +18,8 @@ import { constructTree } from "./util";
 
 function TreeNode({ item, collapsedNodes, onExpand, onCollapse }: any): any {
   const isCollapsed = collapsedNodes[item.id];
+  const dependencyStore = useContext(dependencyGraphStore);
+
   return (
     <Flex flexDirection="column" marginLeft="15px">
       <Flex flexDirection="column">
@@ -55,10 +57,7 @@ function TreeNode({ item, collapsedNodes, onExpand, onCollapse }: any): any {
                 <Flex marginLeft="5px">
                   <Link
                     onClick={() =>
-                      openFile(
-                        symbol.filePath,
-                        (symbol.location as any).toJSON()
-                      )
+                      dependencyStore.moveSymbols(-symbol.x, -symbol.y)
                     }
                   >
                     {symbol.name}
@@ -88,6 +87,7 @@ function Outline({}: Props) {
   const dependencyStore = useContext(dependencyGraphStore);
   const app = useContext(appStore);
   const tree = constructTree(
+    app.root,
     [...dependencyStore.symbols.values()],
     app.separator
   );
