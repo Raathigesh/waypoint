@@ -28,16 +28,15 @@ function Symbol({ symbol }: Props) {
   const projectInfo = useContext(appStore);
   const charWidth = getCharWidth(projectInfo.fontSize, projectInfo.fontFamily);
   const editorRef: any = useRef(null);
-  const [showReferences, setShowReferences] = useState(false);
 
   const markers = symbol?.markers.map(marker => ({
     startRow: marker.location?.start.line || 0,
     startCol: marker.location?.start.column || 0,
     endRow: marker.location?.end.line || 0,
     endCol: marker.location?.end.column || 0,
-    className: `marker-${symbol.id}-${marker.location?.start.line || 0}-${marker
-      .location?.start.column || 0}-${marker.location?.end.line || 0}-${marker
-      .location?.end.column || 0}`,
+    className: `marker-${symbol.name}-${marker.location?.start.line ||
+      0}-${marker.location?.start.column || 0}-${marker.location?.end.line ||
+      0}-${marker.location?.end.column || 0}`,
     type: "background",
     color: marker.color
   }));
@@ -72,7 +71,7 @@ function Symbol({ symbol }: Props) {
         (marker.location?.end.column || 0) + 1
       ),
       options: {
-        inlineClassName: `marker-${symbol.id}-${marker.location?.start.line ||
+        inlineClassName: `marker-${symbol.name}-${marker.location?.start.line ||
           0}-${marker.location?.start.column || 0}-${marker.location?.end
           .line || 0}-${marker.location?.end.column || 0}`
       }
@@ -120,46 +119,24 @@ function Symbol({ symbol }: Props) {
             ${cssString}
           `}
         />
-        {!showReferences && (
-          <MonacoEditor
-            ref={editorRef}
-            width={width}
-            height={height}
-            language="javascript"
-            editorWillMount={handleEditorWillMount}
-            editorDidMount={handleEditorDidMount}
-            value={symbol.code}
-            options={{
-              readOnly: true,
-              lineNumbers: "off",
-              fontFamily: projectInfo.fontFamily,
-              fontSize: projectInfo.fontSize,
-              minimap: {
-                enabled: false
-              }
-            }}
-          />
-        )}
-        {symbol.references && showReferences && (
-          <Flex flexDirection="column">
-            {symbol.references?.map(reference => {
-              return (
-                <Flex padding="10px" fontSize="12px">
-                  <Link
-                    fontSize={11}
-                    whiteSpace="nowrap"
-                    onClick={() => {
-                      openFile(reference.filePath, reference.location as any);
-                    }}
-                  >
-                    {reference.name} -{" "}
-                    {reference.filePath.replace(projectInfo.root, "")}
-                  </Link>
-                </Flex>
-              );
-            })}
-          </Flex>
-        )}
+        <MonacoEditor
+          ref={editorRef}
+          width={width}
+          height={height}
+          language="javascript"
+          editorWillMount={handleEditorWillMount}
+          editorDidMount={handleEditorDidMount}
+          value={symbol.code}
+          options={{
+            readOnly: true,
+            lineNumbers: "off",
+            fontFamily: projectInfo.fontFamily,
+            fontSize: projectInfo.fontSize,
+            minimap: {
+              enabled: false
+            }
+          }}
+        />
       </Flex>
     </Flex>
   );

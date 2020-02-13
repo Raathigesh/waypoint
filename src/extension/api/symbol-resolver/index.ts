@@ -233,8 +233,8 @@ export default class SymbolsResolver {
   }
 
   @Query(returns => String)
-  public async getCode(@Arg("path") path: string, @Arg("id") id: string) {
-    return this.indexer.getCode(path, id);
+  public async getCode(@Arg("path") path: string, @Arg("name") name: string) {
+    return this.indexer.getCode(path, name);
   }
 
   @Subscription(() => String, {

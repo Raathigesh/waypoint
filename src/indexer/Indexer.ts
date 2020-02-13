@@ -168,10 +168,10 @@ export default class Indexer {
     return markers;
   }
 
-  public async getCode(path: string, id: string) {
+  public async getCode(path: string, name: string) {
     const file = this.files[path];
     if (file) {
-      const symbol = file.symbols.find(symbol => symbol.id === id);
+      const symbol = file.symbols.find(symbol => symbol.name === name);
       if (!symbol || !symbol.location) {
         return "";
       }

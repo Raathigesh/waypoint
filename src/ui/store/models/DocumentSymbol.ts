@@ -1,8 +1,11 @@
 import { types, flow } from "mobx-state-tree";
 import * as nanoid from "nanoid";
 import { DocumentLocation } from "./DocumentLocation";
-import { getReferences } from "../services/search";
-import { GqlMarkers } from "entities/GqlSymbolInformation";
+import { getReferences, getMarkers, getCode } from "../services/search";
+import {
+  GqlMarkers,
+  GqlSymbolInformation
+} from "entities/GqlSymbolInformation";
 
 export const Marker = types.model("Marker", {
   id: types.string,
@@ -14,10 +17,9 @@ export const Marker = types.model("Marker", {
 
 export const DocumentSymbol = types
   .model("DocumentSymbol", {
-    id: types.string,
     name: types.string,
     filePath: types.string,
-    kind: types.string,
+    kind: types.maybe(types.string),
     code: types.maybeNull(types.string),
     location: types.maybeNull(DocumentLocation),
     markers: types.array(Marker),
@@ -37,6 +39,11 @@ export const DocumentSymbol = types
     tempX: 0,
     tempY: 0
   }))
+  .views(self => ({
+    get id() {
+      return `${self.filePath}-${self.name}`;
+    }
+  }))
   .actions(self => {
     const setPosition = (x: number, y: number) => {
       self.x = x;
@@ -47,11 +54,54 @@ export const DocumentSymbol = types
 
     const setRef = (ref: any) => (self.ref = ref);
 
+    const fetchMarkers = flow(function*() {
+      const symbolWithMakers: GqlSymbolInformation = yield getMarkers(
+        self.filePath,
+        self.name
+      );
+
+      self.kind = symbolWithMakers.kind;
+      self.location = {
+        start: {
+          column: symbolWithMakers?.location?.start?.column || 0,
+          line: symbolWithMakers?.location?.start?.line || 0
+        },
+        end: {
+          column: symbolWithMakers?.location?.end?.column || 0,
+          line: symbolWithMakers?.location?.end?.line || 0
+        }
+      };
+
+      (symbolWithMakers.markers || []).forEach(marker => {
+        const markerObj = Marker.create({
+          id: nanoid(),
+          filePath: marker.filePath,
+          name: marker.name,
+          location: {
+            start: {
+              column: marker?.location?.start?.column || 0,
+              line: marker?.location?.start?.line || 0
+            },
+            end: {
+              column: marker?.location?.end?.column || 0,
+              line: marker?.location?.end?.line || 0
+            }
+          },
+          color: ""
+        });
+
+        self.markers.push(markerObj);
+      });
+    });
+
+    const fetchCode = flow(function*() {
+      const code: string = yield getCode(self.filePath, self.name);
+      self.code = code;
+    });
+
     const fetchReferences = flow(function*() {
       self.references.clear();
-
       const references = yield getReferences(self.filePath, self.name);
-
       references.forEach((reference: GqlMarkers) => {
         self.references?.push(
           Marker.create({
@@ -74,5 +124,5 @@ export const DocumentSymbol = types
       });
     });
 
-    return { setPosition, setRef, fetchReferences };
+    return { setPosition, fetchMarkers, setRef, fetchReferences, fetchCode };
   });

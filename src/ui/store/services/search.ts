@@ -127,16 +127,16 @@ export async function getSymbolsForActiveFile() {
   return results.getSymbolsForActiveFile;
 }
 
-export async function getCode(path: string, id: string) {
+export async function getCode(path: string, name: string) {
   const query = gql`
-    query GetCode($path: String!, $id: String!) {
-      getCode(path: $path, id: $id)
+    query GetCode($path: String!, $name: String!) {
+      getCode(path: $path, name: $name)
     }
   `;
 
   const results = await sendQuery<{ getCode: string }>(query, {
     path,
-    id
+    name
   });
   return results.getCode;
 }
