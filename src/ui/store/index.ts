@@ -35,7 +35,7 @@ const dependencyGraph = DependencyGraph.create({
 });
 export const dependencyGraphStore = createContext(dependencyGraph);
 export const indexerStatusStore = createContext(
-  IndexerStatus.create({ status: "none" }, { pathMap, app })
+  IndexerStatus.create({ status: "none" }, { pathMap, app, dependencyGraph })
 );
 export const appStore = createContext(app);
 

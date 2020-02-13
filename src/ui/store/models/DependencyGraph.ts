@@ -30,7 +30,7 @@ export const DependencyGraph = types
     isBubbleDragging: types.boolean
   })
   .actions(self => {
-    const afterCreate = flow(function*() {
+    const initializeStage = flow(function*() {
       const config: PersistableStage | null = yield getStageConfig();
       if (config) {
         config.symbols.forEach(symbol =>
@@ -184,7 +184,7 @@ export const DependencyGraph = types
     };
 
     return {
-      afterCreate,
+      initializeStage,
       setCurrentSymbol,
       addBubble,
       removeNode,
