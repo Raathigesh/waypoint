@@ -62,6 +62,7 @@ function Code({ symbol }: Props) {
           <Button
             size="xs"
             variant="outline"
+            marginLeft="3px"
             padding="3px"
             onClick={e => {
               e.stopPropagation();
@@ -74,6 +75,7 @@ function Code({ symbol }: Props) {
           <Button
             size="xs"
             variant="outline"
+            marginLeft="3px"
             padding="3px"
             onClick={e => {
               e.stopPropagation();

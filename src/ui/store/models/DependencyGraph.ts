@@ -16,8 +16,15 @@ export interface PersistableSymbol {
   y: number | undefined;
 }
 
+export interface PersistableFile {
+  path: string;
+  x: number | undefined;
+  y: number | undefined;
+}
+
 export interface PersistableStage {
   symbols: PersistableSymbol[];
+  files: PersistableFile[];
 }
 
 export const DependencyGraph = types
@@ -39,6 +46,10 @@ export const DependencyGraph = types
             y: symbol.y
           })
         );
+
+        config.files.map(file => {
+          return addFile(file.path, file.x, file.y);
+        });
       }
     });
 
@@ -143,35 +154,37 @@ export const DependencyGraph = types
       });
     };
 
-    const addFileMap = (gqlFile: GqlFile) => {
-      self.files.set(
-        gqlFile.filePath,
-        File.create({
-          filePath: gqlFile.filePath,
-          symbols: gqlFile.symbols.map(symbol =>
-            DocumentSymbol.create({
-              name: symbol.name,
-              filePath: symbol.filePath || "",
-              kind: symbol.kind,
-              location: {
-                start: {
-                  column: symbol?.location?.start?.column || 0,
-                  line: symbol?.location?.start?.line || 0
-                },
-                end: {
-                  column: symbol?.location?.end?.column || 0,
-                  line: symbol?.location?.end?.line || 0
-                }
+    const addFileMap = (gqlFile: GqlFile, x?: number, y?: number) => {
+      const file = File.create({
+        filePath: gqlFile.filePath,
+        symbols: gqlFile.symbols.map(symbol =>
+          DocumentSymbol.create({
+            name: symbol.name,
+            filePath: symbol.filePath || "",
+            kind: symbol.kind,
+            location: {
+              start: {
+                column: symbol?.location?.start?.column || 0,
+                line: symbol?.location?.start?.line || 0
+              },
+              end: {
+                column: symbol?.location?.end?.column || 0,
+                line: symbol?.location?.end?.line || 0
               }
-            })
-          )
-        })
-      );
+            }
+          })
+        )
+      });
+
+      if (x && y) {
+        file.setPosition(x, y);
+      }
+      self.files.set(gqlFile.filePath, file);
     };
 
-    const addFile = flow(function*(filePath: string) {
+    const addFile = flow(function*(filePath: string, x?: number, y?: number) {
       const gqlFile: GqlFile = yield getFile(filePath);
-      addFileMap(gqlFile);
+      addFileMap(gqlFile, x, y);
     });
 
     const addNote = () => {
@@ -206,6 +219,11 @@ export const DependencyGraph = types
           path: symbol.filePath,
           x: symbol.x,
           y: symbol.y
+        })),
+        files: [...self.files.values()].map(file => ({
+          path: file.filePath,
+          x: file.x,
+          y: file.y
         }))
       };
     }

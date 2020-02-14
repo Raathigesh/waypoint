@@ -134,6 +134,7 @@ function Frame({
               size="xs"
               variant="outline"
               padding="3px"
+              marginLeft="3px"
               onClick={e => {
                 setCollapsed(true);
                 e.stopPropagation();
@@ -147,6 +148,7 @@ function Frame({
               size="xs"
               variant="outline"
               padding="3px"
+              marginLeft="3px"
               onClick={e => {
                 setCollapsed(false);
                 e.stopPropagation();
@@ -159,6 +161,7 @@ function Frame({
             size="xs"
             variant="outline"
             padding="3px"
+            marginLeft="3px"
             onClick={e => {
               onRemove();
               e.stopPropagation();

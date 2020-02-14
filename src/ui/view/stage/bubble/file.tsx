@@ -12,8 +12,10 @@ import {
   Tooltip,
   Icon,
   Button,
-  IconButton
+  IconButton,
+  Box
 } from "@chakra-ui/core";
+import { File as FileIcon } from "react-feather";
 import { dependencyGraphStore, appStore } from "ui/store";
 import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
@@ -22,6 +24,7 @@ import { X, Minimize2, Maximize2 } from "react-feather";
 import { openFile } from "ui/store/services/file";
 import Draggable from "./Dragabble";
 import Frame from "./Frame";
+import SymbolKindIcon from "ui/view/components/SymbolKindIcon";
 
 interface Props {
   file: Instance<typeof File>;
@@ -33,7 +36,14 @@ function FileBubble({ file }: Props) {
 
   return (
     <Frame
-      title={file.filePath.replace(projectInfo.root, "")}
+      title={
+        <Flex alignItems="center">
+          <Box marginRight="5px">
+            <FileIcon size="15px" />
+          </Box>
+          {file.filePath.replace(projectInfo.root, "")}
+        </Flex>
+      }
       x={file.x || 0}
       y={file.y || 0}
       headerColor={file.color || "rgba(0, 0, 0, 0.028)"}
@@ -50,27 +60,23 @@ function FileBubble({ file }: Props) {
       <Fragment>
         <Flex flexDirection="column">
           {file.symbols.map(sym => (
-            <Flex alignItems="center" marginRight="5px">
-              <Button
-                flexGrow={1}
-                variantColor="teal"
-                variant="ghost"
-                justifyContent="flex-start"
+            <Flex
+              key={sym.id}
+              alignItems="center"
+              marginRight="5px"
+              marginBottom="5px"
+            >
+              <Box marginLeft="10px" marginRight="10px">
+                <SymbolKindIcon kind={sym.kind} size="11px" />
+              </Box>
+              <Link
                 fontSize="12px"
-                height="30px"
                 onClick={() =>
                   dependencyGraph.setCurrentSymbol(sym.name, sym.filePath)
                 }
               >
                 {sym.name}
-              </Button>
-              <IconButton
-                variant="outline"
-                aria-label="Call Segun"
-                size="xs"
-                icon="external-link"
-                onClick={() => openFile(file.filePath, sym.location as any)}
-              />
+              </Link>
             </Flex>
           ))}
         </Flex>
