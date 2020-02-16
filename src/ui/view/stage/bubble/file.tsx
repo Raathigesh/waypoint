@@ -63,8 +63,8 @@ function FileBubble({ file }: Props) {
             <Flex
               key={sym.id}
               alignItems="center"
-              marginRight="5px"
-              marginBottom="5px"
+              marginRight="8px"
+              marginBottom="8px"
             >
               <Box marginLeft="10px" marginRight="10px">
                 <SymbolKindIcon kind={sym.kind} size="11px" />

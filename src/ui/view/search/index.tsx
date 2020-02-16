@@ -13,6 +13,7 @@ import { useKeyPress } from "ui/util/hooks";
 import { searchSymbol, searchFile } from "ui/store/services/search";
 import { dependencyGraphStore, appStore } from "ui/store";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
+import SymbolKindIcon from "../components/SymbolKindIcon";
 
 export interface SearchResult {
   value: string;
@@ -86,7 +87,8 @@ export default function SearchDialog() {
       value: item.name,
       label: `${item.name} : ${item.filePath}`,
       path: item.filePath,
-      symbol: item
+      symbol: item,
+      kind: item.kind
     }));
 
     return resultOptions;
@@ -115,7 +117,10 @@ export default function SearchDialog() {
 
   const formatOptionLabel = (item: any) => {
     return (
-      <Flex>
+      <Flex alignItems="center">
+        <Flex marginRight="5px">
+          <SymbolKindIcon kind={item.kind} size="12px" />
+        </Flex>
         <Flex
           color="gray.800"
           fontSize={12}
