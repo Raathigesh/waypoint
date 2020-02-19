@@ -3,32 +3,39 @@ import { indexerStatus, startIndexing } from "../services";
 import { PathMap } from "./PathMap";
 import { App } from "./app";
 import { DependencyGraph } from "./DependencyGraph";
+import { GqlIndexerStatus } from "entities/GqlIndexerStatus";
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export const IndexerStatus = types
   .model("IndexerStatus", {
-    status: types.string
+    status: types.string,
+    totalFiles: types.number,
+    indexedFiles: types.number
   })
   .actions(self => {
     const getStatus = flow(function*() {
-      const status: string = yield indexerStatus();
-      self.status = status;
+      const status: GqlIndexerStatus = yield indexerStatus();
+      self.status = status.status;
+      self.indexedFiles = status.indexedFileCount;
+      self.totalFiles = status.totalFiles;
     });
 
     const pollForStatus: () => Promise<any> = flow(function*() {
       const env: {
         dependencyGraph: typeof DependencyGraph.Type;
       } = getEnv(self);
-      const status: string = yield indexerStatus();
+      const status: GqlIndexerStatus = yield indexerStatus();
 
       if (
-        (status === "indexed" && self.status === "indexing") ||
-        status === "indexed"
+        (status.status === "indexed" && self.status === "indexing") ||
+        status.status === "indexed"
       ) {
         env.dependencyGraph.initializeStage();
       }
 
-      self.status = status;
+      self.status = status.status;
+      self.indexedFiles = status.indexedFileCount;
+      self.totalFiles = status.totalFiles;
       while (true && self.status === "indexing") {
         yield sleep(1000);
         yield pollForStatus();

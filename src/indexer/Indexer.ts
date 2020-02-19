@@ -15,35 +15,43 @@ export default class Indexer {
   public files: { [path: string]: SourceFile } = {};
   public status: "none" | "indexed" | "indexing" = "none";
   public project: Project | undefined;
+  public totalFiles: number = 0;
+  public indexedFileCount: number = 0;
 
   public async parse(project: Project) {
     this.status = "indexing";
     this.project = project;
 
     const files = await this.readProjectFiles(project.root);
+    this.totalFiles = files.length;
 
-    const promises: any = [];
+    const supportedFiles = files.filter(
+      filePath => getFileType(filePath) !== "UNSUPPORTED"
+    );
 
-    try {
-      files
-        .filter(filePath => getFileType(filePath) !== "UNSUPPORTED")
-        .forEach(filePath => {
-          const sourceFile = new SourceFile();
-          const parsePromise = sourceFile.parse(
-            filePath,
-            project.pathAlias,
-            project.root
-          );
-          promises.push(parsePromise);
-          this.files[filePath] = sourceFile;
-        });
+    this.relaxedIndexer(supportedFiles);
+  }
 
-      await Promise.all(promises);
-    } catch (e) {
-      console.log("Error in indexer", e);
-    } finally {
+  public relaxedIndexer(filesToIndex: string[]) {
+    if (filesToIndex.length === 0) {
       this.status = "indexed";
-      console.log("Marking indexer status", this.status);
+      return;
+    }
+
+    const currentFile = filesToIndex.pop();
+    const sourceFile = new SourceFile();
+
+    if (this.project && currentFile) {
+      const parsePromise = sourceFile.parse(
+        currentFile,
+        this.project.pathAlias,
+        this.project.root
+      );
+      this.files[currentFile] = sourceFile;
+      this.indexedFileCount += 1;
+      setTimeout(() => {
+        this.relaxedIndexer(filesToIndex);
+      }, 0);
     }
   }
 
@@ -108,29 +116,9 @@ export default class Indexer {
     const symbol = file.symbols.find(symbol => symbol.name === name);
 
     if (!symbol && this.project) {
-      let actualSymbolName = name;
-      const exportStatement = file.exportStatements.find(s => {
-        const specifier = s.specifiers.find(
-          specifier => specifier.exported === name
-        );
-        if (specifier) {
-          actualSymbolName = specifier?.local;
-        }
-        return specifier;
-      });
-
-      if (exportStatement) {
-        const pathOfTheFile = exportStatement.path;
-        const absolutePath = findAbsoluteFilePathWhichExists(
-          this.project?.root,
-          dirname(path),
-          pathOfTheFile,
-          this.project.pathAlias
-        );
-        const actualFile = this.files[absolutePath];
-        return actualFile.symbols.find(
-          symbol => symbol.name === actualSymbolName
-        );
+      const reExportedSymbol = this.getReExportedSymbol(name, path, file);
+      if (reExportedSymbol) {
+        return reExportedSymbol;
       }
     }
     return symbol;
@@ -171,12 +159,17 @@ export default class Indexer {
   public async getCode(path: string, name: string) {
     const file = this.files[path];
     if (file) {
-      const symbol = file.symbols.find(symbol => symbol.name === name);
+      let symbol: ESModuleItem | null | undefined = file.symbols.find(
+        symbol => symbol.name === name
+      );
       if (!symbol || !symbol.location) {
-        return "";
+        symbol = this.getReExportedSymbol(name, path, file);
+        if (!symbol || !symbol.location) {
+          return "";
+        }
       }
 
-      const content = await promisify(readFile)(path);
+      const content = await promisify(readFile)(symbol.path);
       const code = content.toString();
       const lines = code.split("\n");
 
@@ -223,5 +216,36 @@ export default class Indexer {
     }
 
     return [];
+  }
+
+  private getReExportedSymbol(name: string, path: string, file: SourceFile) {
+    if (!this.project) {
+      return null;
+    }
+
+    let actualSymbolName = name;
+    const exportStatement = file.exportStatements.find(s => {
+      const specifier = s.specifiers.find(
+        specifier => specifier.exported === name
+      );
+      if (specifier) {
+        actualSymbolName = specifier?.local;
+      }
+      return specifier;
+    });
+
+    if (exportStatement) {
+      const pathOfTheFile = exportStatement.path;
+      const absolutePath = findAbsoluteFilePathWhichExists(
+        this.project?.root,
+        dirname(path),
+        pathOfTheFile,
+        this.project.pathAlias
+      );
+      const actualFile = this.files[absolutePath];
+      return actualFile.symbols.find(
+        symbol => symbol.name === actualSymbolName
+      );
+    }
   }
 }

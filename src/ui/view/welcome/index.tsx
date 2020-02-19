@@ -61,7 +61,8 @@ function Welcome({ indexerStatus, onOpenPreference }: Props) {
           fontSize={20}
           textAlign="center"
         >
-          Indexing in progress
+          Indexing in progress ({indexerStatus.indexedFiles}/
+          {indexerStatus.totalFiles})
         </Text>
         <Progress size="sm" value={100} width="100%" isAnimated hasStripe />
       </Fragment>

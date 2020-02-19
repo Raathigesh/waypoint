@@ -2,6 +2,7 @@ import gql from "graphql-tag";
 import { sendQuery, sendMutation } from "ui/util/graphql";
 import { PathMapItem } from "extension/api/symbol-resolver/ReIndexArgs";
 import { GqlProjectInfo } from "entities/GqlProjectInfo";
+import { GqlIndexerStatus } from "entities/GqlIndexerStatus";
 
 export async function getProjectInfo() {
   const query = gql`
@@ -22,11 +23,15 @@ export async function getProjectInfo() {
 export async function indexerStatus() {
   const query = gql`
     query IndexStatus {
-      indexingStatus
+      indexingStatus {
+        status
+        totalFiles
+        indexedFileCount
+      }
     }
   `;
 
-  const result = await sendQuery<{ indexingStatus: string }>(query, {
+  const result = await sendQuery<{ indexingStatus: GqlIndexerStatus }>(query, {
     query
   });
   return result.indexingStatus;

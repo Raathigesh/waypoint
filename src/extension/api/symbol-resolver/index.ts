@@ -24,6 +24,7 @@ import { existsSync } from "fs";
 import { GqlFile } from "entities/GqlFile";
 import { pubSub } from "common/pubSub";
 import { GqlLocation } from "entities/GqlLocation";
+import { GqlIndexerStatus } from "entities/GqlIndexerStatus";
 
 @Service()
 @Resolver(GqlSearchResult)
@@ -73,9 +74,13 @@ export default class SymbolsResolver {
     return "OK";
   }
 
-  @Query(returns => String)
+  @Query(returns => GqlIndexerStatus)
   public indexingStatus() {
-    return this.indexer.status;
+    const status = new GqlIndexerStatus();
+    status.status = this.indexer.status;
+    status.indexedFileCount = this.indexer.indexedFileCount;
+    status.totalFiles = this.indexer.totalFiles;
+    return status;
   }
 
   @Query(returns => GqlProjectInfo)
