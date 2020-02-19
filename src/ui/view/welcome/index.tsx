@@ -64,7 +64,13 @@ function Welcome({ indexerStatus, onOpenPreference }: Props) {
           Indexing in progress ({indexerStatus.indexedFiles}/
           {indexerStatus.totalFiles})
         </Text>
-        <Progress size="sm" value={100} width="100%" isAnimated hasStripe />
+        <Progress
+          size="sm"
+          value={(indexerStatus.indexedFiles / indexerStatus.totalFiles) * 100}
+          width="100%"
+          isAnimated
+          hasStripe
+        />
       </Fragment>
     );
   }
