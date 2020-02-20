@@ -1,5 +1,6 @@
 import React, { useContext, useState, Fragment } from "react";
 import { dependencyGraphStore, appStore } from "ui/store";
+
 import { observer } from "mobx-react-lite";
 import { Instance } from "mobx-state-tree";
 import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
@@ -10,6 +11,7 @@ import { Flex, Box, Link, Button } from "@chakra-ui/core";
 import { List, File } from "react-feather";
 import ReferenceDialog from "ui/view/references";
 import { openFile } from "ui/store/services/file";
+import { ArcherElement } from "react-archer";
 
 const getMaxLineLength = (code: string) =>
   Math.max(...code.split("\n").map(line => line.length));
@@ -53,6 +55,7 @@ function Code({ symbol }: Props) {
       onRemove={() => {
         dependencyGraph.removeNode(symbol.id);
       }}
+      onUpdate={() => dependencyGraph.refreshArrows()}
       setPosition={symbol.setPosition}
       setRef={symbol.setRef}
       width={width + 10}
@@ -87,7 +90,17 @@ function Code({ symbol }: Props) {
         </Fragment>
       }
     >
-      <Symbol symbol={symbol} />
+      <ArcherElement
+        id={symbol.id}
+        relations={symbol.connections.map(con => ({
+          targetId: con,
+          targetAnchor: "top",
+          sourceAnchor: "bottom",
+          time: Date.now()
+        }))}
+      >
+        <Symbol symbol={symbol} />
+      </ArcherElement>
       {isReferenceOpen && (
         <ReferenceDialog
           symbol={symbol}

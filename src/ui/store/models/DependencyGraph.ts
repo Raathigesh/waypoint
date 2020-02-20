@@ -14,6 +14,7 @@ export interface PersistableSymbol {
   path: string;
   x: number | undefined;
   y: number | undefined;
+  connections: string[];
 }
 
 export interface PersistableFile {
@@ -36,6 +37,9 @@ export const DependencyGraph = types
     currentColorIndex: types.number,
     isBubbleDragging: types.boolean
   })
+  .volatile(self => ({
+    arcContainerRef: null
+  }))
   .actions(self => {
     const initializeStage = flow(function*() {
       const config: PersistableStage | null = yield getStageConfig();
@@ -43,7 +47,8 @@ export const DependencyGraph = types
         config.symbols.forEach(symbol =>
           setCurrentSymbol(symbol.name, symbol.path, {
             x: symbol.x,
-            y: symbol.y
+            y: symbol.y,
+            connections: symbol.connections
           })
         );
 
@@ -69,11 +74,13 @@ export const DependencyGraph = types
       attributes?: {
         x: number | undefined;
         y: number | undefined;
+        connections: string[];
       }
     ) {
       const documentSymbol = DocumentSymbol.create({
         name,
-        filePath
+        filePath,
+        connections: attributes?.connections || []
       });
 
       yield documentSymbol.fetchMarkers();
@@ -116,6 +123,8 @@ export const DependencyGraph = types
         symbolForBubble.setPosition(x, y);
         yield symbolForBubble.fetchMarkers();
         yield symbolForBubble.fetchCode();
+        const sourceSymbol = self.symbols.get(id);
+        sourceSymbol?.addConnection(symbolForBubble.id);
         self.symbols.set(symbolForBubble.id, symbolForBubble);
       }
     });
@@ -129,7 +138,21 @@ export const DependencyGraph = types
     };
 
     const setIsBubbleDragging = (flag: boolean) => {
+      if (
+        self.isBubbleDragging === true &&
+        flag === false &&
+        self.arcContainerRef !== null
+      ) {
+        refreshArrows();
+      }
+
       self.isBubbleDragging = flag;
+    };
+
+    const refreshArrows = () => {
+      if (self.arcContainerRef) {
+        (self.arcContainerRef as any).refreshScreen();
+      }
     };
 
     const moveSymbols = (deltaX: number, deltaY: number) => {
@@ -146,6 +169,7 @@ export const DependencyGraph = types
           symbol.tempY = nextY;
         }
       });
+      refreshArrows();
     };
 
     const finalizePosition = () => {
@@ -196,6 +220,10 @@ export const DependencyGraph = types
       self.notes.delete(id);
     };
 
+    const setArcContainerRef = (ref: any) => {
+      self.arcContainerRef = ref;
+    };
+
     return {
       initializeStage,
       setCurrentSymbol,
@@ -208,7 +236,9 @@ export const DependencyGraph = types
       removeFile,
       addFileMap,
       addNote,
-      removeNote
+      removeNote,
+      setArcContainerRef,
+      refreshArrows
     };
   })
   .views(self => ({
@@ -218,7 +248,8 @@ export const DependencyGraph = types
           name: symbol.name,
           path: symbol.filePath,
           x: symbol.x,
-          y: symbol.y
+          y: symbol.y,
+          connections: symbol.connections
         })),
         files: [...self.files.values()].map(file => ({
           path: file.filePath,

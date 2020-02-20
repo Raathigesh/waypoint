@@ -31,6 +31,7 @@ export const DocumentSymbol = types
         symbolId: types.string
       })
     ),
+    connections: types.array(types.string),
     x: types.maybe(types.number),
     y: types.maybe(types.number)
   })
@@ -124,5 +125,16 @@ export const DocumentSymbol = types
       });
     });
 
-    return { setPosition, fetchMarkers, setRef, fetchReferences, fetchCode };
+    const addConnection = (id: string) => {
+      self.connections.push(id);
+    };
+
+    return {
+      setPosition,
+      fetchMarkers,
+      setRef,
+      fetchReferences,
+      fetchCode,
+      addConnection
+    };
   });

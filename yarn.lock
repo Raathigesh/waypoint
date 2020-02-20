@@ -7713,6 +7713,14 @@ react-animate-height@2.0.9:
     classnames "^2.2.5"
     prop-types "^15.6.1"
 
+react-archer@^1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/react-archer/-/react-archer-1.5.0.tgz#c0d3427310178d748d72f0c3db0dd75b4b533f61"
+  integrity sha512-NOSMD7eZCQfzVegg0+6dA7/Y3k37V4NZUd1Ri0kMWZ4e57ezfP0uX1tAuVOiSxdIFQiM+v7A8HRCSyTBxJXn7A==
+  dependencies:
+    react-fast-compare "^2.0.4"
+    resize-observer-polyfill "1.5.0"
+
 react-clientside-effect@^1.2.2:
   version "1.2.2"
   resolved "https://registry.yarnpkg.com/react-clientside-effect/-/react-clientside-effect-1.2.2.tgz#6212fb0e07b204e714581dd51992603d1accc837"
@@ -7737,6 +7745,11 @@ react-draggable@4.2.0, react-draggable@^4.2.0:
   dependencies:
     classnames "^2.2.5"
     prop-types "^15.6.0"
+
+react-fast-compare@^2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-2.0.4.tgz#e84b4d455b0fec113e0402c329352715196f81f9"
+  integrity sha512-suNP+J1VU1MWFKcyt7RtjiSWUjvidmQSlqu+eHslq+342xCbGTYmC0mEhPCOHxlW0CywylOC1u2DFAT+bv4dBw==
 
 react-feather@^1.1.6:
   version "1.1.6"
@@ -8132,6 +8145,11 @@ requires-port@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
+
+resize-observer-polyfill@1.5.0:
+  version "1.5.0"
+  resolved "https://registry.yarnpkg.com/resize-observer-polyfill/-/resize-observer-polyfill-1.5.0.tgz#660ff1d9712a2382baa2cad450a4716209f9ca69"
+  integrity sha512-M2AelyJDVR/oLnToJLtuDJRBBWUGUvvGigj1411hXhAdyFWqMaqHp7TixW3FpiLuVaikIcR1QL+zqoJoZlOgpg==
 
 resolve-cwd@^2.0.0:
   version "2.0.0"

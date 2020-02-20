@@ -1,7 +1,9 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Flex, Button } from "@chakra-ui/core";
 import { X, Minimize2, Maximize2 } from "react-feather";
+import { ArcherContainer, ArcherElement } from "react-archer";
 import { Resizable } from "re-resizable";
+import { observer } from "mobx-react-lite";
 
 interface Props {
   title: any;
@@ -19,6 +21,7 @@ interface Props {
   scroll?: boolean;
   zIndex?: number;
   headerAction?: any;
+  onUpdate?: () => void;
 }
 
 function Frame({
@@ -36,7 +39,8 @@ function Frame({
   children,
   scroll,
   zIndex,
-  headerAction
+  headerAction,
+  onUpdate
 }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const handle: any = useRef(null);
@@ -83,6 +87,7 @@ function Frame({
       (container.current as any).style.transform = `translate(${finalX}px, ${finalY}px)`;
     }
     intermediatePosition = { x: finalX, y: finalY };
+    onUpdate && onUpdate();
   };
 
   useEffect(() => {
@@ -206,4 +211,4 @@ function Frame({
   );
 }
 
-export default Frame;
+export default observer(Frame);
