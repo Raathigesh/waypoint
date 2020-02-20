@@ -1,4 +1,5 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const TerserPlugin = require("terser-webpack-plugin");
 const webpack = require("webpack");
 const path = require("path");
 
@@ -28,6 +29,20 @@ module.exports = env => ({
     headers: {
       "Access-Control-Allow-Origin": "*"
     }
+  },
+  optimization: {
+    minimizer: [
+      new TerserPlugin({
+        cache: true,
+        parallel: true,
+        sourceMap: true,
+        terserOptions: {
+          compress: {
+            inline: false
+          }
+        }
+      })
+    ]
   },
   devtool: "source-map",
   module: {
