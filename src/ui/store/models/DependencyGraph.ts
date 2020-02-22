@@ -112,10 +112,6 @@ export const DependencyGraph = types
         const symbolForBubble = DocumentSymbol.create({
           name: clickedMarker.name,
           filePath: clickedMarker.filePath,
-          createdForMarker: {
-            markerId: clickedMarker.id,
-            symbolId: id
-          },
           color: nextColor,
           x,
           y

@@ -26,12 +26,6 @@ export const DocumentSymbol = types
     markers: types.array(Marker),
     references: types.array(Marker),
     color: types.maybe(types.string),
-    createdForMarker: types.maybe(
-      types.model({
-        markerId: types.string,
-        symbolId: types.string
-      })
-    ),
     connections: types.array(types.string),
     x: types.maybe(types.number),
     y: types.maybe(types.number)
