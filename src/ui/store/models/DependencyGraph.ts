@@ -120,6 +120,7 @@ export const DependencyGraph = types
           x,
           y
         });
+        clickedMarker.connectedSymbol = symbolForBubble.id;
         symbolForBubble.setPosition(x, y);
         yield symbolForBubble.fetchMarkers();
         yield symbolForBubble.fetchCode();
@@ -131,6 +132,19 @@ export const DependencyGraph = types
 
     const removeNode = (id: string) => {
       self.symbols.delete(id);
+
+      // remove existing connections
+      self.symbols.forEach(symbol => {
+        if (symbol.connections.includes(id)) {
+          symbol.connections.remove(id);
+          const marker = symbol.markers.find(
+            marker => marker.connectedSymbol === id
+          );
+          if (marker) {
+            marker.color = "";
+          }
+        }
+      });
     };
 
     const removeFile = (path: string) => {

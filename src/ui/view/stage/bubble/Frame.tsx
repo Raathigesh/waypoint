@@ -137,7 +137,7 @@ function Frame({
           {!collapsed && (
             <Button
               size="xs"
-              variant="outline"
+              variant="ghost"
               padding="3px"
               marginLeft="3px"
               onClick={e => {
@@ -151,7 +151,7 @@ function Frame({
           {collapsed && (
             <Button
               size="xs"
-              variant="outline"
+              variant="ghost"
               padding="3px"
               marginLeft="3px"
               onClick={e => {
@@ -164,7 +164,7 @@ function Frame({
           )}
           <Button
             size="xs"
-            variant="outline"
+            variant="ghost"
             padding="3px"
             marginLeft="3px"
             onClick={e => {

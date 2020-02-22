@@ -12,7 +12,8 @@ export const Marker = types.model("Marker", {
   filePath: types.string,
   name: types.string,
   location: types.maybeNull(DocumentLocation),
-  color: types.string
+  color: types.string,
+  connectedSymbol: types.maybe(types.string)
 });
 
 export const DocumentSymbol = types
@@ -42,7 +43,7 @@ export const DocumentSymbol = types
   }))
   .views(self => ({
     get id() {
-      return `${self.filePath}-${self.name}`;
+      return btoa(`${self.filePath}-${self.name}`);
     }
   }))
   .actions(self => {
@@ -75,7 +76,7 @@ export const DocumentSymbol = types
 
       (symbolWithMakers.markers || []).forEach(marker => {
         const markerObj = Marker.create({
-          id: nanoid(),
+          id: btoa(`${marker.filePath}:${marker.name}`),
           filePath: marker.filePath,
           name: marker.name,
           location: {

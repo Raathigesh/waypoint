@@ -11,10 +11,38 @@ import { Flex, Box, Link, Button } from "@chakra-ui/core";
 import { List, File } from "react-feather";
 import ReferenceDialog from "ui/view/references";
 import { openFile } from "ui/store/services/file";
-import { ArcherElement } from "react-archer";
+import { ArcherElement, Relation, AnchorPosition } from "react-archer";
 
 const getMaxLineLength = (code: string) =>
   Math.max(...code.split("\n").map(line => line.length));
+
+const getAnchorSide = (
+  sourceX: number,
+  sourceY: number,
+  targetX: number,
+  targetY: number
+): {
+  targetAnchor: AnchorPosition;
+  sourceAnchor: AnchorPosition;
+} => {
+  let targetAnchor: AnchorPosition = "middle";
+  let sourceAnchor: AnchorPosition = "middle";
+
+  if (sourceX < targetX) {
+    sourceAnchor = "right";
+    targetAnchor = "left";
+  }
+
+  if (sourceX > targetX) {
+    sourceAnchor = "left";
+    targetAnchor = "right";
+  }
+
+  return {
+    targetAnchor,
+    sourceAnchor
+  };
+};
 
 interface Props {
   symbol: Instance<typeof DocumentSymbol>;
@@ -64,7 +92,7 @@ function Code({ symbol }: Props) {
         <Fragment>
           <Button
             size="xs"
-            variant="outline"
+            variant="ghost"
             marginLeft="3px"
             padding="3px"
             onClick={e => {
@@ -77,7 +105,7 @@ function Code({ symbol }: Props) {
           </Button>
           <Button
             size="xs"
-            variant="outline"
+            variant="ghost"
             marginLeft="3px"
             padding="3px"
             onClick={e => {
@@ -92,12 +120,24 @@ function Code({ symbol }: Props) {
     >
       <ArcherElement
         id={symbol.id}
-        relations={symbol.connections.map(con => ({
-          targetId: con,
-          targetAnchor: "top",
-          sourceAnchor: "bottom",
-          time: Date.now()
-        }))}
+        relations={symbol.connections.map(con => {
+          const targetSymbol = dependencyGraph.symbols.get(con);
+          const anchor = getAnchorSide(
+            symbol.x || 0,
+            symbol.y || 0,
+            (targetSymbol && targetSymbol.x) || 0,
+            (targetSymbol && targetSymbol.y) || 0
+          );
+
+          return {
+            targetId: con,
+            targetAnchor: anchor.targetAnchor,
+            sourceAnchor: anchor.sourceAnchor,
+            style: {
+              strokeColor: targetSymbol?.color
+            }
+          };
+        })}
       >
         <Symbol symbol={symbol} />
       </ArcherElement>
