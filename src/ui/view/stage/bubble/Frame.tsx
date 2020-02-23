@@ -22,6 +22,7 @@ interface Props {
   zIndex?: number;
   headerAction?: any;
   onUpdate?: () => void;
+  onResize: (height: number, width: number) => void;
 }
 
 function Frame({
@@ -40,7 +41,8 @@ function Frame({
   scroll,
   zIndex,
   headerAction,
-  onUpdate
+  onUpdate,
+  onResize
 }: Props) {
   const [collapsed, setCollapsed] = useState(false);
   const handle: any = useRef(null);
@@ -199,9 +201,12 @@ function Frame({
       ) : (
         <Resizable
           style={{ background: "white", borderRadius: "10px" }}
-          defaultSize={{
-            width: `${width || 300}px`,
-            height: `${height || 400}px`
+          size={{
+            width: `${width}px`,
+            height: `${height}px`
+          }}
+          onResizeStop={(e, direction, ref, d) => {
+            onResize((height || 0) + d.height, (width || 0) + d.width);
           }}
         >
           {content}

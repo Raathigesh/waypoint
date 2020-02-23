@@ -20,6 +20,8 @@ export interface PersistableSymbol {
     id: string;
     color: string;
   }[];
+  height: number | undefined;
+  width: number | undefined;
 }
 
 export interface PersistableFile {
@@ -55,7 +57,9 @@ export const DependencyGraph = types
             y: symbol.y,
             connections: symbol.connections,
             markers: symbol.markers,
-            color: symbol.color
+            color: symbol.color,
+            height: symbol.height,
+            width: symbol.width
           })
         );
 
@@ -87,13 +91,17 @@ export const DependencyGraph = types
           id: string;
           color: string;
         }[];
+        height: number | undefined;
+        width: number | undefined;
       }
     ) {
       const documentSymbol = DocumentSymbol.create({
         name,
         filePath,
         color: attributes?.color,
-        connections: attributes?.connections || []
+        connections: attributes?.connections || [],
+        height: attributes?.height,
+        width: attributes?.width
       });
 
       yield documentSymbol.fetchMarkers(attributes?.markers || []);
@@ -277,7 +285,9 @@ export const DependencyGraph = types
             id: marker.id,
             color: marker.color
           })),
-          color: symbol.color || ""
+          color: symbol.color || "",
+          height: symbol.height,
+          width: symbol.width
         })),
         files: [...self.files.values()].map(file => ({
           path: file.filePath,

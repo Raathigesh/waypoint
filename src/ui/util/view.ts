@@ -12,3 +12,32 @@ export function getCharWidth(fontSize: number, fontFamily: string) {
   document.body.appendChild(element);
   return Number(element.clientWidth) / text.length;
 }
+
+const getMaxLineLength = (code: string) =>
+  Math.max(...code.split("\n").map(line => line.length));
+
+export const getDimensions = (
+  fontSize: number,
+  fontFamily: string,
+  code: string,
+  resizedWidth: number | undefined,
+  resizedHeight: number | undefined
+) => {
+  const charWidth = getCharWidth(fontSize, fontFamily);
+  const defaultWidth = (charWidth + 2) * getMaxLineLength(code);
+  const defaultHeight = code.split("\n").length * 20 + 50;
+  console.log(
+    "resizedHeight",
+    resizedHeight,
+    "resizedWidth",
+    resizedWidth,
+    "final width",
+    resizedWidth || defaultWidth,
+    "final height",
+    Math.min(900, resizedHeight || defaultHeight)
+  );
+  return {
+    width: resizedWidth || defaultWidth,
+    height: Math.min(900, resizedHeight || defaultHeight)
+  };
+};

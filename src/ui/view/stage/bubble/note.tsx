@@ -208,6 +208,7 @@ const Note = ({ note }: Props) => {
       width={600}
       zIndex={2}
       scroll
+      onResize={() => {}}
     >
       <Global
         styles={css`

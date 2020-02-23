@@ -14,7 +14,7 @@ import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 import { css, Global } from "@emotion/core";
 import DawnTheme from "monaco-themes/themes/Tomorrow.json";
 import { openFile } from "ui/store/services/file";
-import { getCharWidth } from "ui/util/view";
+import { getCharWidth, getDimensions } from "ui/util/view";
 
 const getMaxLineLength = (code: string) =>
   Math.max(...code.split("\n").map(line => line.length));
@@ -26,7 +26,6 @@ interface Props {
 function Symbol({ symbol }: Props) {
   const dependencyGraph = useContext(dependencyGraphStore);
   const projectInfo = useContext(appStore);
-  const charWidth = getCharWidth(projectInfo.fontSize, projectInfo.fontFamily);
   const editorRef: any = useRef(null);
 
   const markers = symbol?.markers.map(marker => ({
@@ -107,9 +106,13 @@ function Symbol({ symbol }: Props) {
     });
   };
 
-  const width =
-    (charWidth + 2) * getMaxLineLength((symbol && symbol?.code) || "");
-  const height = (symbol.code || "").split("\n").length * 20;
+  const dimensions = getDimensions(
+    projectInfo.fontSize,
+    projectInfo.fontFamily,
+    symbol.code || "",
+    symbol.width,
+    symbol.height
+  );
 
   return (
     <Flex flexDirection="column" flexGrow={1} justifyContent="space-between">
@@ -121,8 +124,8 @@ function Symbol({ symbol }: Props) {
         />
         <MonacoEditor
           ref={editorRef}
-          width={width}
-          height={height}
+          width={dimensions.width}
+          height={dimensions.height - 50}
           language="javascript"
           editorWillMount={handleEditorWillMount}
           editorDidMount={handleEditorDidMount}

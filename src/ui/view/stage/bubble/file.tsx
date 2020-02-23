@@ -56,6 +56,7 @@ function FileBubble({ file }: Props) {
       }}
       setPosition={file.setPosition}
       setRef={file.setRef}
+      onResize={() => {}}
     >
       <Fragment>
         <Flex flexDirection="column">

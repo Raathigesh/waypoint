@@ -6,15 +6,12 @@ import { Instance } from "mobx-state-tree";
 import { DocumentSymbol } from "ui/store/models/DocumentSymbol";
 import Frame from "./Frame";
 import Symbol from "./symbol";
-import { getCharWidth } from "ui/util/view";
+import { getCharWidth, getDimensions } from "ui/util/view";
 import { Flex, Box, Link, Button } from "@chakra-ui/core";
 import { List, File } from "react-feather";
 import ReferenceDialog from "ui/view/references";
 import { openFile } from "ui/store/services/file";
 import { ArcherElement, Relation, AnchorPosition } from "react-archer";
-
-const getMaxLineLength = (code: string) =>
-  Math.max(...code.split("\n").map(line => line.length));
 
 const getAnchorSide = (
   sourceX: number,
@@ -50,11 +47,14 @@ interface Props {
 
 function Code({ symbol }: Props) {
   const projectInfo = useContext(appStore);
-  const charWidth = getCharWidth(projectInfo.fontSize, projectInfo.fontFamily);
   const dependencyGraph = useContext(dependencyGraphStore);
-  const width =
-    (charWidth + 2) * getMaxLineLength((symbol && symbol?.code) || "");
-  const height = (symbol.code || "").split("\n").length * 20;
+  const dimensions = getDimensions(
+    projectInfo.fontSize,
+    projectInfo.fontFamily,
+    symbol.code || "",
+    symbol.width,
+    symbol.height
+  );
 
   const [isReferenceOpen, setIsReferenceOpen] = useState(false);
 
@@ -68,13 +68,24 @@ function Code({ symbol }: Props) {
           }}
         >
           {symbol.name}
-          <Box fontSize="10px" marginLeft="10px">
-            {symbol.filePath.replace(projectInfo.root, "")}
+          <Box
+            fontSize="10px"
+            marginLeft="10px"
+            overflow="hidden"
+            style={{ textOverflow: "ellipsis" }}
+          >
+            {symbol.filePath
+              .replace(projectInfo.root, "")
+              .split(projectInfo.separator)
+              .join(" > ")}
           </Box>
         </Flex>
       }
       x={symbol.x || 0}
       y={symbol.y || 0}
+      onResize={(resizedHeight, resizedWidth) =>
+        symbol.setDimensions(resizedHeight, resizedWidth)
+      }
       headerColor={symbol.color || "rgba(0, 0, 0, 0.028)"}
       onEnd={() => {
         dependencyGraph.setIsBubbleDragging(false);
@@ -86,8 +97,8 @@ function Code({ symbol }: Props) {
       onUpdate={() => dependencyGraph.refreshArrows()}
       setPosition={symbol.setPosition}
       setRef={symbol.setRef}
-      width={width + 10}
-      height={Math.min(900, height + 50)}
+      width={dimensions.width}
+      height={dimensions.height}
       headerAction={
         <Fragment>
           <Button

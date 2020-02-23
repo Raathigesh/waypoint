@@ -34,7 +34,9 @@ export const DocumentSymbol = types
     color: types.maybe(types.string),
     connections: types.array(types.string),
     x: types.maybe(types.number),
-    y: types.maybe(types.number)
+    y: types.maybe(types.number),
+    height: types.maybe(types.number),
+    width: types.maybe(types.number)
   })
   .volatile(self => ({
     ref: null,
@@ -137,12 +139,21 @@ export const DocumentSymbol = types
       self.connections.push(id);
     };
 
+    const setDimensions = (
+      height: number | undefined,
+      width: number | undefined
+    ) => {
+      self.height = height;
+      self.width = width;
+    };
+
     return {
       setPosition,
       fetchMarkers,
       setRef,
       fetchReferences,
       fetchCode,
-      addConnection
+      addConnection,
+      setDimensions
     };
   });
