@@ -15,6 +15,11 @@ export interface PersistableSymbol {
   x: number | undefined;
   y: number | undefined;
   connections: string[];
+  color: string;
+  markers: {
+    id: string;
+    color: string;
+  }[];
 }
 
 export interface PersistableFile {
@@ -48,7 +53,9 @@ export const DependencyGraph = types
           setCurrentSymbol(symbol.name, symbol.path, {
             x: symbol.x,
             y: symbol.y,
-            connections: symbol.connections
+            connections: symbol.connections,
+            markers: symbol.markers,
+            color: symbol.color
           })
         );
 
@@ -75,15 +82,21 @@ export const DependencyGraph = types
         x: number | undefined;
         y: number | undefined;
         connections: string[];
+        color: string;
+        markers: {
+          id: string;
+          color: string;
+        }[];
       }
     ) {
       const documentSymbol = DocumentSymbol.create({
         name,
         filePath,
+        color: attributes?.color,
         connections: attributes?.connections || []
       });
 
-      yield documentSymbol.fetchMarkers();
+      yield documentSymbol.fetchMarkers(attributes?.markers || []);
       yield documentSymbol.fetchCode();
       if (attributes) {
         documentSymbol.setPosition(attributes?.x || 0, attributes.y || 0);
@@ -107,7 +120,7 @@ export const DependencyGraph = types
       if (clickedMarker) {
         const nextColor = getNextColor();
         const id = symbol.id;
-        clickedMarker.color = nextColor;
+        clickedMarker.setColor(nextColor);
 
         const symbolForBubble = DocumentSymbol.create({
           name: clickedMarker.name,
@@ -118,7 +131,7 @@ export const DependencyGraph = types
         });
         clickedMarker.connectedSymbol = symbolForBubble.id;
         symbolForBubble.setPosition(x, y);
-        yield symbolForBubble.fetchMarkers();
+        yield symbolForBubble.fetchMarkers([]);
         yield symbolForBubble.fetchCode();
         const sourceSymbol = self.symbols.get(id);
         sourceSymbol?.addConnection(symbolForBubble.id);
@@ -137,7 +150,7 @@ export const DependencyGraph = types
             marker => marker.connectedSymbol === id
           );
           if (marker) {
-            marker.color = "";
+            marker.setColor("");
           }
         }
       });
@@ -259,7 +272,12 @@ export const DependencyGraph = types
           path: symbol.filePath,
           x: symbol.x,
           y: symbol.y,
-          connections: symbol.connections
+          connections: symbol.connections,
+          markers: symbol.markers.map(marker => ({
+            id: marker.id,
+            color: marker.color
+          })),
+          color: symbol.color || ""
         })),
         files: [...self.files.values()].map(file => ({
           path: file.filePath,

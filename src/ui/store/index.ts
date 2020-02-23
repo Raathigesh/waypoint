@@ -21,7 +21,6 @@ export const pathMapStore = createContext(pathMap);
 const dependencyGraph = DependencyGraph.create({
   currentColorIndex: 0,
   colors: [
-    "rgb(203, 213, 224, 0.3)",
     "rgb(245, 101, 101, 0.3)",
     "rgb(251, 211, 141, 0.3)",
     "rgb(154, 230, 180, 0.3)",

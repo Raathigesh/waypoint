@@ -7,14 +7,20 @@ import {
   GqlSymbolInformation
 } from "entities/GqlSymbolInformation";
 
-export const Marker = types.model("Marker", {
-  id: types.string,
-  filePath: types.string,
-  name: types.string,
-  location: types.maybeNull(DocumentLocation),
-  color: types.string,
-  connectedSymbol: types.maybe(types.string)
-});
+export const Marker = types
+  .model("Marker", {
+    id: types.string,
+    filePath: types.string,
+    name: types.string,
+    location: types.maybeNull(DocumentLocation),
+    color: types.string,
+    connectedSymbol: types.maybe(types.string)
+  })
+  .actions(self => ({
+    setColor(color: string) {
+      self.color = color;
+    }
+  }));
 
 export const DocumentSymbol = types
   .model("DocumentSymbol", {
@@ -50,7 +56,12 @@ export const DocumentSymbol = types
 
     const setRef = (ref: any) => (self.ref = ref);
 
-    const fetchMarkers = flow(function*() {
+    const fetchMarkers = flow(function*(
+      markers: {
+        id: string;
+        color: string;
+      }[]
+    ) {
       const symbolWithMakers: GqlSymbolInformation = yield getMarkers(
         self.filePath,
         self.name
@@ -69,8 +80,10 @@ export const DocumentSymbol = types
       };
 
       (symbolWithMakers.markers || []).forEach(marker => {
+        const idMarker = btoa(`${marker.filePath}:${marker.name}`);
+        const colorForMaker = (markers || []).find(m => m.id === idMarker);
         const markerObj = Marker.create({
-          id: btoa(`${marker.filePath}:${marker.name}`),
+          id: idMarker,
           filePath: marker.filePath,
           name: marker.name,
           location: {
@@ -83,7 +96,7 @@ export const DocumentSymbol = types
               line: marker?.location?.end?.line || 0
             }
           },
-          color: ""
+          color: colorForMaker?.color || ""
         });
 
         self.markers.push(markerObj);

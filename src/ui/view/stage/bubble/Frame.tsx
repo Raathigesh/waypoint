@@ -117,7 +117,6 @@ function Frame({
       <Flex
         cursor="grab"
         alignItems="center"
-        backgroundColor={headerColor || "rgba(0, 0, 0, 0.028)"}
         justifyContent="flex-end"
         borderRadius="5px 5px 0px 0px"
         padding="3px"
@@ -189,7 +188,8 @@ function Frame({
         position: "absolute",
         transform: `translate(${x}px, ${y}px)`,
         zIndex: zIndex || 3,
-        borderRadius: "10px"
+        borderRadius: "10px",
+        border: `2px solid ${headerColor || "none"}`
       }}
       ref={container}
       onClick={e => e.stopPropagation()}
