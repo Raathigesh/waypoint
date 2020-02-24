@@ -3,7 +3,7 @@
   "displayName": "JS Bubbles",
   "description": "Re-imagining reading JavaScript in VSCode",
   "publisher": "raathigeshan",
-  "version": "0.18.0",
+  "version": "0.18.1",
   "engines": {
     "vscode": "^1.33.0"
   },
