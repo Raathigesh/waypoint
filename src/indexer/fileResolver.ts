@@ -1,5 +1,5 @@
 import { isAbsolute, resolve, dirname, sep, join } from "path";
-import { existsSync, statSync } from "fs";
+import { existsSync, statSync, lstatSync } from "fs";
 const supportedExtensions = ["js", "jsx", "ts", "tsx"];
 
 export function tryResolvingWithIndexOrExtension(originalPath: string) {
@@ -28,7 +28,7 @@ export function findAbsoluteFilePathWhichExists(
 ) {
   // when a path is absolute
   if (isAbsolute(originalPath)) {
-    if (existsSync(originalPath)) {
+    if (existsSync(originalPath) && !lstatSync(originalPath).isDirectory()) {
       return originalPath;
     }
 

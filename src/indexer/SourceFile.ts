@@ -29,6 +29,8 @@ export default class SourceFile {
   public importStatements: ImportStatement[] = [];
   public exportStatements: ExportStatement[] = [];
   public programScope: Scope | undefined;
+  public root: string = "";
+  public pathAliasMap: { [alias: string]: string } = {};
 
   public async parse(
     filePath: string,
@@ -37,6 +39,8 @@ export default class SourceFile {
   ) {
     try {
       this.path = filePath;
+      this.root = root;
+      this.pathAliasMap = pathAliasMap;
 
       const content = await promisify(readFile)(filePath);
       const ast = this.getAST(content.toString(), filePath);
@@ -64,7 +68,7 @@ export default class SourceFile {
           this.extractExportNamedDeclaration(path);
         }
       });
-      this.linkLocalSymbols();
+      this.linkLocalSymbols(root, pathAliasMap);
     } catch (e) {
       console.log("Parsing failed", filePath, e);
     }
@@ -133,7 +137,12 @@ export default class SourceFile {
             this.isInLocation(location, reference.location)
           ) {
             symbol.markers.push({
-              filePath: importStatement.path,
+              filePath: findAbsoluteFilePathWhichExists(
+                this.root,
+                dirname(this.path),
+                importStatement.path,
+                this.pathAliasMap
+              ),
               name: specifier.name,
               location: this.adjustLocation(location, reference.location) as any
             });
@@ -144,7 +153,10 @@ export default class SourceFile {
     this.symbols.push(symbol);
   }
 
-  private linkLocalSymbols() {
+  private linkLocalSymbols(
+    root: string,
+    pathAliasMap: { [alias: string]: string }
+  ) {
     if (!this.programScope) {
       return;
     }
@@ -164,7 +176,12 @@ export default class SourceFile {
 
             if (!existingMarker) {
               symbol.markers.push({
-                filePath: symbol.path,
+                filePath: findAbsoluteFilePathWhichExists(
+                  root,
+                  dirname(this.path),
+                  symbol.path,
+                  pathAliasMap
+                ),
                 name,
                 location: this.adjustLocation(
                   symbol.location,
@@ -230,7 +247,14 @@ export default class SourceFile {
 
     return parser.parse(content, {
       sourceType: "module",
-      plugins: ["jsx", "classProperties", "dynamicImport", additionalPlugin]
+      plugins: [
+        "jsx",
+        "classProperties",
+        "dynamicImport",
+        "nullishCoalescingOperator",
+        "optionalChaining",
+        additionalPlugin
+      ]
     });
   }
 
