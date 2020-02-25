@@ -12,12 +12,15 @@ import { List, File } from "react-feather";
 import ReferenceDialog from "ui/view/references";
 import { openFile } from "ui/store/services/file";
 import { ArcherElement, Relation, AnchorPosition } from "react-archer";
+import { Tooltip } from "react-tippy";
 
 const getAnchorSide = (
   sourceX: number,
   sourceY: number,
   targetX: number,
-  targetY: number
+  targetY: number,
+  sourceHeight: number,
+  targetHeight: number
 ): {
   targetAnchor: AnchorPosition;
   sourceAnchor: AnchorPosition;
@@ -25,16 +28,22 @@ const getAnchorSide = (
   let targetAnchor: AnchorPosition = "middle";
   let sourceAnchor: AnchorPosition = "middle";
 
-  if (sourceX < targetX) {
+  const isTargetBelowSource = targetY > sourceY + sourceHeight;
+  const isTargetAboveSource = targetY + targetHeight < sourceY;
+
+  if (isTargetBelowSource) {
+    sourceAnchor = "bottom";
+    targetAnchor = "top";
+  } else if (isTargetAboveSource) {
+    sourceAnchor = "top";
+    targetAnchor = "bottom";
+  } else if (sourceX < targetX) {
     sourceAnchor = "right";
     targetAnchor = "left";
-  }
-
-  if (sourceX > targetX) {
+  } else if (sourceX > targetX) {
     sourceAnchor = "left";
     targetAnchor = "right";
   }
-
   return {
     targetAnchor,
     sourceAnchor
@@ -112,7 +121,9 @@ function Code({ symbol }: Props) {
               symbol.fetchReferences();
             }}
           >
-            <List cursor="pointer" size="12px" />
+            <Tooltip size="small" title="Show references" position="bottom">
+              <List cursor="pointer" size="12px" />
+            </Tooltip>
           </Button>
           <Button
             size="xs"
@@ -124,7 +135,9 @@ function Code({ symbol }: Props) {
               openFile(symbol.filePath, symbol.location as any);
             }}
           >
-            <File cursor="pointer" size="12px" />
+            <Tooltip size="small" title="Open file" position="bottom">
+              <File cursor="pointer" size="12px" />
+            </Tooltip>
           </Button>
         </Fragment>
       }
@@ -133,11 +146,21 @@ function Code({ symbol }: Props) {
         id={symbol.id}
         relations={symbol.connections.map(con => {
           const targetSymbol = dependencyGraph.symbols.get(con);
+
+          const targetDimension = getDimensions(
+            projectInfo.fontSize,
+            projectInfo.fontFamily,
+            (targetSymbol && targetSymbol.code) || "",
+            (targetSymbol && targetSymbol.width) || 0,
+            (targetSymbol && targetSymbol.height) || 0
+          );
           const anchor = getAnchorSide(
             symbol.x || 0,
             symbol.y || 0,
             (targetSymbol && targetSymbol.x) || 0,
-            (targetSymbol && targetSymbol.y) || 0
+            (targetSymbol && targetSymbol.y) || 0,
+            dimensions.height || 0,
+            targetDimension.height || 0
           );
 
           return {

@@ -255,6 +255,12 @@ export const DependencyGraph = types
       self.arcContainerRef = ref;
     };
 
+    const clear = () => {
+      self.symbols.clear();
+      self.notes.clear();
+      self.files.clear();
+    };
+
     return {
       initializeStage,
       setCurrentSymbol,
@@ -269,7 +275,8 @@ export const DependencyGraph = types
       addNote,
       removeNote,
       setArcContainerRef,
-      refreshArrows
+      refreshArrows,
+      clear
     };
   })
   .views(self => ({

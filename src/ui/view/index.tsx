@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, Fragment } from "react";
 import { observer } from "mobx-react-lite";
+import { Tooltip } from "react-tippy";
 import {
   Flex,
   IconButton,
@@ -35,64 +36,86 @@ function App() {
       <Welcome indexerStatus={indexerStatus} onOpenPreference={onOpen} />
       {indexerStatus.status === "indexed" && (
         <Fragment>
-          <IconButton
-            variant="outline"
-            position="fixed"
-            right="10px"
-            top="10px"
-            onClick={onOpen}
-            aria-label="Settings"
-            icon="settings"
-            marginLeft="10px"
-            zIndex={100}
-          />
-          <IconButton
-            variant="outline"
-            position="fixed"
-            right="60px"
-            top="10px"
-            onClick={() => dependencyGraph.addNote()}
-            aria-label="Settings"
-            icon="plus-square"
-            marginLeft="10px"
-            zIndex={100}
-          />
-          <Popover placement="bottom" closeOnBlur={false}>
-            <PopoverTrigger>
+          <Flex position="fixed" right="10px" top="10px" zIndex={100}>
+            <Tooltip size="small" title="Preference" position="bottom">
               <IconButton
                 variant="outline"
-                position="fixed"
-                right="110px"
-                top="10px"
-                aria-label="Copy link"
-                icon="link"
+                size="sm"
+                onClick={onOpen}
+                aria-label="Settings"
+                icon="settings"
                 marginLeft="10px"
-                zIndex={100}
               />
-            </PopoverTrigger>
-            <PopoverContent
-              zIndex={4}
-              color="white"
-              bg="blue.800"
-              borderColor="blue.800"
-            >
-              <PopoverHeader pt={4} fontWeight="bold" border="0">
-                Open this URL in the browser
-              </PopoverHeader>
-              <PopoverArrow />
-              <PopoverCloseButton />
-              <PopoverBody>
-                <Input
-                  color="blue.800"
-                  placeholder="small size"
-                  size="sm"
-                  borderRadius="3px"
-                  value="http://localhost:4545"
-                />
-              </PopoverBody>
-            </PopoverContent>
-          </Popover>
-
+            </Tooltip>
+            <Tooltip size="small" title="Add a note" position="bottom">
+              <IconButton
+                variant="outline"
+                size="sm"
+                onClick={() => dependencyGraph.addNote()}
+                aria-label="Note"
+                icon="plus-square"
+                marginLeft="10px"
+              />
+            </Tooltip>
+            <Popover placement="bottom" closeOnBlur={false}>
+              <Tooltip
+                size="small"
+                title="Open link in browser"
+                position="bottom"
+              >
+                <PopoverTrigger>
+                  <IconButton
+                    size="sm"
+                    variant="outline"
+                    aria-label="Copy link"
+                    icon="link"
+                    marginLeft="10px"
+                  />
+                </PopoverTrigger>
+              </Tooltip>
+              <PopoverContent
+                zIndex={4}
+                color="white"
+                bg="blue.800"
+                borderColor="blue.800"
+              >
+                <PopoverHeader pt={4} fontWeight="bold" border="0">
+                  Open this URL in the browser
+                </PopoverHeader>
+                <PopoverArrow />
+                <PopoverCloseButton />
+                <PopoverBody>
+                  <Input
+                    color="blue.800"
+                    placeholder="small size"
+                    size="sm"
+                    borderRadius="3px"
+                    value="http://localhost:4545"
+                  />
+                </PopoverBody>
+              </PopoverContent>
+            </Popover>
+            <Tooltip size="small" title="Refresh" position="bottom">
+              <IconButton
+                size="sm"
+                variant="outline"
+                onClick={() => dependencyGraph.initializeStage()}
+                aria-label="Refresh"
+                icon={"repeat" as any}
+                marginLeft="10px"
+              />
+            </Tooltip>
+            <Tooltip size="small" title="Remove all items" position="bottom">
+              <IconButton
+                size="sm"
+                variant="outline"
+                onClick={() => dependencyGraph.clear()}
+                aria-label="Delete"
+                icon={"delete" as any}
+                marginLeft="10px"
+              />
+            </Tooltip>
+          </Flex>
           <Stage />
         </Fragment>
       )}

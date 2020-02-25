@@ -4,6 +4,7 @@ import { X, Minimize2, Maximize2 } from "react-feather";
 import { ArcherContainer, ArcherElement } from "react-archer";
 import { Resizable } from "re-resizable";
 import { observer } from "mobx-react-lite";
+import { Tooltip } from "react-tippy";
 
 interface Props {
   title: any;
@@ -146,7 +147,9 @@ function Frame({
                 e.stopPropagation();
               }}
             >
-              <Minimize2 cursor="pointer" size="12px" />
+              <Tooltip size="small" title="Collapse" position="bottom">
+                <Minimize2 cursor="pointer" size="12px" />
+              </Tooltip>
             </Button>
           )}
           {collapsed && (
@@ -160,9 +163,12 @@ function Frame({
                 e.stopPropagation();
               }}
             >
-              <Maximize2 cursor="pointer" size="12px" />
+              <Tooltip size="small" title="Expand" position="bottom">
+                <Maximize2 cursor="pointer" size="12px" />
+              </Tooltip>
             </Button>
           )}
+
           <Button
             size="xs"
             variant="ghost"
@@ -173,7 +179,9 @@ function Frame({
               e.stopPropagation();
             }}
           >
-            <X cursor="pointer" size="12px" />
+            <Tooltip size="small" title="Remove" position="bottom">
+              <X cursor="pointer" size="12px" />
+            </Tooltip>
           </Button>
         </Flex>
       </Flex>
