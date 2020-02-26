@@ -200,7 +200,8 @@ export default class Indexer {
 
       function ignoreFunc(file: string, stats: Stats) {
         return (
-          indexableDirectories.find(dir => file.includes(dir)) === undefined
+          indexableDirectories.find(dir => file.includes(dir)) === undefined ||
+          file.includes("node_modules")
         );
       }
 

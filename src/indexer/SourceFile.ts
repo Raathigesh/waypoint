@@ -43,6 +43,13 @@ export default class SourceFile {
       this.pathAliasMap = pathAliasMap;
 
       const content = await promisify(readFile)(filePath);
+      const size = content.byteLength;
+
+      // if the file is too big, don't try to parse it
+      if (size === 500000) {
+        return;
+      }
+
       const ast = this.getAST(content.toString(), filePath);
 
       traverse(ast, {

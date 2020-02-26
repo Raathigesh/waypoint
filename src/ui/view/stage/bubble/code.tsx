@@ -66,6 +66,10 @@ function Code({ symbol }: Props) {
   );
 
   const [isReferenceOpen, setIsReferenceOpen] = useState(false);
+  const relativePath = symbol.filePath.replace(projectInfo.root, "");
+  const trimmedPath = relativePath.startsWith(projectInfo.separator)
+    ? relativePath.substr(1)
+    : relativePath;
 
   return (
     <Frame
@@ -83,10 +87,7 @@ function Code({ symbol }: Props) {
             overflow="hidden"
             style={{ textOverflow: "ellipsis" }}
           >
-            {symbol.filePath
-              .replace(projectInfo.root, "")
-              .split(projectInfo.separator)
-              .join(" > ")}
+            {trimmedPath.split(projectInfo.separator).join(" > ")}
           </Box>
         </Flex>
       }

@@ -1,6 +1,6 @@
 <div align="center">
 <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/bubbles.png">
-  
+
 <p align="center">
   A VSCode extension for <em>navigating</em> and <em>understanding</em> <br/>
   JavaScript codebases.
@@ -44,6 +44,12 @@ JSBubbles is inspired by [Code bubbles](http://www.andrewbragdon.com/codebubbles
 <div align="center">
   <p align="center"><b>Fast symbol search</b></p>
  <p align="center"><em>Press `ctrl + f` to open the symbol search window. Search and select a symbol to bring to the stage.</em></p>
+
+ <p align="center">You can also filter symbols by type. The search supports <b>"type"</b>, <b>"var"</b>, <b>"class"</b> and <b>"func"</b> as filters.
+ </p>
+  <p align="center"> E.g: "type domain" or "func getItem" or "class View" or "var url"
+ </p>
+
  <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/2-search-symbol.gif">
 </div>
 
@@ -67,14 +73,14 @@ JSBubbles is inspired by [Code bubbles](http://www.andrewbragdon.com/codebubbles
 
 <br/>
 <br/>
- 
+
 <div align="center">
   <p align="center"><b>Take notes with a note bubble</b></p>
  <p align="center"><em>Add a note bubble and bring in other bubbles from the stage.</em></p>
 <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/5-add-note-bubble.gif">
 </div>
 
-<br/> 
+<br/>
 <br/>
 
 ### Contributing
