@@ -74,7 +74,8 @@
     "publish-ext": "vsce publish --yarn",
     "pretty": "prettier --write  \"src/**/*.{ts,tsx}\"",
     "test": "jest",
-    "ship": "yarn version && git push origin --tag"
+    "ship": "yarn version && git push origin --tag",
+    "docs": "cd website && yarn install && yarn build"
   },
   "devDependencies": {
     "@babel/core": "^7.7.2",
