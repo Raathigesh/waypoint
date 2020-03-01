@@ -1,0 +1,44 @@
+---
+id: IndexYourProject
+title: Index your project
+---
+
+import useBaseUrl from "@docusaurus/useBaseUrl";
+
+Indexing is the process of traversing your project's source files and extracting the important pieces of information such as symbols, import statements and export statements.
+
+### Tell which directories contains the source code
+
+You have to tell JS Bubbles which folders it should traverse. You can add multiple folders. All the paths should be relative to the folder opened in VSCode.
+
+<img
+  alt="Directories to index"
+  style={{
+    border: "1px solid #f4f4f4",
+    borderRadius: "3px",
+    maxWidth: "500px"
+  }}
+  src={useBaseUrl("img/directories-to-index.png")}
+/>
+
+By default the indexer will skip `node_modules`.
+
+### Configure path alias
+
+If you use [`resolve.alias`](https://webpack.js.org/configuration/resolve/#resolvealias) of Webpack or a similar feature of another build tool, you should configure those paths in the preference.
+
+<img
+  alt="Directories to index"
+  style={{
+    border: "1px solid #f4f4f4",
+    borderRadius: "3px",
+    maxWidth: "500px"
+  }}
+  src={useBaseUrl("img/path-alias.png")}
+/>
+
+For example if you have a path alias `app` points to a directory `./src/view/app` in your project, the `Alias` text box should be `app` and the `Path` text box should be `./src/view/app`.
+
+### Start indexing
+
+Once you have your configurations in place, click the "Start Indexing" button. This might take a few seconds or minutes depending on the number of files in your project.
