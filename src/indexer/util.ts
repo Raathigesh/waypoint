@@ -15,7 +15,7 @@ export const getFileType = (path: string): FileType => {
   return "UNSUPPORTED";
 };
 
-export function santizePath(root: string, path?: string = "") {
+export function santizePath(root: string, path: string | undefined = "") {
   return path
     .replace(root, "")
     .split(sep)
