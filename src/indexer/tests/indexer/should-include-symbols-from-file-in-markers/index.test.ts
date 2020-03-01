@@ -1,7 +1,7 @@
 import { resolve, sep, dirname } from "path";
 import Indexer from "indexer/Indexer";
 import Project from "indexer/Project";
-import { santizePath } from "indexer/tests/util";
+import { santizePath } from "indexer/util";
 
 const waitForIndexer = () =>
   new Promise(resolve => {

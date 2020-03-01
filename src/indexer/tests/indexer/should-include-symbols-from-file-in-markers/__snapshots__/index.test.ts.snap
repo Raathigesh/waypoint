@@ -2,7 +2,7 @@
 
 exports[`Indexer should have symbols from the file in the marker 1`] = `
 Object {
-  "id": "ZnVuY3Rpb25BOkQ6XHByb2plY3RzXGluc2lnaHRcc3JjXGluZGV4ZXJcdGVzdHNcaW5kZXhlclxzaG91bGQtaW5jbHVkZS1zeW1ib2xzLWZyb20tZmlsZS1pbi1tYXJrZXJzXHByb2plY3RcYS5qcw==",
+  "id": "ZnVuY3Rpb25BOi9hLmpz",
   "kind": "FunctionDeclaration",
   "location": SourceLocation {
     "end": Position {

@@ -21,6 +21,7 @@ import { ImportDeclaration } from "@babel/types";
 import { dirname } from "path";
 import { findAbsoluteFilePathWhichExists } from "./fileResolver";
 import { GqlLocation } from "entities/GqlLocation";
+import { santizePath } from "./util";
 import ExportStatement from "./ExportStatement";
 
 export default class SourceFile {
@@ -131,7 +132,7 @@ export default class SourceFile {
 
   private createSymbol(name: string, kind: string, location: SourceLocation) {
     const symbol = new ESModuleItem();
-    symbol.id = btoa(`${name}:${this.path}`);
+    symbol.id = btoa(`${name}:${santizePath(this.root, this.path)}`);
     symbol.name = name;
     symbol.kind = kind;
     symbol.location = location;
