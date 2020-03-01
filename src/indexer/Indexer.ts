@@ -29,10 +29,10 @@ export default class Indexer {
       filePath => getFileType(filePath) !== "UNSUPPORTED"
     );
 
-    this.relaxedIndexer(supportedFiles);
+    return this.relaxedIndexer(supportedFiles);
   }
 
-  public relaxedIndexer(filesToIndex: string[]) {
+  public relaxedIndexer(filesToIndex: string[], pendingPromises: any[] = []) {
     if (filesToIndex.length === 0) {
       this.status = "indexed";
       return;
@@ -47,12 +47,17 @@ export default class Indexer {
         this.project.pathAlias,
         this.project.root
       );
+
+      pendingPromises.push(parsePromise);
+
       this.files[currentFile] = sourceFile;
       this.indexedFileCount += 1;
       setTimeout(() => {
-        this.relaxedIndexer(filesToIndex);
+        this.relaxedIndexer(filesToIndex, pendingPromises);
       }, 0);
     }
+
+    return Promise.all(pendingPromises);
   }
 
   public indexFile(path: string) {

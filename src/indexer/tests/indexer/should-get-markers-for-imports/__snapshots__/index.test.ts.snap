@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Indexer should have named exports 1`] = `
+Object {
+  "id": "ZnVuY3Rpb25BOkQ6XHByb2plY3RzXGluc2lnaHRcc3JjXGluZGV4ZXJcdGVzdHNcaW5kZXhlclxzaG91bGQtZ2V0LW1hcmtlcnMtZm9yLWltcG9ydHNccHJvamVjdFxhLmpz",
+  "kind": "FunctionDeclaration",
+  "location": SourceLocation {
+    "end": Position {
+      "column": 1,
+      "line": 4,
+    },
+    "start": Position {
+      "column": 7,
+      "line": 2,
+    },
+  },
+  "markers": Array [
+    Object {
+      "filePath": "/b.js",
+      "location": Object {
+        "end": Object {
+          "column": 21,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 12,
+          "line": 1,
+        },
+      },
+      "name": "functionB",
+    },
+  ],
+  "name": "functionA",
+  "path": "/a.js",
+}
+`;
+
+exports[`Indexer should have named exports in markers 1`] = `
+Object {
+  "id": "ZnVuY3Rpb25BOkQ6XHByb2plY3RzXGluc2lnaHRcc3JjXGluZGV4ZXJcdGVzdHNcaW5kZXhlclxzaG91bGQtZ2V0LW1hcmtlcnMtZm9yLWltcG9ydHNccHJvamVjdFxhLmpz",
+  "kind": "FunctionDeclaration",
+  "location": SourceLocation {
+    "end": Position {
+      "column": 1,
+      "line": 4,
+    },
+    "start": Position {
+      "column": 7,
+      "line": 2,
+    },
+  },
+  "markers": Array [
+    Object {
+      "filePath": "/b.js",
+      "location": Object {
+        "end": Object {
+          "column": 21,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 12,
+          "line": 1,
+        },
+      },
+      "name": "functionB",
+    },
+  ],
+  "name": "functionA",
+  "path": "/a.js",
+}
+`;

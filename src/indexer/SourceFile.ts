@@ -131,7 +131,7 @@ export default class SourceFile {
 
   private createSymbol(name: string, kind: string, location: SourceLocation) {
     const symbol = new ESModuleItem();
-    symbol.id = nanoid();
+    symbol.id = btoa(`${name}:${this.path}`);
     symbol.name = name;
     symbol.kind = kind;
     symbol.location = location;
