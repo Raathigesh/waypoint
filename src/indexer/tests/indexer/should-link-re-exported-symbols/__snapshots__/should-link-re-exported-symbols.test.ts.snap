@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Indexer should link re-exported symbols 1`] = `
+Object {
+  "id": "ZnVuY3Rpb25BOi9jLmpz",
+  "kind": "FunctionDeclaration",
+  "location": SourceLocation {
+    "end": Position {
+      "column": 30,
+      "line": 1,
+    },
+    "start": Position {
+      "column": 7,
+      "line": 1,
+    },
+  },
+  "markers": Array [],
+  "name": "functionA",
+  "path": "/c.js",
+}
+`;

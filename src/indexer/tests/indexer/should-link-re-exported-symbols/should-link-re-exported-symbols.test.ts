@@ -1,4 +1,4 @@
-import { resolve, sep, dirname } from "path";
+import { resolve } from "path";
 import Indexer from "indexer/Indexer";
 import Project from "indexer/Project";
 import { santizePath } from "indexer/util";
@@ -12,7 +12,7 @@ const waitForIndexer = () =>
   });
 
 describe("Indexer", () => {
-  it("should have symbols from the file in the marker", async () => {
+  it("should link re-exported symbols", async () => {
     const project: Project = {
       root: resolve(__dirname, "./project"),
       pathAlias: {},

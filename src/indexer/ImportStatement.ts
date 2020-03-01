@@ -1,5 +1,6 @@
 export interface ImportSpecifier {
   name: string;
+  isDefault: boolean;
   references: {
     location?: {
       start: {

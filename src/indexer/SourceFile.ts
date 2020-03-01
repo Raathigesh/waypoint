@@ -6,11 +6,11 @@ import {
   SourceLocation,
   Identifier,
   Program,
-  ExportNamedDeclaration
+  ExportNamedDeclaration,
+  ExportDefaultDeclaration
 } from "babel-types";
 import { readFile } from "fs";
 import { promisify } from "util";
-const nanoid = require("nanoid");
 import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import { NodePath, Scope } from "babel-traverse";
@@ -124,15 +124,20 @@ export default class SourceFile {
         specifiers: path.node.specifiers.map(specifier => ({
           local: specifier.local.name,
           exported: specifier.exported.name
-        }))
+        })),
+        isDefault: false // TODO
       };
       this.exportStatements.push(exportStatement);
     }
   }
 
+  private btoa(stringToEncode: string) {
+    return Buffer.from(stringToEncode).toString("base64");
+  }
+
   private createSymbol(name: string, kind: string, location: SourceLocation) {
     const symbol = new ESModuleItem();
-    symbol.id = btoa(`${name}:${santizePath(this.root, this.path)}`);
+    symbol.id = this.btoa(`${name}:${santizePath(this.root, this.path)}`);
     symbol.name = name;
     symbol.kind = kind;
     symbol.location = location;
@@ -151,7 +156,7 @@ export default class SourceFile {
                 importStatement.path,
                 this.pathAliasMap
               ),
-              name: specifier.name,
+              name: specifier.isDefault ? "@@DEFAULT_EXPORT@@" : specifier.name,
               location: this.adjustLocation(location, reference.location) as any
             });
           }
@@ -236,6 +241,7 @@ export default class SourceFile {
           ((specifierPath as any).imported &&
             (specifierPath as any).imported.name) ||
           specifierPath.local.name,
+        isDefault: specifierPath.type === "ImportDefaultSpecifier",
         references: referencePaths.map(referencePath => {
           return {
             location: referencePath.node.loc

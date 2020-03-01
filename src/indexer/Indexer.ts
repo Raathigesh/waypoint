@@ -224,7 +224,11 @@ export default class Indexer {
     return [];
   }
 
-  private getReExportedSymbol(name: string, path: string, file: SourceFile) {
+  private getReExportedSymbol(
+    name: string,
+    path: string,
+    file: SourceFile
+  ): ESModuleItem | null | undefined {
     if (!this.project) {
       return null;
     }
@@ -249,9 +253,15 @@ export default class Indexer {
         this.project.pathAlias
       );
       const actualFile = this.files[absolutePath];
-      return actualFile.symbols.find(
+      const symbolFromActualFile = actualFile.symbols.find(
         symbol => symbol.name === actualSymbolName
       );
+
+      if (symbolFromActualFile) {
+        return symbolFromActualFile;
+      }
+
+      return this.getReExportedSymbol(name, absolutePath, actualFile);
     }
   }
 }

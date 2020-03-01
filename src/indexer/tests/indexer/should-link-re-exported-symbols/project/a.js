@@ -1,0 +1,1 @@
+export { functionA } from "./b";

@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Indexer should include default import as markers 1`] = `
+Object {
+  "id": "Y29uc3VtZXI6L2EuanM=",
+  "kind": "FunctionDeclaration",
+  "location": SourceLocation {
+    "end": Position {
+      "column": 1,
+      "line": 7,
+    },
+    "start": Position {
+      "column": 0,
+      "line": 4,
+    },
+  },
+  "markers": Array [
+    Object {
+      "filePath": "/b.js",
+      "location": Object {
+        "end": Object {
+          "column": 11,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 2,
+          "line": 1,
+        },
+      },
+      "name": "@@DEFAULT_EXPORT@@",
+    },
+    Object {
+      "filePath": "/c.js",
+      "location": Object {
+        "end": Object {
+          "column": 18,
+          "line": 2,
+        },
+        "start": Object {
+          "column": 2,
+          "line": 2,
+        },
+      },
+      "name": "@@DEFAULT_EXPORT@@",
+    },
+    Object {
+      "filePath": "/a.js",
+      "location": Object {
+        "end": Object {
+          "column": 11,
+          "line": 1,
+        },
+        "start": Object {
+          "column": 2,
+          "line": 1,
+        },
+      },
+      "name": "functionA",
+    },
+    Object {
+      "filePath": "/a.js",
+      "location": Object {
+        "end": Object {
+          "column": 18,
+          "line": 2,
+        },
+        "start": Object {
+          "column": 2,
+          "line": 2,
+        },
+      },
+      "name": "functionBRenamed",
+    },
+  ],
+  "name": "consumer",
+  "path": "/a.js",
+}
+`;
+
+exports[`Indexer should return symbol when requested with the default imported name 1`] = `
+Object {
+  "markers": undefined,
+  "path": "",
+}
+`;

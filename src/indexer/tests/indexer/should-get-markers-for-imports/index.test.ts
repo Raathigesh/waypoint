@@ -2,6 +2,7 @@ import { resolve, sep, dirname } from "path";
 import Indexer from "indexer/Indexer";
 import Project from "indexer/Project";
 import { santizePath } from "indexer/util";
+import { Marker } from "indexer/ESModuleItem";
 
 const waitForIndexer = () =>
   new Promise(resolve => {
@@ -29,7 +30,7 @@ describe("Indexer", () => {
     expect({
       ...functionA,
       path: santizePath(project.root, functionA?.path),
-      markers: functionA?.markers.map(marker => ({
+      markers: functionA?.markers.map((marker: Marker) => ({
         ...marker,
         filePath: santizePath(project.root, marker.filePath)
       }))
