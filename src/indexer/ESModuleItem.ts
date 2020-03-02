@@ -2,6 +2,7 @@ export interface Marker {
   location: SymbolLocation;
   filePath: string;
   name: string;
+  isFromDefaultImport?: boolean;
 }
 
 export interface SymbolLocation {
@@ -22,4 +23,5 @@ export default class ESModuleItem {
   public path: string = "";
   public kind: string = "";
   public markers: Marker[] = [];
+  public isDefaultExport: boolean = false;
 }

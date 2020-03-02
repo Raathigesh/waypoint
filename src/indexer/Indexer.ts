@@ -117,7 +117,13 @@ export default class Indexer {
   }
 
   public getSymbolWithMarkers(path: string, name: string) {
+    const shouldGetDefaultExport = name === "@@DEFAULT_EXPORT@@";
     const file = this.files[path];
+
+    if (shouldGetDefaultExport) {
+      return file.symbols.find(symbol => symbol.isDefaultExport === true);
+    }
+
     const symbol = file.symbols.find(symbol => symbol.name === name);
 
     if (!symbol && this.project) {
@@ -162,11 +168,19 @@ export default class Indexer {
   }
 
   public async getCode(path: string, name: string) {
+    const shouldGetDefaultExport = name === "@@DEFAULT_EXPORT@@";
     const file = this.files[path];
     if (file) {
-      let symbol: ESModuleItem | null | undefined = file.symbols.find(
-        symbol => symbol.name === name
-      );
+      let symbol: ESModuleItem | null | undefined;
+
+      if (shouldGetDefaultExport) {
+        symbol = file.symbols.find(symbol => symbol.isDefaultExport === true);
+      }
+
+      if (!symbol) {
+        symbol = file.symbols.find(symbol => symbol.name === name);
+      }
+
       if (!symbol || !symbol.location) {
         symbol = this.getReExportedSymbol(name, path, file);
         if (!symbol || !symbol.location) {

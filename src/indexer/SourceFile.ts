@@ -74,6 +74,11 @@ export default class SourceFile {
         },
         ExportNamedDeclaration: (path: NodePath<ExportNamedDeclaration>) => {
           this.extractExportNamedDeclaration(path);
+        },
+        ExportDefaultDeclaration: (
+          path: NodePath<ExportDefaultDeclaration>
+        ) => {
+          this.extractDefaultExportDeclaration(path);
         }
       });
       this.linkLocalSymbols(root, pathAliasMap);
@@ -90,7 +95,14 @@ export default class SourceFile {
 
   private extractFunctionDeclaration(path: NodePath<FunctionDeclaration>) {
     const name = path.node.id.name;
-    this.createSymbol(name, path.node.type, path.node.loc);
+    const isParentDefaultExport =
+      path.parent.type === "ExportDefaultDeclaration";
+    this.createSymbol(
+      name,
+      path.node.type,
+      path.node.loc,
+      isParentDefaultExport
+    );
   }
 
   private extractVariableDeclaration(path: NodePath<VariableDeclaration>) {
@@ -100,19 +112,33 @@ export default class SourceFile {
     ) {
       return;
     }
-    path.getStatementParent;
+
     const name = (path.node.declarations[0].id as Identifier).name;
     this.createSymbol(name, path.node.type, path.node.loc);
   }
 
   private extractClassDeclaration(path: NodePath<ClassDeclaration>) {
     const name = path.node.id.name;
-    this.createSymbol(name, path.node.type, path.node.loc);
+    const isParentDefaultExport =
+      path.parent.type === "ExportDefaultDeclaration";
+    this.createSymbol(
+      name,
+      path.node.type,
+      path.node.loc,
+      isParentDefaultExport
+    );
   }
 
   private extractTypeAlias(path: NodePath<TypeAlias>) {
     const name = path.node.id.name;
-    this.createSymbol(name, path.node.type, path.node.loc);
+    const isParentDefaultExport =
+      path.parent.type === "ExportDefaultDeclaration";
+    this.createSymbol(
+      name,
+      path.node.type,
+      path.node.loc,
+      isParentDefaultExport
+    );
   }
 
   private extractExportNamedDeclaration(
@@ -125,23 +151,33 @@ export default class SourceFile {
           local: specifier.local.name,
           exported: specifier.exported.name
         })),
-        isDefault: false // TODO
+        isDefault: false
       };
       this.exportStatements.push(exportStatement);
     }
   }
 
+  private extractDefaultExportDeclaration(
+    path: NodePath<ExportDefaultDeclaration>
+  ) {}
+
   private btoa(stringToEncode: string) {
     return Buffer.from(stringToEncode).toString("base64");
   }
 
-  private createSymbol(name: string, kind: string, location: SourceLocation) {
+  private createSymbol(
+    name: string,
+    kind: string,
+    location: SourceLocation,
+    isDefaultExport: boolean = false
+  ) {
     const symbol = new ESModuleItem();
     symbol.id = this.btoa(`${name}:${santizePath(this.root, this.path)}`);
     symbol.name = name;
     symbol.kind = kind;
     symbol.location = location;
     symbol.path = this.path;
+    symbol.isDefaultExport = isDefaultExport;
     this.importStatements.forEach(importStatement => {
       importStatement.specifiers.forEach(specifier => {
         specifier.references.forEach(reference => {
@@ -156,8 +192,12 @@ export default class SourceFile {
                 importStatement.path,
                 this.pathAliasMap
               ),
-              name: specifier.isDefault ? "@@DEFAULT_EXPORT@@" : specifier.name,
-              location: this.adjustLocation(location, reference.location) as any
+              name: specifier.name,
+              location: this.adjustLocation(
+                location,
+                reference.location
+              ) as any,
+              isFromDefaultImport: specifier.isDefault
             });
           }
         });

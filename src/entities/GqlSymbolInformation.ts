@@ -11,6 +11,9 @@ export class GqlMarkers {
 
   @Field({ nullable: true })
   name: string = "";
+
+  @Field({ nullable: true })
+  isFromDefaultImport?: boolean = false;
 }
 
 @ObjectType()

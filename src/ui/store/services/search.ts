@@ -74,6 +74,7 @@ export async function getMarkers(path: string, name: string) {
         markers {
           filePath
           name
+          isFromDefaultImport
           location {
             start {
               line

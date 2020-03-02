@@ -14,7 +14,8 @@ export const Marker = types
     name: types.string,
     location: types.maybeNull(DocumentLocation),
     color: types.string,
-    connectedSymbol: types.maybe(types.string)
+    connectedSymbol: types.maybe(types.string),
+    isFromDefaultImport: types.maybe(types.boolean)
   })
   .actions(self => ({
     setColor(color: string) {
@@ -62,11 +63,12 @@ export const DocumentSymbol = types
       markers: {
         id: string;
         color: string;
-      }[]
+      }[],
+      isDefaultSymbol: boolean = false
     ) {
       const symbolWithMakers: GqlSymbolInformation = yield getMarkers(
         self.filePath,
-        self.name
+        isDefaultSymbol ? "@@DEFAULT_EXPORT@@" : self.name
       );
 
       self.kind = symbolWithMakers.kind;
@@ -98,15 +100,19 @@ export const DocumentSymbol = types
               line: marker?.location?.end?.line || 0
             }
           },
-          color: colorForMaker?.color || ""
+          color: colorForMaker?.color || "",
+          isFromDefaultImport: marker.isFromDefaultImport || false
         });
 
         self.markers.push(markerObj);
       });
     });
 
-    const fetchCode = flow(function*() {
-      const code: string = yield getCode(self.filePath, self.name);
+    const fetchCode = flow(function*(isDefaultSymbol: boolean = false) {
+      const code: string = yield getCode(
+        self.filePath,
+        isDefaultSymbol ? "@@DEFAULT_EXPORT@@" : self.name
+      );
       self.code = code;
     });
 
