@@ -3,6 +3,7 @@
 exports[`Indexer should link re-exported symbols 1`] = `
 Object {
   "id": "ZnVuY3Rpb25BOi9jLmpz",
+  "isDefaultExport": false,
   "kind": "FunctionDeclaration",
   "location": SourceLocation {
     "end": Position {

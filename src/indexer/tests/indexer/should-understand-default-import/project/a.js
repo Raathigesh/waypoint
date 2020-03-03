@@ -1,7 +1,7 @@
 import functionA from "./b";
 import functionBRenamed from "./c";
 
-function consumer() {
+export default function consumer() {
   functionA();
   functionBRenamed();
 }

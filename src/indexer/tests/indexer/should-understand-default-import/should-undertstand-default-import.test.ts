@@ -48,8 +48,8 @@ describe("Indexer", () => {
     await waitForIndexer();
 
     const functionA = indexer.getSymbolWithMarkers(
-      resolve(__dirname, "./project/c.js"),
-      "functionBRenamed"
+      resolve(__dirname, "./project/a.js"),
+      "@@DEFAULT_EXPORT@@"
     );
 
     expect({

@@ -125,6 +125,7 @@ export const DependencyGraph = types
           marker.location.start.column <= column &&
           marker.location.end.column >= column
       );
+
       if (clickedMarker) {
         const nextColor = getNextColor();
         const id = symbol.id;
@@ -139,8 +140,11 @@ export const DependencyGraph = types
         });
         clickedMarker.connectedSymbol = symbolForBubble.id;
         symbolForBubble.setPosition(x, y);
-        yield symbolForBubble.fetchMarkers([]);
-        yield symbolForBubble.fetchCode();
+        yield symbolForBubble.fetchMarkers(
+          [],
+          clickedMarker.isFromDefaultImport
+        );
+        yield symbolForBubble.fetchCode(clickedMarker.isFromDefaultImport);
         const sourceSymbol = self.symbols.get(id);
         sourceSymbol?.addConnection(symbolForBubble.id);
         self.symbols.set(symbolForBubble.id, symbolForBubble);
