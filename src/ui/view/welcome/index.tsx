@@ -1,5 +1,20 @@
 import React, { Fragment } from "react";
-import { Flex, Button, Text, Progress, Link, Image } from "@chakra-ui/core";
+import {
+  Flex,
+  Button,
+  Text,
+  Progress,
+  Link,
+  Image,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  useDisclosure
+} from "@chakra-ui/core";
 import { Coffee, Settings, Activity } from "react-feather";
 import { observer } from "mobx-react-lite";
 import { IndexerStatus } from "ui/store/models/IndexerStatus";

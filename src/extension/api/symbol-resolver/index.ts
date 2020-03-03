@@ -80,6 +80,7 @@ export default class SymbolsResolver {
     status.status = this.indexer.status;
     status.indexedFileCount = this.indexer.indexedFileCount;
     status.totalFiles = this.indexer.totalFiles;
+    status.failures = this.indexer.failures;
     return status;
   }
 

@@ -3,7 +3,7 @@ const fuzzysort = require("fuzzysort");
 import { promisify } from "util";
 import { Service } from "typedi";
 import Project from "./Project";
-import SourceFile from "./SourceFile";
+import SourceFile, { ParseFailure } from "./SourceFile";
 import { getFileType } from "indexer/util";
 import ESModuleItem, { Marker } from "./ESModuleItem";
 import { readFile, Stats } from "fs";
@@ -17,6 +17,7 @@ export default class Indexer {
   public project: Project | undefined;
   public totalFiles: number = 0;
   public indexedFileCount: number = 0;
+  public failures: ParseFailure[] = [];
 
   public async parse(project: Project) {
     this.status = "indexing";
@@ -32,7 +33,7 @@ export default class Indexer {
     return this.relaxedIndexer(supportedFiles);
   }
 
-  public relaxedIndexer(filesToIndex: string[], pendingPromises: any[] = []) {
+  public async relaxedIndexer(filesToIndex: string[]) {
     if (filesToIndex.length === 0) {
       this.status = "indexed";
       return;
@@ -42,22 +43,22 @@ export default class Indexer {
     const sourceFile = new SourceFile();
 
     if (this.project && currentFile) {
-      const parsePromise = sourceFile.parse(
+      const parseResult = await sourceFile.parse(
         currentFile,
         this.project.pathAlias,
         this.project.root
       );
 
-      pendingPromises.push(parsePromise);
+      if (parseResult) {
+        this.failures.push(parseResult);
+      }
 
       this.files[currentFile] = sourceFile;
       this.indexedFileCount += 1;
       setTimeout(() => {
-        this.relaxedIndexer(filesToIndex, pendingPromises);
+        this.relaxedIndexer(filesToIndex);
       }, 0);
     }
-
-    return Promise.all(pendingPromises);
   }
 
   public indexFile(path: string) {

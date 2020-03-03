@@ -83,7 +83,8 @@ module.exports = env => ({
       title: "JS Bubbles",
       template: require("html-webpack-template"),
       appMountId: "root",
-      inject: false
+      inject: false,
+      favicon: "./icons/icon.png"
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({

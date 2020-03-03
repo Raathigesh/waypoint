@@ -44,8 +44,10 @@ function Symbol({ symbol }: Props) {
     return `${str}
 
     .${marker.className} {
-      background-color: ${marker.color || "rgb(234,234,234, 0.6)"};
-      border: 1px solid ${marker.color || "rgb(234,234,234, 0.3)"};
+      background-color: ${
+        marker.color ? "transparent" : "rgb(234,234,234, 0.6)"
+      };
+      border-bottom: 2px solid ${marker.color || "rgb(234,234,234, 0.3)"};
       border-radius: 2px;
       cursor: pointer;
     }

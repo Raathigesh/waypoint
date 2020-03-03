@@ -9,7 +9,7 @@ export default class ContentProvider {
   <head>
     <meta charset="utf-8">
     <meta content="ie=edge" http-equiv="x-ua-compatible">
-    <title>Fabulous</title>
+    <title>JS Bubbles</title>
   </head>
   <body>
     <div id="root">
@@ -32,7 +32,8 @@ export default class ContentProvider {
   <head>
     <meta charset="utf-8">
     <meta content="ie=edge" http-equiv="x-ua-compatible">
-    <title>Fabulous</title>
+    <link rel="icon" href="icon.png" type="image/png">
+    <title>JS Bubbles</title>
   </head>
   <body>
     <div id="root">

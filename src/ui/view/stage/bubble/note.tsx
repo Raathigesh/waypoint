@@ -204,11 +204,13 @@ const Note = ({ note }: Props) => {
       }}
       setPosition={note.setPosition}
       setRef={note.setRef}
-      height={500}
-      width={600}
+      height={note.height || 500}
+      width={note.width || 600}
       zIndex={2}
       scroll
-      onResize={() => {}}
+      onResize={(resizedHeight, resizedWidth) =>
+        note.setDimensions(resizedHeight, resizedWidth)
+      }
     >
       <Global
         styles={css`

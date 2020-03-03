@@ -27,6 +27,10 @@ export async function indexerStatus() {
         status
         totalFiles
         indexedFileCount
+        failures {
+          filePath
+          error
+        }
       }
     }
   `;

@@ -24,6 +24,11 @@ import { GqlLocation } from "entities/GqlLocation";
 import { santizePath } from "./util";
 import ExportStatement from "./ExportStatement";
 
+export interface ParseFailure {
+  filePath: string;
+  error: string;
+}
+
 export default class SourceFile {
   public path: string = "";
   public symbols: ESModuleItem[] = [];
@@ -37,7 +42,7 @@ export default class SourceFile {
     filePath: string,
     pathAliasMap: { [alias: string]: string },
     root: string
-  ) {
+  ): Promise<ParseFailure | null> {
     try {
       this.path = filePath;
       this.root = root;
@@ -48,7 +53,10 @@ export default class SourceFile {
 
       // if the file is too big, don't try to parse it
       if (size === 500000) {
-        return;
+        return {
+          filePath,
+          error: "File is too big to parse. Ignoring."
+        };
       }
 
       const ast = this.getAST(content.toString(), filePath);
@@ -79,7 +87,12 @@ export default class SourceFile {
       this.linkLocalSymbols(root, pathAliasMap);
     } catch (e) {
       console.log("Parsing failed", filePath, e);
+      return {
+        filePath,
+        error: e.toString()
+      };
     }
+    return null;
   }
 
   public getSymbolInPosition(position: GqlLocation) {

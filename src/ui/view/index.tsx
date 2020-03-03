@@ -22,6 +22,7 @@ import { indexerStatusStore, dependencyGraphStore } from "../store";
 import Welcome from "./welcome";
 import Preference from "./preference";
 import Stage from "./stage";
+import IndexerFailures from "./stage/IndexerFailures";
 
 function App() {
   const indexerStatus = useContext(indexerStatusStore);
@@ -37,6 +38,7 @@ function App() {
       {indexerStatus.status === "indexed" && (
         <Fragment>
           <Flex position="fixed" right="10px" top="10px" zIndex={100}>
+            <IndexerFailures />
             <Tooltip size="small" title="Preference" position="bottom">
               <IconButton
                 variant="outline"

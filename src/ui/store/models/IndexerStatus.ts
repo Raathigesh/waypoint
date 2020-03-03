@@ -6,11 +6,17 @@ import { DependencyGraph } from "./DependencyGraph";
 import { GqlIndexerStatus } from "entities/GqlIndexerStatus";
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+export const IndexerFailure = types.model("IndexerFailure", {
+  filePath: types.string,
+  error: types.string
+});
+
 export const IndexerStatus = types
   .model("IndexerStatus", {
     status: types.string,
     totalFiles: types.number,
-    indexedFiles: types.number
+    indexedFiles: types.number,
+    failures: types.array(IndexerFailure)
   })
   .actions(self => {
     const getStatus = flow(function*() {
@@ -18,6 +24,15 @@ export const IndexerStatus = types
       self.status = status.status;
       self.indexedFiles = status.indexedFileCount;
       self.totalFiles = status.totalFiles;
+
+      status.failures.forEach(failure => {
+        self.failures.push(
+          IndexerFailure.create({
+            filePath: failure.filePath,
+            error: failure.error
+          })
+        );
+      });
     });
 
     const pollForStatus: () => Promise<any> = flow(function*() {
@@ -36,6 +51,14 @@ export const IndexerStatus = types
       self.status = status.status;
       self.indexedFiles = status.indexedFileCount;
       self.totalFiles = status.totalFiles;
+      status.failures.forEach(failure => {
+        self.failures.push(
+          IndexerFailure.create({
+            filePath: failure.filePath,
+            error: failure.error
+          })
+        );
+      });
       while (true && self.status === "indexing") {
         yield sleep(1000);
         yield pollForStatus();

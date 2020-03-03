@@ -7,7 +7,9 @@ export const Note = types
     color: types.maybe(types.string),
     x: types.maybe(types.number),
     y: types.maybe(types.number),
-    symbols: types.map(DocumentSymbol)
+    symbols: types.map(DocumentSymbol),
+    height: types.maybe(types.number),
+    width: types.maybe(types.number)
   })
   .volatile(self => ({
     ref: null,
@@ -28,5 +30,13 @@ export const Note = types
       self.symbols.set(symbol.id, symbol);
     };
 
-    return { setPosition, setRef, setSymbol };
+    const setDimensions = (
+      height: number | undefined,
+      width: number | undefined
+    ) => {
+      self.height = height;
+      self.width = width;
+    };
+
+    return { setPosition, setRef, setSymbol, setDimensions };
   });
