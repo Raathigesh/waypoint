@@ -199,7 +199,7 @@ function Frame({
         transform: `translate(${x}px, ${y}px)`,
         zIndex: zIndex || 3,
         borderRadius: "10px",
-        border: `2px solid ${headerColor || "none"}`
+        border: `1px solid ${headerColor || "none"}`
       }}
       ref={container}
       onClick={e => e.stopPropagation()}

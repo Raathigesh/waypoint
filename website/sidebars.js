@@ -8,6 +8,8 @@
 module.exports = {
   someSidebar: {
     "Getting Started": ["Installation", "IndexYourProject"],
-    Features: []
+    "Search symbol & file": ["FileSearch", "SymbolSearch"],
+    "Navigating around the stage": ["NavigateAround"],
+    Bubbles: ["SymbolBubble", "FileBubble", "NoteBubble"]
   }
 };

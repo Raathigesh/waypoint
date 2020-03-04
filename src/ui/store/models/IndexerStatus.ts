@@ -24,6 +24,7 @@ export const IndexerStatus = types
       self.status = status.status;
       self.indexedFiles = status.indexedFileCount;
       self.totalFiles = status.totalFiles;
+      self.failures.clear();
 
       status.failures.forEach(failure => {
         self.failures.push(
@@ -51,6 +52,7 @@ export const IndexerStatus = types
       self.status = status.status;
       self.indexedFiles = status.indexedFileCount;
       self.totalFiles = status.totalFiles;
+      self.failures.clear();
       status.failures.forEach(failure => {
         self.failures.push(
           IndexerFailure.create({

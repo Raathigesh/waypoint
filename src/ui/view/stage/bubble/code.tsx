@@ -169,7 +169,8 @@ function Code({ symbol }: Props) {
             targetAnchor: anchor.targetAnchor,
             sourceAnchor: anchor.sourceAnchor,
             style: {
-              strokeColor: targetSymbol?.color
+              strokeColor: targetSymbol?.color,
+              strokeWidth: 1
             }
           };
         })}

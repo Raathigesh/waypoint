@@ -21,10 +21,10 @@ function IndexerFailures() {
 
   return (
     <Flex marginTop="3px">
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size="medium">
         <ModalOverlay />
         <ModalContent>
-          <ModalHeader>Modal Title</ModalHeader>
+          <ModalHeader>Indexer failures</ModalHeader>
           <ModalCloseButton />
           <ModalBody maxHeight="700px" overflow="auto">
             {indexerStatus.failures.map(failure => (

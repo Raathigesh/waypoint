@@ -22,6 +22,7 @@ export default class Indexer {
   public async parse(project: Project) {
     this.status = "indexing";
     this.project = project;
+    this.failures = [];
 
     const files = await this.readProjectFiles(project.root);
     this.totalFiles = files.length;
