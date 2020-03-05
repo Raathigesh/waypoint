@@ -15,6 +15,7 @@ import { ChevronRight, ChevronDown, Folder, File, Circle } from "react-feather";
 import { openFile } from "ui/store/services/file";
 import { observer } from "mobx-react-lite";
 import { constructTree } from "./util";
+import SymbolKindIcon from "../components/SymbolKindIcon";
 
 function TreeNode({ item, collapsedNodes, onExpand, onCollapse }: any): any {
   const isCollapsed = collapsedNodes[item.id];
@@ -53,7 +54,9 @@ function TreeNode({ item, collapsedNodes, onExpand, onCollapse }: any): any {
           <Flex flexDirection="column" marginLeft="30px" marginBottom="5px">
             {(item.symbols || []).map((symbol: any) => (
               <Flex fontSize={13} fontWeight={600} alignItems="center">
-                <Circle size={10} />
+                <Box marginTop="2px">
+                  <SymbolKindIcon size="11" kind={symbol.kind} />
+                </Box>
                 <Flex marginLeft="5px">
                   <Link
                     onClick={() =>

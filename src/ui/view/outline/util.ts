@@ -7,6 +7,7 @@ export interface TreeNode {
   label: string;
   path: string;
   type: "directory" | "file";
+  kind: string | undefined;
   children?: TreeNode[];
   symbols?: Instance<typeof DocumentSymbol>[];
 }
@@ -43,7 +44,8 @@ function ensurePath(
       path: symbol.filePath,
       type: isAFile ? "file" : "directory",
       children: [],
-      symbols: isAFile ? [symbol] : []
+      symbols: isAFile ? [symbol] : [],
+      kind: symbol.kind
     };
     root.children?.push(hasTokenChildren);
   } else if (hasTokenChildren && isAFile) {
@@ -61,10 +63,11 @@ export function constructTree(
   separator: string
 ): TreeNode {
   const tree: TreeNode = {
-    label: rootPath,
+    label: "",
     path: "",
     type: "directory",
-    children: []
+    children: [],
+    kind: ""
   };
   references.forEach(item => {
     const tokens = item.filePath.replace(rootPath, "").split(separator);
