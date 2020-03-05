@@ -2,9 +2,7 @@ require("module-alias/register");
 import * as vscode from "vscode";
 import ContentProvider from "./ContentProvider";
 import { join } from "path";
-import { getUIMessenger } from "common/messaging/ui";
 import { Container } from "typedi";
-import Services from "./services";
 import { startApiServer } from "./api";
 import { pubSub } from "common/pubSub";
 const getPort = require("get-port");
@@ -54,9 +52,6 @@ async function initialize(context: vscode.ExtensionContext) {
     await startApiServer(port);
     isServerRunning = true;
   }
-
-  const uiMessenger = getUIMessenger();
-  Services.forEach(Service => new Service(context, uiMessenger));
 
   const contentProvider = new ContentProvider();
   let currentPanel: vscode.WebviewPanel | undefined = undefined;

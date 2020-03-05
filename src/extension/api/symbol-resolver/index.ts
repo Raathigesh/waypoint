@@ -25,6 +25,8 @@ import { GqlFile } from "entities/GqlFile";
 import { pubSub } from "common/pubSub";
 import { GqlLocation } from "entities/GqlLocation";
 import { GqlIndexerStatus } from "entities/GqlIndexerStatus";
+import { Uri } from "vscode";
+import { OpenFileArgs } from "./OpenFileArgs";
 
 @Service()
 @Resolver(GqlSearchResult)
@@ -248,5 +250,18 @@ export default class SymbolsResolver {
   })
   events(@Root() eventName: string) {
     return eventName;
+  }
+
+  @Query(returns => String)
+  public openFile(@Args() { path, location }: OpenFileArgs) {
+    vscode.window.showTextDocument(Uri.file(path), {
+      viewColumn: vscode.ViewColumn.One,
+      selection: new vscode.Selection(
+        new vscode.Position(location.startLine - 1, location.startColumn),
+        new vscode.Position(location.endLine - 1, location.endColumn)
+      )
+    });
+
+    return "OK";
   }
 }

@@ -4,14 +4,14 @@ import { Container } from "typedi";
 import "reflect-metadata";
 import { pubSub } from "common/pubSub";
 import SymbolsResolver from "./symbol-resolver";
-import MessageResolver from "common/messaging/resolvers/MessageResolver";
+
 import WorkplaceResolver from "./ConfigResolver";
 import { initializeStaticRoutes } from "./static-files";
 
 export async function getSchema() {
   try {
     return await buildSchema({
-      resolvers: [SymbolsResolver, MessageResolver, WorkplaceResolver],
+      resolvers: [SymbolsResolver, WorkplaceResolver],
       pubSub: pubSub as any,
       container: Container
     });

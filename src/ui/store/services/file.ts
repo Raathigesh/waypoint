@@ -1,15 +1,27 @@
 import { GqlLocation } from "entities/GqlLocation";
-import { Events } from "common/Events";
-import { getExtensionMessenger } from "common/messaging/extension";
 import gql from "graphql-tag";
 import { sendQuery } from "ui/util/graphql";
 import { GqlFile } from "entities/GqlFile";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 
-const extensionMessenger = getExtensionMessenger();
+export async function openFile(path: string, location?: GqlLocation) {
+  const query = gql`
+    query OpenFile($path: String!, $location: Location!) {
+      openFile(path: $path, location: $location)
+    }
+  `;
 
-export function openFile(path: string, location?: GqlLocation) {
-  extensionMessenger.send(Events.Window.ShowTextDocument, { path, location });
+  const results = await sendQuery<string>(query, {
+    path,
+    location: {
+      startColumn: location?.start?.column,
+      startLine: location?.start?.line,
+      endColumn: location?.end?.column,
+      endLine: location?.end?.line
+    }
+  });
+
+  return results;
 }
 
 export async function getFile(path: string) {
