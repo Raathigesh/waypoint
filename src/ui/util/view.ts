@@ -36,8 +36,11 @@ export const getDimensions = (
     "final height",
     Math.min(900, resizedHeight || defaultHeight)
   );
+
+  const minWidth = 300;
+  const minHeight = 100;
   return {
-    width: resizedWidth || defaultWidth,
-    height: Math.min(900, resizedHeight || defaultHeight)
+    width: Math.max(minWidth, resizedWidth || defaultWidth),
+    height: Math.max(minHeight, Math.min(900, resizedHeight || defaultHeight))
   };
 };
