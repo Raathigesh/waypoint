@@ -3,18 +3,21 @@ import {
   createClient,
   defaultExchanges,
   subscriptionExchange,
-  Client,
-  createRequest
+  Client
 } from "urql";
-import * as ws from "ws";
-import { pipe, subscribe } from "wonka";
-
-let WS_URL = "ws://localhost:4545";
-let HTTP_URL = "http://localhost:4545";
 
 const client: Client | null = null;
 
 export const getClient = (ws_impl: any) => {
+  let port: string | undefined = "4545";
+
+  if ((window as any).port) {
+    port = (window as any).prompt;
+  }
+
+  let WS_URL = `ws://localhost:${port}`;
+  let HTTP_URL = `http://localhost:${port}`;
+
   if (client !== null) {
     return client;
   }
@@ -34,19 +37,3 @@ export const getClient = (ws_impl: any) => {
     ]
   });
 };
-
-export function executeQuery(query: any, variables: any) {
-  const client = getClient(ws);
-  return new Promise((resolve, reject) => {
-    try {
-      pipe(
-        client.executeMutation(createRequest(query, variables)) as any,
-        subscribe((result: any) => {
-          resolve(result);
-        })
-      );
-    } catch (e) {
-      reject(e);
-    }
-  });
-}
