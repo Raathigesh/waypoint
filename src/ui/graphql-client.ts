@@ -6,8 +6,10 @@ import {
 } from "urql";
 import { SubscriptionClient } from "subscriptions-transport-ws";
 
-let WS_URL = "ws://localhost:4545";
-let HTTP_URL = "http://localhost:4545";
+const port = (window as any).port || 4545;
+
+let WS_URL = `ws://localhost:${port}`;
+let HTTP_URL = `http://localhost:${port}`;
 
 export function getAPIUrl() {
   return HTTP_URL;

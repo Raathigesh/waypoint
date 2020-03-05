@@ -31,6 +31,8 @@ export default class Indexer {
       filePath => getFileType(filePath) !== "UNSUPPORTED"
     );
 
+    this.indexedFileCount = 0;
+
     return this.relaxedIndexer(supportedFiles);
   }
 

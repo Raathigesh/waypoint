@@ -47,8 +47,8 @@ function Symbol({ symbol }: Props) {
       background-color: ${
         marker.color ? "transparent" : "rgb(234,234,234, 0.6)"
       };
-      border-bottom: 1px solid ${marker.color || "rgb(234,234,234, 0.3)"};
-      border-radius: 2px;
+      border: 1px solid ${marker.color || "rgb(234,234,234, 0.3)"};
+      border-radius: 5px;
       cursor: pointer;
     }
 

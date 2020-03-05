@@ -33,6 +33,9 @@ export default class ContentProvider {
     <meta charset="utf-8">
     <meta content="ie=edge" http-equiv="x-ua-compatible">
     <link rel="icon" href="icon.png" type="image/png">
+    <script>
+        window.port = ${port};
+    </script>
     <title>JS Bubbles</title>
   </head>
   <body>

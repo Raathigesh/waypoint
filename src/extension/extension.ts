@@ -7,9 +7,9 @@ import { Container } from "typedi";
 import Services from "./services";
 import { startApiServer } from "./api";
 import { pubSub } from "common/pubSub";
+const getPort = require("get-port");
 
 let isServerRunning = false;
-const port = 4545;
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand(
@@ -48,6 +48,7 @@ async function initialize(context: vscode.ExtensionContext) {
   if (vscode.workspace.rootPath) {
     process.env.projectRoot = vscode.workspace.rootPath;
   }
+  const port = await getPort({ port: 4545 });
 
   if (!isServerRunning) {
     await startApiServer(port);

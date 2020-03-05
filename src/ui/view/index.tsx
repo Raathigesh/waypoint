@@ -92,7 +92,7 @@ function App() {
                     placeholder="small size"
                     size="sm"
                     borderRadius="3px"
-                    value="http://localhost:4545"
+                    value={`http://localhost:${(window as any).port}`}
                   />
                 </PopoverBody>
               </PopoverContent>
