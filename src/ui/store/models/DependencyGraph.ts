@@ -30,9 +30,18 @@ export interface PersistableFile {
   y: number | undefined;
 }
 
+export interface PersistableNote {
+  content?: string;
+  x: number | undefined;
+  y: number | undefined;
+  height: number | undefined;
+  width: number | undefined;
+}
+
 export interface PersistableStage {
   symbols: PersistableSymbol[];
   files: PersistableFile[];
+  notes: PersistableNote[];
 }
 
 export const DependencyGraph = types
@@ -65,6 +74,10 @@ export const DependencyGraph = types
 
         config.files.map(file => {
           return addFile(file.path, file.x, file.y);
+        });
+
+        config.notes.map(note => {
+          return addNote(note);
         });
       }
     });
@@ -246,9 +259,37 @@ export const DependencyGraph = types
       addFileMap(gqlFile, x, y);
     });
 
-    const addNote = () => {
+    const addNote = (
+      { x, y, content, width, height }: PersistableNote = {
+        x: 0,
+        y: 0,
+        width: undefined,
+        height: undefined
+      }
+    ) => {
       const id = nanoid();
-      self.notes.set(id, Note.create({ id, x: 0, y: 0, color: "" }));
+      const note = Note.create({
+        id,
+        x,
+        y,
+        width,
+        height,
+        content:
+          JSON.stringify(content) ||
+          JSON.stringify([
+            {
+              type: "paragraph",
+              children: [
+                {
+                  text: ""
+                }
+              ]
+            }
+          ]),
+        color: ""
+      });
+
+      self.notes.set(id, note);
     };
 
     const removeNote = (id: string) => {
@@ -304,6 +345,13 @@ export const DependencyGraph = types
           path: file.filePath,
           x: file.x,
           y: file.y
+        })),
+        notes: [...self.notes.values()].map(note => ({
+          content: JSON.parse(note.content),
+          x: note.x,
+          y: note.y,
+          height: note.height,
+          width: note.width
         }))
       };
     }

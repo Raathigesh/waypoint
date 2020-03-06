@@ -9,7 +9,8 @@ export const Note = types
     y: types.maybe(types.number),
     symbols: types.map(DocumentSymbol),
     height: types.maybe(types.number),
-    width: types.maybe(types.number)
+    width: types.maybe(types.number),
+    content: types.string
   })
   .volatile(self => ({
     ref: null,
@@ -38,5 +39,9 @@ export const Note = types
       self.width = width;
     };
 
-    return { setPosition, setRef, setSymbol, setDimensions };
+    const setContent = (content: any) => {
+      self.content = JSON.stringify(content);
+    };
+
+    return { setPosition, setRef, setSymbol, setDimensions, setContent };
   });

@@ -125,7 +125,7 @@ const withShortcuts = (editor: Editor) => {
 
 const Note = ({ note }: Props) => {
   const ref = useRef(null);
-  const [value, setValue] = useState(initialValue);
+
   const store = useContext(dependencyGraphStore);
   const [target, setTarget] = useState();
   const [index, setIndex] = useState(0);
@@ -241,9 +241,20 @@ const Note = ({ note }: Props) => {
       <Flex padding="15px" className="note" cursor="initial">
         <Slate
           editor={editor as any}
-          value={value}
+          value={
+            (JSON.parse(note.content) as any) || [
+              {
+                type: "paragraph",
+                children: [
+                  {
+                    text: ""
+                  }
+                ]
+              }
+            ]
+          }
           onChange={value => {
-            setValue(value as any);
+            note.setContent(value);
             const { selection } = editor;
 
             if (selection && Range.isCollapsed(selection)) {
@@ -400,16 +411,5 @@ const MentionElement = observer(
     );
   }
 );
-
-const initialValue = [
-  {
-    type: "paragraph",
-    children: [
-      {
-        text: ""
-      }
-    ]
-  }
-];
 
 export default observer(Note);
