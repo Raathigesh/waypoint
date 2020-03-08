@@ -12,7 +12,7 @@ export const getClient = (ws_impl: any) => {
   let port: string | undefined = "4545";
 
   if ((window as any).port) {
-    port = (window as any).prompt;
+    port = (window as any).port;
   }
 
   let WS_URL = `ws://localhost:${port}`;
