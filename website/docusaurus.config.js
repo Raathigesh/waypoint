@@ -7,6 +7,8 @@ module.exports = {
   organizationName: "JSBubbles", // Usually your GitHub org/user name.
   projectName: "JSBubbles", // Usually your repo name.
   themeConfig: {
+    sidebarCollapsible: false,
+    disableDarkMode: true,
     navbar: {
       title: "JS Bubbles",
       logo: {

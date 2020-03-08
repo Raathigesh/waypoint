@@ -24,12 +24,24 @@
 
 .features {
   display: flex;
+  flex-direction: column;
   align-items: center;
   padding: 2rem 0;
   width: 100%;
 }
 
+.feature {
+  margin-bottom: 100px;
+}
+
 .featureImage {
-  height: 200px;
-  width: 200px;
+  height: 300px;
+  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 0px 1.5px rgba(0, 0, 0, 0.028), 0 0px 5.1px rgba(0, 0, 0, 0.042),
+    0 0px 23px rgba(0, 0, 0, 0.07);
+}
+
+.featureContent {
+  margin-left: 50px;
 }
