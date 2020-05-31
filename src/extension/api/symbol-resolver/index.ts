@@ -264,4 +264,25 @@ export default class SymbolsResolver {
 
     return "OK";
   }
+
+  @Mutation(returns => String)
+  public async insertImport(
+    @Arg("symbol") symbol: string,
+    @Arg("path") path: string
+  ) {
+    if (this.activeEditorPath) {
+      const currentFile = this.indexer.files[this.activeEditorPath];
+      const result = await currentFile.insertImportStatement(symbol, path);
+      if (result && this.activeEditor) {
+        this.activeEditor.edit(editBuilder => {
+          editBuilder.insert(
+            new vscode.Position(result.position.line, result.position.column),
+            result.content
+          );
+        });
+      }
+    }
+
+    return "";
+  }
 }

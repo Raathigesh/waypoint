@@ -19,7 +19,10 @@ import ImportStatement, { ImportSpecifier } from "./ImportStatement";
 import ESModuleItem from "./ESModuleItem";
 import { ImportDeclaration } from "@babel/types";
 import { dirname } from "path";
-import { findAbsoluteFilePathWhichExists } from "./fileResolver";
+import {
+  findAbsoluteFilePathWhichExists,
+  getAliasPathForAbsolutePath
+} from "./fileResolver";
 import { GqlLocation } from "entities/GqlLocation";
 import { santizePath } from "./util";
 import ExportStatement from "./ExportStatement";
@@ -104,6 +107,41 @@ export default class SourceFile {
     return this.symbols.find(
       sym => sym.location && this.isInLocation(sym.location, position)
     );
+  }
+
+  public async insertImportStatement(symbol: string, path: string) {
+    try {
+      const content = await promisify(readFile)(this.path);
+      const ast = this.getAST(content.toString(), this.path);
+
+      const importDeclarationPaths: NodePath<ImportDeclaration>[] = [];
+
+      traverse(ast, {
+        ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
+          importDeclarationPaths.push(path);
+        }
+      });
+
+      const lastImportDeclaration = importDeclarationPaths.pop();
+      if (lastImportDeclaration) {
+        const aliasedPath = getAliasPathForAbsolutePath(
+          this.root,
+          path,
+          this.pathAliasMap
+        );
+        return {
+          position: {
+            line: (lastImportDeclaration.node.loc?.end.line || 0) + 1,
+            column: 0
+          },
+          content: `import {${symbol}} from '${aliasedPath}' \n`
+        };
+      }
+
+      return null;
+    } catch (e) {
+      console.log("Parsing failed", this.path, e);
+    }
   }
 
   private extractFunctionDeclaration(path: NodePath<FunctionDeclaration>) {

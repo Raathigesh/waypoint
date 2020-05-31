@@ -1,4 +1,4 @@
-import { isAbsolute, resolve, dirname, sep, join } from "path";
+import { isAbsolute, resolve, dirname, sep, join, normalize } from "path";
 import { existsSync, statSync, lstatSync } from "fs";
 const supportedExtensions = ["js", "jsx", "ts", "tsx"];
 
@@ -18,6 +18,26 @@ export function tryResolvingWithIndexOrExtension(originalPath: string) {
   }
 
   return null;
+}
+
+export function getAliasPathForAbsolutePath(
+  root: string,
+  absolutePath: string,
+  pathAliasMap: { [alias: string]: string }
+) {
+  let substitutedPath = normalize(absolutePath);
+  Object.entries(pathAliasMap).forEach(([alias, path]) => {
+    const normalizedPath = normalize(join(root, path));
+    if (absolutePath.startsWith(normalizedPath)) {
+      substitutedPath = absolutePath.replace(normalizedPath, alias);
+    }
+    const regexSep = sep === "\\" ? "\\\\" : sep;
+    substitutedPath = substitutedPath.replace(new RegExp(regexSep, "g"), "/");
+    if (substitutedPath.endsWith("index.js")) {
+      substitutedPath = substitutedPath.replace(`${sep}index.js`, "");
+    }
+  });
+  return substitutedPath;
 }
 
 export function findAbsoluteFilePathWhichExists(

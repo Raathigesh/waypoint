@@ -1,6 +1,6 @@
 import { GqlLocation } from "entities/GqlLocation";
 import gql from "graphql-tag";
-import { sendQuery } from "ui/util/graphql";
+import { sendQuery, sendMutation } from "ui/util/graphql";
 import { GqlFile } from "entities/GqlFile";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 
@@ -113,4 +113,18 @@ export async function getActiveSymbolForFile() {
   }>(query, {});
 
   return results.getActiveSymbolForFile;
+}
+
+export async function insertImport(symbol: string, path: string) {
+  const mutation = gql`
+    mutation InsertImport($symbol: String!, $path: String!) {
+      insertImport(symbol: $symbol, path: $path)
+    }
+  `;
+
+  const results = await sendMutation<any>(mutation, {
+    symbol,
+    path
+  });
+  return {};
 }
