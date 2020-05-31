@@ -1,9 +1,9 @@
 {
-  "name": "js-bubbles",
-  "displayName": "JS Bubbles",
-  "description": "Re-imagining reading JavaScript in VSCode",
+  "name": "js-clippy",
+  "displayName": "JS Clippy",
+  "description": "Co-pilot for JavaScript in VSCode",
   "publisher": "raathigeshan",
-  "version": "0.22.3",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.33.0"
   },
@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Raathigesh/insight.git"
+    "url": "https://github.com/Raathigesh/JSBubbles"
   },
   "icon": "icons/icon.png",
   "galleryBanner": {
