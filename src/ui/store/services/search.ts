@@ -6,10 +6,10 @@ import {
   GqlSymbolInformation
 } from "entities/GqlSymbolInformation";
 
-export async function searchSymbol(query: string) {
+export async function searchSymbol(query: string, type: string) {
   const mutation = gql`
-    mutation Search($query: String!) {
-      search(query: $query) {
+    mutation Search($query: String!, $type: String!) {
+      search(query: $query, type: $type) {
         items {
           id
           name
@@ -32,7 +32,8 @@ export async function searchSymbol(query: string) {
   `;
 
   const results = await sendMutation<{ search: GqlSearchResult }>(mutation, {
-    query
+    query,
+    type
   });
   return {
     items: results.search.items,

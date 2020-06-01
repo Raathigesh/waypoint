@@ -8,6 +8,7 @@ import { pubSub } from "common/pubSub";
 const getPort = require("get-port");
 
 let isServerRunning = false;
+let port = 0;
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand(
@@ -46,18 +47,15 @@ async function initialize(context: vscode.ExtensionContext) {
   if (vscode.workspace.rootPath) {
     process.env.projectRoot = vscode.workspace.rootPath;
   }
-  const port = await getPort({ port: 4545 });
 
   if (!isServerRunning) {
+    port = await getPort({ port: 4545 });
     await startApiServer(port);
     isServerRunning = true;
   }
 
   const contentProvider = new ContentProvider();
   let currentPanel: vscode.WebviewPanel | undefined = undefined;
-
-  const outputChannel = vscode.window.createOutputChannel("Insight");
-  outputChannel.show();
 
   currentPanel = vscode.window.createWebviewPanel(
     "js-bubbles",

@@ -81,7 +81,7 @@ export default function SearchDialog() {
       return fileOptions;
     }
 
-    const results = await searchSymbol(inputValue);
+    const results = await searchSymbol(inputValue, "");
 
     const resultOptions = results.items.map(item => ({
       value: item.name,

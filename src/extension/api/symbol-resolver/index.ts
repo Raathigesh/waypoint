@@ -99,10 +99,10 @@ export default class SymbolsResolver {
   }
 
   @Mutation(returns => GqlSearchResult)
-  public async search(@Arg("query") query: string) {
+  public async search(@Arg("query") query: string, @Arg("type") type: string) {
     try {
       const result = new GqlSearchResult();
-      const items = this.indexer.search(query);
+      const items = this.indexer.search(query, type);
       result.items = items.map(({ obj }: { obj: ESModuleItem }) => {
         const item = new GqlSymbolInformation();
         item.filePath = obj.path;

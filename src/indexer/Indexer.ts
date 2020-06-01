@@ -74,21 +74,15 @@ export default class Indexer {
     sourceFile.parse(path, this.project.pathAlias, this.project.root);
   }
 
-  public search(query: string) {
+  public search(query: string, queryType: string) {
     try {
-      const queryTokens = query.split(/\s+/);
-      let queryType: string | null = null;
       let searchQuery = query;
-      if (queryTokens.length > 1) {
-        queryType = queryTokens[0];
-        searchQuery = queryTokens[1];
-      }
 
       let results: ESModuleItem[] = [];
       Object.entries(this.files).forEach(([, file]) => {
         file.symbols.forEach(symbol => {
           if (
-            queryType === null ||
+            queryType === "" ||
             (queryType === "func" && symbol.kind === "FunctionDeclaration") ||
             (queryType === "type" && symbol.kind === "TypeAlias") ||
             (queryType === "var" && symbol.kind === "VariableDeclaration") ||
