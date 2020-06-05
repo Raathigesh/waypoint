@@ -19,6 +19,7 @@ export default class Indexer {
   public totalFiles: number = 0;
   public indexedFileCount: number = 0;
   public failures: ParseFailure[] = [];
+  public workerJSFile: string | undefined;
 
   public async parse(project: Project) {
     this.status = "indexing";
@@ -53,7 +54,8 @@ export default class Indexer {
         (file: SourceFile) => {
           this.indexedFileCount += 1;
           this.files[file.path] = file;
-        }
+        },
+        this.workerJSFile
       );
       this.status = "indexed";
     }

@@ -28,10 +28,13 @@ function runInWorker(
   filePaths: string[],
   pathAlias: { [key: string]: string },
   root: string,
-  cb: (file: SourceFile) => void
+  cb: (file: SourceFile) => void,
+  workerFile: string
 ) {
   return new Promise(resolve => {
-    const worker = fork(join(__dirname, "Worker.js"), [], { silent: true });
+    const worker = fork(join(__dirname, workerFile), [], {
+      silent: true
+    });
     worker.on("message", (result: ParseResult) => {
       const file = new SourceFile();
       file.path = result.path;
@@ -66,14 +69,21 @@ export async function run(
     pathAlias: { [key: string]: string };
     root: string;
   },
-  cb: (file: SourceFile) => void
+  cb: (file: SourceFile) => void,
+  workerFile: string = "Worker.js"
 ) {
   try {
     const workerPromises: any = [];
 
     const fileChunks = partition(data.files, 12);
     fileChunks.forEach((chunk: string[]) => {
-      const promise = runInWorker(chunk, data.pathAlias, data.root, cb);
+      const promise = runInWorker(
+        chunk,
+        data.pathAlias,
+        data.root,
+        cb,
+        workerFile
+      );
       workerPromises.push(promise);
     });
 

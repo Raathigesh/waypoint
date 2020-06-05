@@ -5,12 +5,12 @@ Object {
   "id": "Y29uc3VtZXI6L2EuanM=",
   "isDefaultExport": true,
   "kind": "FunctionDeclaration",
-  "location": SourceLocation {
-    "end": Position {
+  "location": Object {
+    "end": Object {
       "column": 1,
       "line": 7,
     },
-    "start": Position {
+    "start": Object {
       "column": 15,
       "line": 4,
     },
@@ -57,12 +57,12 @@ Object {
   "id": "Y29uc3VtZXI6L2EuanM=",
   "isDefaultExport": true,
   "kind": "FunctionDeclaration",
-  "location": SourceLocation {
-    "end": Position {
+  "location": Object {
+    "end": Object {
       "column": 1,
       "line": 7,
     },
-    "start": Position {
+    "start": Object {
       "column": 15,
       "line": 4,
     },

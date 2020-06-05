@@ -5,12 +5,12 @@ Object {
   "id": "ZnVuY3Rpb25BOi9hLmpz",
   "isDefaultExport": false,
   "kind": "FunctionDeclaration",
-  "location": SourceLocation {
-    "end": Position {
+  "location": Object {
+    "end": Object {
       "column": 1,
       "line": 4,
     },
-    "start": Position {
+    "start": Object {
       "column": 7,
       "line": 2,
     },

@@ -19,6 +19,7 @@ describe("Indexer", () => {
       directories: ["."]
     };
     const indexer = new Indexer();
+    indexer.workerJSFile = "../../out/indexer/Worker.js";
     await indexer.parse(project);
     await waitForIndexer();
 
@@ -44,6 +45,7 @@ describe("Indexer", () => {
       directories: ["."]
     };
     const indexer = new Indexer();
+    indexer.workerJSFile = "../../out/indexer/Worker.js";
     await indexer.parse(project);
     await waitForIndexer();
 
