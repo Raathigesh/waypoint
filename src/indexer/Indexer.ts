@@ -9,6 +9,7 @@ import ESModuleItem, { Marker } from "./ESModuleItem";
 import { readFile, Stats } from "fs";
 import { findAbsoluteFilePathWhichExists } from "./fileResolver";
 import { dirname, join } from "path";
+import { run } from "./WorkerRunner";
 
 @Service()
 export default class Indexer {
@@ -42,25 +43,19 @@ export default class Indexer {
       return;
     }
 
-    const currentFile = filesToIndex.pop();
-    const sourceFile = new SourceFile();
-
-    if (this.project && currentFile) {
-      const parseResult = await sourceFile.parse(
-        currentFile,
-        this.project.pathAlias,
-        this.project.root
+    if (this.project) {
+      await run(
+        {
+          files: filesToIndex,
+          pathAlias: this.project?.pathAlias,
+          root: this.project?.root
+        },
+        (file: SourceFile) => {
+          this.indexedFileCount += 1;
+          this.files[file.path] = file;
+        }
       );
-
-      if (parseResult) {
-        this.failures.push(parseResult);
-      }
-
-      this.files[currentFile] = sourceFile;
-      this.indexedFileCount += 1;
-      setTimeout(() => {
-        this.relaxedIndexer(filesToIndex);
-      }, 0);
+      this.status = "indexed";
     }
   }
 
@@ -77,16 +72,19 @@ export default class Indexer {
   public search(query: string, queryType: string) {
     try {
       let searchQuery = query;
+      const queryTypes = queryType.split(":");
 
       let results: ESModuleItem[] = [];
       Object.entries(this.files).forEach(([, file]) => {
         file.symbols.forEach(symbol => {
           if (
             queryType === "" ||
-            (queryType === "func" && symbol.kind === "FunctionDeclaration") ||
-            (queryType === "type" && symbol.kind === "TypeAlias") ||
-            (queryType === "var" && symbol.kind === "VariableDeclaration") ||
-            (queryType === "class" && symbol.kind === "ClassDeclaration")
+            (queryTypes.includes("func") &&
+              symbol.kind === "FunctionDeclaration") ||
+            (queryTypes.includes("type") && symbol.kind === "TypeAlias") ||
+            (queryTypes.includes("var") &&
+              symbol.kind === "VariableDeclaration") ||
+            (queryTypes.includes("class") && symbol.kind === "ClassDeclaration")
           ) {
             results.push({
               ...symbol,
@@ -215,10 +213,21 @@ export default class Indexer {
         join(this.project?.root || "", directory)
       );
 
-      function ignoreFunc(file: string, stats: Stats) {
+      function ignoreFunc(path: string, stats: Stats) {
+        if (stats.isDirectory()) {
+          return (
+            !indexableDirectories.some(indexableDirectory =>
+              indexableDirectory.includes(path)
+            ) &&
+            !indexableDirectories.some(indexableDirectory =>
+              path.includes(indexableDirectory)
+            )
+          );
+        }
+
         return (
-          indexableDirectories.find(dir => file.includes(dir)) === undefined ||
-          file.includes("node_modules")
+          indexableDirectories.find(dir => path.includes(dir)) === undefined ||
+          path.includes("node_modules")
         );
       }
 

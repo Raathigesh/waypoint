@@ -23,6 +23,7 @@ import {
   TabPanels,
   TabPanel
 } from "@chakra-ui/core";
+import { SortablePane, Pane } from "react-sortable-pane";
 import { indexerStatusStore, dependencyGraphStore } from "../store";
 import Welcome from "./welcome";
 import Preference from "./preference";
@@ -37,11 +38,11 @@ function App() {
   }, []);
 
   return (
-    <Flex bg="gray.50" flexDirection="column" p={3} minHeight="100vh">
+    <Flex bg="gray.50" flexDirection="column" minHeight="100vh" flexGrow={1}>
       <Welcome indexerStatus={indexerStatus} onOpenPreference={onOpen} />
       {indexerStatus.status === "indexed" && (
         <Fragment>
-          <Flex position="fixed" right="10px" top="10px" zIndex={100}>
+          <Flex position="fixed" right="10px" bottom="10px" zIndex={100}>
             <IndexerFailures />
             <Tooltip size="small" title="Preference" position="bottom">
               <IconButton
@@ -54,17 +55,8 @@ function App() {
               />
             </Tooltip>
           </Flex>
-          <Flex mt="20px">
-            <Tabs flexGrow={1}>
-              <TabList>
-                <Tab>Search</Tab>
-              </TabList>
-              <TabPanels>
-                <TabPanel>
-                  <SymbolSearch />
-                </TabPanel>
-              </TabPanels>
-            </Tabs>
+          <Flex height="100vh">
+            <SymbolSearch />
           </Flex>
         </Fragment>
       )}

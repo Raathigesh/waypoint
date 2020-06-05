@@ -62,7 +62,7 @@ export const IndexerStatus = types
         );
       });
       while (true && self.status === "indexing") {
-        yield sleep(1000);
+        yield sleep(500);
         yield pollForStatus();
       }
     });
@@ -74,7 +74,10 @@ export const IndexerStatus = types
       } = getEnv(self);
 
       startIndexing(
-        env.pathMap.items.map(item => ({ alias: item.alias, path: item.path })),
+        env.pathMap.items.map(item => ({
+          alias: item.alias,
+          path: item.path
+        })),
         [...env.app.directories.values()]
       );
       self.status = "indexing";

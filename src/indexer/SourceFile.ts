@@ -14,7 +14,7 @@ import { promisify } from "util";
 import * as parser from "@babel/parser";
 import traverse from "@babel/traverse";
 import { NodePath, Scope } from "babel-traverse";
-import { getFileType } from "indexer/util";
+import { getFileType } from "./util";
 import ImportStatement, { ImportSpecifier } from "./ImportStatement";
 import ESModuleItem from "./ESModuleItem";
 import { ImportDeclaration } from "@babel/types";
@@ -32,6 +32,13 @@ export interface ParseFailure {
   error: string;
 }
 
+export interface ParseResult {
+  path: string;
+  symbols: ESModuleItem[];
+  importStatements: ImportStatement[];
+  exportStatements: ExportStatement[];
+}
+
 export default class SourceFile {
   public path: string = "";
   public symbols: ESModuleItem[] = [];
@@ -45,7 +52,7 @@ export default class SourceFile {
     filePath: string,
     pathAliasMap: { [alias: string]: string },
     root: string
-  ): Promise<ParseFailure | null> {
+  ): Promise<ParseFailure | ParseResult> {
     try {
       this.path = filePath;
       this.root = root;
@@ -97,10 +104,19 @@ export default class SourceFile {
       console.log("Parsing failed", filePath, e);
       return {
         filePath,
-        error: e.toString()
+        error: e.toString(),
+        path: this.path,
+        symbols: this.symbols || [],
+        importStatements: this.importStatements || [],
+        exportStatements: this.exportStatements || []
       };
     }
-    return null;
+    return {
+      path: this.path,
+      symbols: this.symbols || [],
+      importStatements: this.importStatements || [],
+      exportStatements: this.exportStatements || []
+    };
   }
 
   public getSymbolInPosition(position: GqlLocation) {
