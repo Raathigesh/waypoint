@@ -1,9 +1,9 @@
 {
-  "name": "js-clippy",
-  "displayName": "JS Clippy",
+  "name": "js-assist",
+  "displayName": "JS Assist",
   "description": "Co-pilot for JavaScript in VSCode",
   "publisher": "raathigeshan",
-  "version": "0.5.0",
+  "version": "0.1.0",
   "engines": {
     "vscode": "^1.33.0"
   },
