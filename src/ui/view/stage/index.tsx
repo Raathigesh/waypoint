@@ -4,7 +4,6 @@ import { Flex, Code, Box } from "@chakra-ui/core";
 import { ArcherContainer, ArcherElement } from "react-archer";
 import Bubble from "./bubble";
 import { dependencyGraphStore } from "ui/store";
-import SearchDialog from "../search";
 import Outline from "../outline";
 
 function Stage() {
@@ -15,10 +14,7 @@ function Stage() {
   const dependencyGraph = useContext(dependencyGraphStore);
   const arcContainer: any = useRef(null);
   console.log(arcContainer);
-  const hasBubbles =
-    dependencyGraph.symbols.size ||
-    dependencyGraph.notes.size ||
-    dependencyGraph.files.size;
+  const hasBubbles = dependencyGraph.symbols.size;
 
   const handleMouseDown = (e: any) => {
     if (e.target !== internalElement.current) {
@@ -130,7 +126,6 @@ function Stage() {
             </Flex>
           )}
         </Flex>
-        <SearchDialog />
         <Outline />
       </Flex>
     </ArcherContainer>

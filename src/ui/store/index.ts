@@ -51,19 +51,10 @@ onSnapshot(dependencyGraph.symbols, () => {
   const config = dependencyGraph.getPersistableJSON();
   setStageConfig(config);
 });
-onSnapshot(dependencyGraph.files, () => {
-  const config = dependencyGraph.getPersistableJSON();
-  setStageConfig(config);
-});
-onSnapshot(dependencyGraph.notes, () => {
-  const config = dependencyGraph.getPersistableJSON();
-  setStageConfig(config);
-});
 
 listenToMessages(async (event: string) => {
   if (event === "js-bubbles.addFile") {
     const gqlFile = await getActiveFile();
-    dependencyGraph.addFileMap(gqlFile);
   } else if (event === "js-bubbles.addSymbol") {
     const symbol = await getActiveSymbolForFile();
     dependencyGraph.setCurrentSymbol(symbol.name, symbol.filePath);

@@ -9,7 +9,6 @@ import Symbol from "./symbol";
 import { getCharWidth, getDimensions } from "ui/util/view";
 import { Flex, Box, Link, Button } from "@chakra-ui/core";
 import { List, File } from "react-feather";
-import ReferenceDialog from "ui/view/references";
 import { openFile } from "ui/store/services/file";
 import { ArcherElement, Relation, AnchorPosition } from "react-archer";
 import { Tooltip } from "react-tippy";
@@ -65,7 +64,6 @@ function Code({ symbol }: Props) {
     symbol.height
   );
 
-  const [isReferenceOpen, setIsReferenceOpen] = useState(false);
   const relativePath = symbol.filePath.replace(projectInfo.root, "");
   const trimmedPath = relativePath.startsWith(projectInfo.separator)
     ? relativePath.substr(1)
@@ -118,21 +116,6 @@ function Code({ symbol }: Props) {
             padding="3px"
             onClick={e => {
               e.stopPropagation();
-              setIsReferenceOpen(true);
-              symbol.fetchReferences();
-            }}
-          >
-            <Tooltip size="small" title="Show references" position="bottom">
-              <List cursor="pointer" size="12px" />
-            </Tooltip>
-          </Button>
-          <Button
-            size="xs"
-            variant="ghost"
-            marginLeft="3px"
-            padding="3px"
-            onClick={e => {
-              e.stopPropagation();
               openFile(symbol.filePath, symbol.location as any);
             }}
           >
@@ -177,12 +160,6 @@ function Code({ symbol }: Props) {
       >
         <Symbol symbol={symbol} />
       </ArcherElement>
-      {isReferenceOpen && (
-        <ReferenceDialog
-          symbol={symbol}
-          onClose={() => setIsReferenceOpen(false)}
-        />
-      )}
     </Frame>
   );
 }

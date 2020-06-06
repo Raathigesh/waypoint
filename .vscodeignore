@@ -7,4 +7,6 @@ src/**
 **/*.map
 **/*.ts
 **/webpack.config.js
+website
+docs
 .babelrc

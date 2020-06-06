@@ -3,10 +3,8 @@ import * as nanoid from "nanoid";
 import { DocumentSymbol, Marker } from "./DocumentSymbol";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
 import { getMarkers, getCode } from "../services/search";
-import { File } from "./File";
 import { getFile } from "../services/file";
 import { GqlFile } from "entities/GqlFile";
-import { Note } from "./Note";
 import { getStageConfig } from "../services/config";
 
 export interface PersistableSymbol {
@@ -24,31 +22,13 @@ export interface PersistableSymbol {
   width: number | undefined;
 }
 
-export interface PersistableFile {
-  path: string;
-  x: number | undefined;
-  y: number | undefined;
-}
-
-export interface PersistableNote {
-  content?: string;
-  x: number | undefined;
-  y: number | undefined;
-  height: number | undefined;
-  width: number | undefined;
-}
-
 export interface PersistableStage {
   symbols: PersistableSymbol[];
-  files: PersistableFile[];
-  notes: PersistableNote[];
 }
 
 export const DependencyGraph = types
   .model("DependencyGraph", {
     symbols: types.map(DocumentSymbol),
-    files: types.map(File),
-    notes: types.map(Note),
     colors: types.array(types.string),
     currentColorIndex: types.number,
     isBubbleDragging: types.boolean
@@ -71,14 +51,6 @@ export const DependencyGraph = types
             width: symbol.width
           })
         );
-
-        config.files.map(file => {
-          return addFile(file.path, file.x, file.y);
-        });
-
-        config.notes.map(note => {
-          return addNote(note);
-        });
       }
     });
 
@@ -181,10 +153,6 @@ export const DependencyGraph = types
       });
     };
 
-    const removeFile = (path: string) => {
-      self.files.delete(path);
-    };
-
     const setIsBubbleDragging = (flag: boolean) => {
       if (
         self.isBubbleDragging === true &&
@@ -204,11 +172,7 @@ export const DependencyGraph = types
     };
 
     const moveSymbols = (deltaX: number, deltaY: number) => {
-      [
-        ...self.symbols.values(),
-        ...self.files.values(),
-        ...self.notes.values()
-      ].forEach(symbol => {
+      [...self.symbols.values()].forEach(symbol => {
         if (symbol) {
           const nextX = (symbol.tempX || 0) + deltaX;
           const nextY = (symbol.tempY || 0) + deltaY;
@@ -226,84 +190,12 @@ export const DependencyGraph = types
       });
     };
 
-    const addFileMap = (gqlFile: GqlFile, x?: number, y?: number) => {
-      const file = File.create({
-        filePath: gqlFile.filePath,
-        symbols: gqlFile.symbols.map(symbol =>
-          DocumentSymbol.create({
-            name: symbol.name,
-            filePath: symbol.filePath || "",
-            kind: symbol.kind,
-            location: {
-              start: {
-                column: symbol?.location?.start?.column || 0,
-                line: symbol?.location?.start?.line || 0
-              },
-              end: {
-                column: symbol?.location?.end?.column || 0,
-                line: symbol?.location?.end?.line || 0
-              }
-            }
-          })
-        )
-      });
-
-      if (x && y) {
-        file.setPosition(x, y);
-      }
-      self.files.set(gqlFile.filePath, file);
-    };
-
-    const addFile = flow(function*(filePath: string, x?: number, y?: number) {
-      const gqlFile: GqlFile = yield getFile(filePath);
-      addFileMap(gqlFile, x, y);
-    });
-
-    const addNote = (
-      { x, y, content, width, height }: PersistableNote = {
-        x: 0,
-        y: 0,
-        width: undefined,
-        height: undefined
-      }
-    ) => {
-      const id = nanoid();
-      const note = Note.create({
-        id,
-        x,
-        y,
-        width,
-        height,
-        content:
-          JSON.stringify(content) ||
-          JSON.stringify([
-            {
-              type: "paragraph",
-              children: [
-                {
-                  text: ""
-                }
-              ]
-            }
-          ]),
-        color: ""
-      });
-
-      self.notes.set(id, note);
-    };
-
-    const removeNote = (id: string) => {
-      self.notes.delete(id);
-    };
-
     const setArcContainerRef = (ref: any) => {
       self.arcContainerRef = ref;
     };
 
     const clear = () => {
       self.symbols.clear();
-      self.notes.clear();
-      self.files.clear();
     };
 
     return {
@@ -314,11 +206,6 @@ export const DependencyGraph = types
       setIsBubbleDragging,
       moveSymbols,
       finalizePosition,
-      addFile,
-      removeFile,
-      addFileMap,
-      addNote,
-      removeNote,
       setArcContainerRef,
       refreshArrows,
       clear
@@ -340,18 +227,6 @@ export const DependencyGraph = types
           color: symbol.color || "",
           height: symbol.height,
           width: symbol.width
-        })),
-        files: [...self.files.values()].map(file => ({
-          path: file.filePath,
-          x: file.x,
-          y: file.y
-        })),
-        notes: [...self.notes.values()].map(note => ({
-          content: JSON.parse(note.content),
-          x: note.x,
-          y: note.y,
-          height: note.height,
-          width: note.width
         }))
       };
     }
