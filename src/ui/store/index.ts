@@ -8,6 +8,7 @@ import { setPathMap, setStageConfig } from "./services/config";
 import { App } from "./models/app";
 import { listenToMessages } from "ui/util/graphql";
 import { getActiveFile, getActiveSymbolForFile } from "./services/file";
+import Bookmarks from "./models/bookmarks";
 
 const app = App.create({
   separator: "",
@@ -40,6 +41,9 @@ export const indexerStatusStore = createContext(
 );
 export const appStore = createContext(app);
 
+const bookmarks = Bookmarks.create();
+export const bookmarksStore = createContext(bookmarks);
+
 onSnapshot(
   pathMap,
   debounce((newSnapshot: any) => {
@@ -57,6 +61,7 @@ listenToMessages(async (event: string) => {
     const gqlFile = await getActiveFile();
   } else if (event === "js-bubbles.addSymbol") {
     const symbol = await getActiveSymbolForFile();
-    dependencyGraph.setCurrentSymbol(symbol.name, symbol.filePath);
+    // dependencyGraph.setCurrentSymbol(symbol.name, symbol.filePath);
+    bookmarks.addBookmark(symbol.name, symbol.filePath);
   }
 });

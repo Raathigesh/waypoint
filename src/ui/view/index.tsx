@@ -1,34 +1,13 @@
 import React, { useContext, useEffect, Fragment } from "react";
 import { observer } from "mobx-react-lite";
 import { Tooltip } from "react-tippy";
-import {
-  Flex,
-  IconButton,
-  useDisclosure,
-  Popover,
-  PopoverTrigger,
-  Button,
-  PopoverHeader,
-  PopoverContent,
-  PopoverArrow,
-  PopoverCloseButton,
-  PopoverBody,
-  PopoverFooter,
-  Box,
-  ButtonGroup,
-  Input,
-  Tabs,
-  TabList,
-  Tab,
-  TabPanels,
-  TabPanel
-} from "@chakra-ui/core";
-import { SortablePane, Pane } from "react-sortable-pane";
-import { indexerStatusStore, dependencyGraphStore } from "../store";
+import { Flex, IconButton, useDisclosure } from "@chakra-ui/core";
+import { indexerStatusStore } from "../store";
 import Welcome from "./welcome";
 import Preference from "./preference";
 import IndexerFailures from "./stage/IndexerFailures";
 import SymbolSearch from "./symbol-search";
+import Bookmarks from "./bookmarks";
 
 function App() {
   const indexerStatus = useContext(indexerStatusStore);
@@ -55,8 +34,9 @@ function App() {
               />
             </Tooltip>
           </Flex>
-          <Flex height="100vh">
+          <Flex padding="5px" direction="column" height="100vh" flexGrow={1}>
             <SymbolSearch />
+            <Bookmarks />
           </Flex>
         </Fragment>
       )}
