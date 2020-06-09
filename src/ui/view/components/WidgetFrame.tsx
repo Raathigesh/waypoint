@@ -1,9 +1,7 @@
 import React from "react";
 import { Flex } from "@chakra-ui/core";
 import { ResizableBox } from "react-resizable";
-import { Bookmark } from "react-feather";
 
-import { getAliasPathForAbsolutePath } from "/src/indexer/fileResolver.ts";
 export default function WidgetFrame({
   title,
   Icon,
