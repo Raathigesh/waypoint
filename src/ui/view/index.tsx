@@ -17,7 +17,7 @@ function App() {
   }, []);
 
   return (
-    <Flex bg="gray.50" flexDirection="column" minHeight="100vh" flexGrow={1}>
+    <Flex bg="#EDEFF6" flexDirection="column" minHeight="100vh" flexGrow={1}>
       <Welcome indexerStatus={indexerStatus} onOpenPreference={onOpen} />
       {indexerStatus.status === "indexed" && (
         <Fragment>
@@ -34,7 +34,7 @@ function App() {
               />
             </Tooltip>
           </Flex>
-          <Flex padding="5px" direction="column" height="100vh" flexGrow={1}>
+          <Flex direction="column" height="100vh" flexGrow={1}>
             <SymbolSearch />
             <Bookmarks />
           </Flex>

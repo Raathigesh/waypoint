@@ -11,6 +11,7 @@ import Select from "react-select/creatable";
 import SymbolItem from "../components/SymbolItem";
 import { observer } from "mobx-react-lite";
 import { bookmarksStore } from "ui/store";
+import WidgetFrame from "../components/WidgetFrame";
 
 export interface SearchResult {
   value: string;
@@ -98,145 +99,114 @@ export default withResizeDetector(
     };
 
     return (
-      <Flex mb={"10px"}>
-        <ResizableBox
-          handle={
-            <Flex
-              width="100%"
-              height="2px"
-              backgroundColor="gray.300"
-              cursor="ns-resize"
-            />
-          }
-          axis="y"
-          width={width}
-          height={height / 2}
-          draggableOpts={{}}
-        >
-          <Flex
-            borderRadius="3px"
-            flexGrow={1}
-            padding="10px"
-            height="100%"
-            direction="column"
-            background="white"
-            borderTop="3px"
-            borderColor="red.200"
-            borderStyle="solid"
-          >
-            <Flex mb="10px" alignItems="center">
-              <Code size={13} />
-              <Flex ml="5px" fontSize="14px" fontWeight={400}>
-                Symbol search
-              </Flex>
-            </Flex>
-            <Select
-              formatCreateLabel={(value: string) => `Search for '${value}'`}
-              isMulti
-              formatOptionLabel={formatOptionLabel}
-              options={[
-                { value: "type", label: "Type", filter: true, Icon: Filter },
-                { value: "class", label: "Class", filter: true, Icon: Filter },
-                { value: "var", label: "Var", filter: true, Icon: Filter },
-                {
-                  value: "func",
-                  label: "Function",
-                  filter: true,
-                  Icon: Filter
+      <WidgetFrame
+        title="Symbol search"
+        Icon={Code}
+        height={height / 2}
+        width={width}
+        mb="15px"
+      >
+        <Select
+          formatCreateLabel={(value: string) => `Search for '${value}'`}
+          isMulti
+          formatOptionLabel={formatOptionLabel}
+          options={[
+            { value: "type", label: "Type", filter: true, Icon: Filter },
+            { value: "class", label: "Class", filter: true, Icon: Filter },
+            { value: "var", label: "Var", filter: true, Icon: Filter },
+            {
+              value: "func",
+              label: "Function",
+              filter: true,
+              Icon: Filter
+            }
+          ]}
+          styles={customStyles}
+          placeholder="Type '/' to add filters"
+          noOptionsMessage={() => "Start searching or add filter by typing '/'"}
+          isClearable
+          value={options}
+          components={{
+            DropdownIndicator: SearchIconComponent,
+            IndicatorSeparator: () => null
+          }}
+          onChange={(options: any[]) => {
+            if (!options) {
+              setOptions([]);
+              return;
+            }
+            let foundFirstNew = false;
+            const filtered = options
+              .reverse()
+              .filter(option => {
+                if (option["__isNew__"] && !foundFirstNew) {
+                  foundFirstNew = true;
+                  return true;
                 }
-              ]}
-              styles={customStyles}
-              placeholder="Type '/' to add filters"
-              noOptionsMessage={() =>
-                "Start searching or add filter by typing '/'"
+                return true;
+              })
+              .reverse();
+            setOptions(filtered as any);
+            const createdOption = options.find(
+              (option: any) => option["__isNew__"]
+            );
+            if (createdOption) {
+              promiseOptions(
+                createdOption.value,
+                options
+                  .filter((option: any) => option.filter)
+                  .map(item => item.value)
+                  .join(":")
+              );
+            }
+          }}
+          filterOption={(option: any, value: string) => {
+            return (
+              (value.startsWith("/") && option.data.filter) ||
+              option.data["__isNew__"]
+            );
+          }}
+          onInputChange={(input: string) => {
+            let query = "";
+            if (input.startsWith("/") || input.trim() === "") {
+              const queryOption: any = options.find(
+                option => option["__isNew__"]
+              );
+              if (queryOption) {
+                query = queryOption.value;
               }
-              isClearable
-              value={options}
-              components={{
-                DropdownIndicator: SearchIconComponent,
-                IndicatorSeparator: () => null
-              }}
-              onChange={(options: any[]) => {
-                if (!options) {
-                  setOptions([]);
-                  return;
-                }
-                let foundFirstNew = false;
-                const filtered = options
-                  .reverse()
-                  .filter(option => {
-                    if (option["__isNew__"] && !foundFirstNew) {
-                      foundFirstNew = true;
-                      return true;
-                    }
-                    return true;
-                  })
-                  .reverse();
-                setOptions(filtered as any);
-                const createdOption = options.find(
-                  (option: any) => option["__isNew__"]
-                );
-                if (createdOption) {
-                  promiseOptions(
-                    createdOption.value,
-                    options
-                      .filter((option: any) => option.filter)
-                      .map(item => item.value)
-                      .join(":")
-                  );
-                }
-              }}
-              filterOption={(option: any, value: string) => {
-                return (
-                  (value.startsWith("/") && option.data.filter) ||
-                  option.data["__isNew__"]
-                );
-              }}
-              onInputChange={(input: string) => {
-                let query = "";
-                if (input.startsWith("/") || input.trim() === "") {
-                  const queryOption: any = options.find(
-                    option => option["__isNew__"]
-                  );
-                  if (queryOption) {
-                    query = queryOption.value;
-                  }
-                } else if (input.trim() !== "") {
-                  query = input;
-                  const filtered = options.filter(
-                    option => !option["__isNew__"]
-                  );
-                  setOptions(filtered);
-                }
+            } else if (input.trim() !== "") {
+              query = input;
+              const filtered = options.filter(option => !option["__isNew__"]);
+              setOptions(filtered);
+            }
 
-                promiseOptions(
-                  query,
-                  options
-                    .filter((option: any) => option.filter)
-                    .map((item: any) => item.value)
-                    .join(":")
-                );
-              }}
-            />
+            promiseOptions(
+              query,
+              options
+                .filter((option: any) => option.filter)
+                .map((item: any) => item.value)
+                .join(":")
+            );
+          }}
+        />
 
-            <Flex direction="column" mt="5px" overflowY="auto">
-              {results.map(item => {
-                return (
-                  <SymbolItem
-                    filePath={item.symbol.filePath}
-                    name={item.symbol.name}
-                    location={item.symbol.location}
-                    kind={item.symbol.kind}
-                    onBookmark={(name, path) => {
-                      bookmarks.addBookmark(name, path);
-                    }}
-                  />
-                );
-              })}
-            </Flex>
-          </Flex>
-        </ResizableBox>
-      </Flex>
+        <Flex direction="column" mt="5px" overflowY="auto">
+          {results.map(item => {
+            return (
+              <SymbolItem
+                filePath={item.symbol.filePath}
+                name={item.symbol.name}
+                location={item.symbol.location}
+                kind={item.symbol.kind}
+                onBookmark={(name, path) => {
+                  bookmarks.addBookmark(name, path);
+                }}
+              />
+            );
+          })}
+        </Flex>
+      </WidgetFrame>
     );
   })
 );

@@ -3,7 +3,7 @@
   "displayName": "JS Assist",
   "description": "Co-pilot for JavaScript in VSCode",
   "publisher": "raathigeshan",
-  "version": "0.23.0",
+  "version": "0.24.0",
   "engines": {
     "vscode": "^1.33.0"
   },
