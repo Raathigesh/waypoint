@@ -11,24 +11,14 @@ let isServerRunning = false;
 let port = 0;
 
 export function activate(context: vscode.ExtensionContext) {
-  let disposable = vscode.commands.registerCommand(
-    "js-bubbles.showPanel",
-    () => {
-      initialize(context);
-    }
-  );
-
-  let disposableAddToStage = vscode.commands.registerCommand(
-    "js-bubbles.addFile",
-    e => {
-      pubSub.publish("js-bubbles.addFile", "js-bubbles.addFile");
-    }
-  );
+  let disposable = vscode.commands.registerCommand("waypoint.showPanel", () => {
+    initialize(context);
+  });
 
   let disposableAddSymbolToStage = vscode.commands.registerCommand(
-    "js-bubbles.addSymbol",
+    "waypoint.addSymbol",
     e => {
-      pubSub.publish("js-bubbles.addSymbol", "js-bubbles.addSymbol");
+      pubSub.publish("waypoint.addSymbol", "waypoint.addSymbol");
     }
   );
 
@@ -36,7 +26,6 @@ export function activate(context: vscode.ExtensionContext) {
     initialize(context);
   }
   context.subscriptions.push(disposable);
-  context.subscriptions.push(disposableAddToStage);
   context.subscriptions.push(disposableAddSymbolToStage);
 }
 
@@ -58,8 +47,8 @@ async function initialize(context: vscode.ExtensionContext) {
   let currentPanel: vscode.WebviewPanel | undefined = undefined;
 
   currentPanel = vscode.window.createWebviewPanel(
-    "js-bubbles",
-    "JS bubbles",
+    "waypoint",
+    "Waypoint",
     vscode.ViewColumn.Beside,
     {
       enableScripts: true,

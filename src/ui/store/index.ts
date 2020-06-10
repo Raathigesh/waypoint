@@ -57,9 +57,9 @@ onSnapshot(dependencyGraph.symbols, () => {
 });
 
 listenToMessages(async (event: string) => {
-  if (event === "js-bubbles.addFile") {
+  if (event === "waypoint.addFile") {
     const gqlFile = await getActiveFile();
-  } else if (event === "js-bubbles.addSymbol") {
+  } else if (event === "waypoint.addSymbol") {
     const symbol = await getActiveSymbolForFile();
     // dependencyGraph.setCurrentSymbol(symbol.name, symbol.filePath);
     bookmarks.addBookmark(symbol.name, symbol.filePath);

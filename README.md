@@ -7,13 +7,13 @@
 
 <br/>
 <img src="https://img.shields.io/github/workflow/status/Raathigesh/JSBubbles/Production Build?style=flat-square" />
-<img src="https://img.shields.io/visual-studio-marketplace/v/Raathigeshan.js-bubbles?color=green&style=flat-square" />
+<img src="https://img.shields.io/visual-studio-marketplace/v/Raathigeshan.waypoint?color=green&style=flat-square" />
 <br />
 </div>
 <br/>
 <br/>
 
-Waypoint is a VSCode extension which makes it easy to find JavaScript symbols and also allows to bookmark them.
+Waypoint is a VSCode extension which makes it easy to search JavaScript symbols across your code base. Also Waypoint allows you to bookmark symbols.
 
 <br/>
 
@@ -22,7 +22,7 @@ Waypoint is a VSCode extension which makes it easy to find JavaScript symbols an
 #### Install and activate
 
 - Install the extension from [marketplace](https://marketplace.visualstudio.com/items?itemName=Raathigeshan.waypoint).
-- Click on the <img src="https://raw.githubusercontent.com/Raathigesh/waypoint/master/docs/assets/Trigger%20icon.png" height="30px"> icon on the top right corner of any file to open the waypoint panel.
+- Click on the Waypoint icon on the top right corner of any file to open the Waypoint panel.
 
 #### Configure and index your project
 

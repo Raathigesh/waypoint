@@ -246,7 +246,7 @@ export default class SymbolsResolver {
   }
 
   @Subscription(() => String, {
-    topics: ["js-bubbles.addFile", "js-bubbles.addSymbol"]
+    topics: ["waypoint.addSymbol"]
   })
   events(@Root() eventName: string) {
     return eventName;

@@ -17,7 +17,7 @@ function App() {
   }, []);
 
   return (
-    <Flex bg="#EDEFF6" flexDirection="column" minHeight="100vh" flexGrow={1}>
+    <Flex bg="white" flexDirection="column" minHeight="100vh" flexGrow={1}>
       <Welcome indexerStatus={indexerStatus} onOpenPreference={onOpen} />
       {indexerStatus.status === "indexed" && (
         <Fragment>

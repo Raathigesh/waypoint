@@ -1,7 +1,7 @@
 {
-  "name": "js-assist",
-  "displayName": "JS Assist",
-  "description": "Co-pilot for JavaScript in VSCode",
+  "name": "waypoint",
+  "displayName": "waypoint",
+  "description": "Blazing fast symbol search for JavaScript in VSCode",
   "publisher": "raathigeshan",
   "version": "0.24.0",
   "engines": {
@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/Raathigesh/JSAssist"
+    "url": "https://github.com/Raathigesh/waypoint"
   },
   "icon": "icons/icon.png",
   "galleryBanner": {
@@ -26,38 +26,30 @@
   "contributes": {
     "commands": [
       {
-        "command": "js-bubbles.showPanel",
-        "title": "Toggle JS Bubbles panel",
+        "command": "waypoint.showPanel",
+        "title": "Toggle Waypoint panel",
         "icon": {
           "dark": "./icons/bubbles.png",
           "light": "./icons/bubbles.png"
         }
       },
       {
-        "command": "js-bubbles.addFile",
-        "title": "Add file to stage"
-      },
-      {
-        "command": "js-bubbles.addSymbol",
-        "title": "Add symbol to stage"
+        "command": "waypoint.addSymbol",
+        "title": "Bookmark symbol"
       }
     ],
     "menus": {
       "editor/title": [
         {
-          "command": "js-bubbles.showPanel",
-          "alt": "js-bubbles.showPanel",
+          "command": "waypoint.showPanel",
+          "alt": "waypoint.showPanel",
           "group": "navigation"
         }
       ],
       "editor/context": [
         {
-          "command": "js-bubbles.addFile",
-          "alt": "js-bubbles.addFile"
-        },
-        {
-          "command": "js-bubbles.addSymbol",
-          "alt": "js-bubbles.addSymbol"
+          "command": "waypoint.addSymbol",
+          "alt": "waypoint.addSymbol"
         }
       ]
     }
