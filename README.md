@@ -1,5 +1,5 @@
 <div align="center">
-<img  src="https://raw.githubusercontent.com/Raathigesh/waypoint/master/docs/assets/logo.png">
+<img  src="https://raw.githubusercontent.com/Raathigesh/waypoint/master/docs/assets/logo.png" width="600px">
 
 <p align="center">
   A VSCode extension for <em>finding</em> things faster in JavaScript codebases
@@ -10,7 +10,6 @@
 <img src="https://img.shields.io/visual-studio-marketplace/v/Raathigeshan.waypoint?color=green&style=flat-square" />
 <br />
 </div>
-<br/>
 <br/>
 
 Waypoint is a VSCode extension which makes it easy to search JavaScript symbols across your code base. Also Waypoint allows you to bookmark symbols.

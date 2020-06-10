@@ -15,7 +15,7 @@ export function initializeStaticRoutes(express: any, port: number) {
       <script>
         window.port = ${port};
       </script>
-      <title>JS Bubbles</title>
+      <title>Waypoint</title>
     </head>
     <body>
       <div id="root">

@@ -80,7 +80,7 @@ module.exports = env => ({
   },
   plugins: [
     new HtmlWebpackPlugin({
-      title: "JS Bubbles",
+      title: "Waypoint",
       template: require("html-webpack-template"),
       appMountId: "root",
       inject: false,

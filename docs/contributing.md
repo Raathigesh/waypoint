@@ -1,4 +1,4 @@
-## Contributing to JS Bubbles
+## Contributing to Waypoint
 
 ### Running the extension locally
 

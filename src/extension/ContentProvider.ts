@@ -9,7 +9,7 @@ export default class ContentProvider {
   <head>
     <meta charset="utf-8">
     <meta content="ie=edge" http-equiv="x-ua-compatible">
-    <title>JS Bubbles</title>
+    <title>Waypoint</title>
   </head>
   <body>
     <div id="root">
@@ -36,7 +36,7 @@ export default class ContentProvider {
     <script>
         window.port = ${port};
     </script>
-    <title>JS Bubbles</title>
+    <title>Waypoint</title>
   </head>
   <body>
     <div id="root">
