@@ -1,6 +1,6 @@
 {
   "name": "waypoint",
-  "displayName": "waypoint",
+  "displayName": "Waypoint",
   "description": "Blazing fast symbol search for JavaScript in VSCode",
   "publisher": "raathigeshan",
   "version": "0.25.0",
