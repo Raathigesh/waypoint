@@ -14,6 +14,8 @@
 
 Waypoint is a VSCode extension which makes it easy to search JavaScript symbols across your code base. Also Waypoint allows you to bookmark symbols.
 
+<img  src="https://raw.githubusercontent.com/Raathigesh/waypoint/master/docs/assets/demo.png">
+
 <br/>
 
 ### Getting started
