@@ -1,9 +1,8 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/bubbles.png">
+<img  src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/logo.png">
 
 <p align="center">
-  A VSCode extension for <em>navigating</em> and <em>understanding</em> <br/>
-  JavaScript codebases.
+  A VSCode extension for <em>finding</em> things faster in JavaScript codebases
 </p>
 
 <br/>
@@ -14,9 +13,7 @@
 <br/>
 <br/>
 
-> 💡Still polishing things up but feel free to try it out and give feedback and ideas.
-
-JS Assist is a VSCode extension which makes it easy to find JavaScript symbols.
+Waypoint is a VSCode extension which makes it easy to find JavaScript symbols and also allows to bookmark them.
 
 <br/>
 
@@ -24,8 +21,8 @@ JS Assist is a VSCode extension which makes it easy to find JavaScript symbols.
 
 #### Install and activate
 
-- Install the extension from [marketplace](https://marketplace.visualstudio.com/items?itemName=Raathigeshan.js-bubbles).
-- Click on the <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/Trigger%20icon.png" height="30px"> icon on the top right corner of any file to open the JS Assist panel.
+- Install the extension from [marketplace](https://marketplace.visualstudio.com/items?itemName=Raathigeshan.waypoint).
+- Click on the <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/Trigger%20icon.png" height="30px"> icon on the top right corner of any file to open the waypoint panel.
 
 #### Configure and index your project
 
