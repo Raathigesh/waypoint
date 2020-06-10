@@ -1,5 +1,5 @@
 <div align="center">
-<img  src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/logo.png">
+<img  src="https://raw.githubusercontent.com/Raathigesh/waypoint/master/docs/assets/logo.png">
 
 <p align="center">
   A VSCode extension for <em>finding</em> things faster in JavaScript codebases
@@ -22,7 +22,7 @@ Waypoint is a VSCode extension which makes it easy to find JavaScript symbols an
 #### Install and activate
 
 - Install the extension from [marketplace](https://marketplace.visualstudio.com/items?itemName=Raathigeshan.waypoint).
-- Click on the <img src="https://raw.githubusercontent.com/Raathigesh/JSBubbles/master/docs/assets/Trigger%20icon.png" height="30px"> icon on the top right corner of any file to open the waypoint panel.
+- Click on the <img src="https://raw.githubusercontent.com/Raathigesh/waypoint/master/docs/assets/Trigger%20icon.png" height="30px"> icon on the top right corner of any file to open the waypoint panel.
 
 #### Configure and index your project
 
