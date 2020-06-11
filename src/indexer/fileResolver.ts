@@ -1,4 +1,12 @@
-import { isAbsolute, resolve, dirname, sep, join, normalize } from "path";
+import {
+  isAbsolute,
+  resolve,
+  dirname,
+  sep,
+  join,
+  normalize,
+  relative
+} from "path";
 import { existsSync, statSync, lstatSync } from "fs";
 const supportedExtensions = ["js", "jsx", "ts", "tsx"];
 
@@ -20,9 +28,15 @@ export function tryResolvingWithIndexOrExtension(originalPath: string) {
   return null;
 }
 
+function convertPathToES6ImportPath(path: string) {
+  const regexSep = sep === "\\" ? "\\\\" : sep;
+  return path.replace(new RegExp(regexSep, "g"), "/");
+}
+
 export function getAliasPathForAbsolutePath(
   root: string,
   absolutePath: string,
+  currentFilePath: string,
   pathAliasMap: { [alias: string]: string }
 ) {
   let substitutedPath = normalize(absolutePath);
@@ -31,12 +45,15 @@ export function getAliasPathForAbsolutePath(
     if (absolutePath.startsWith(normalizedPath)) {
       substitutedPath = absolutePath.replace(normalizedPath, alias);
     }
-    const regexSep = sep === "\\" ? "\\\\" : sep;
-    substitutedPath = substitutedPath.replace(new RegExp(regexSep, "g"), "/");
+
+    substitutedPath = convertPathToES6ImportPath(substitutedPath);
     if (substitutedPath.endsWith("index.js")) {
       substitutedPath = substitutedPath.replace(`${sep}index.js`, "");
     }
   });
+  if (normalize(absolutePath) === substitutedPath) {
+    return relative(dirname(currentFilePath), absolutePath);
+  }
   return substitutedPath;
 }
 

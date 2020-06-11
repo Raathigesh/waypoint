@@ -27,6 +27,7 @@ export default withResizeDetector(
     const [results, setResults] = useState<SearchResult[]>([]);
     const [options, setOptions] = useState([]);
     const bookmarks = useContext(bookmarksStore);
+    const [inputValue, setInputValue] = useState("");
 
     const promiseOptions = useRef(
       debounce(async (inputValue: string, type: string) => {
@@ -51,18 +52,31 @@ export default withResizeDetector(
       control: (provided: any) => ({
         ...provided,
         borderColor: "inherit",
-        borderRadius: "4px 4px 0px 0px"
+        borderRadius: "4px 4px 0px 0px",
+        boxShadow: "none"
       }),
       menu: (provided: any) => ({
         ...provided,
-        backgroundColor: "#F1F5F9",
+        backgroundColor: "#ffff",
         boxShadow: "none",
         position: "initial",
         marginTop: "0px",
         borderRadius: "0px 0px 4px 4px",
         borderStyle: "solid",
-        borderWidth: "1px",
+        borderWidth: "0px 1px 1px 1px",
         borderColor: "#CBD5E0"
+      }),
+      option: (provided: any) => ({
+        ...provided
+      }),
+      multiValue: (provided: any) => ({
+        ...provided,
+        backgroundColor: "#eaf2fc",
+        borderRadius: "3px"
+      }),
+      input: (provided: any) => ({
+        ...provided,
+        color: "#666666"
       })
     };
 
@@ -78,14 +92,9 @@ export default withResizeDetector(
         <Flex alignItems="center" justifyContent="space-between">
           <Flex alignItems="center">
             <Flex marginRight="5px" marginTop="1px">
-              <Icon kind={item.kind} size="13px" />
+              <Icon kind={item.kind} size="12px" />
             </Flex>
-            <Flex
-              color="gray.800"
-              fontSize={14}
-              marginRight="10px"
-              marginBottom="2px"
-            >
+            <Flex color="gray.800" fontSize={13} mr="1px">
               {item.label}
             </Flex>
           </Flex>
@@ -100,14 +109,16 @@ export default withResizeDetector(
 
     return (
       <WidgetFrame
-        title="Symbol search"
+        title="Search"
+        subTitle="Search symbols across your codebase"
         Icon={Code}
         height={height / 2}
         width={width}
-        mb="15px"
+        mb="8px"
       >
         <Select
           formatCreateLabel={(value: string) => `Search for '${value}'`}
+          inputValue={inputValue}
           isMulti
           formatOptionLabel={formatOptionLabel}
           options={[
@@ -166,7 +177,15 @@ export default withResizeDetector(
               option.data["__isNew__"]
             );
           }}
-          onInputChange={(input: string) => {
+          onInputChange={(input: string, context: any) => {
+            if (
+              context.action === "input-blur" ||
+              context.action === "menu-close"
+            ) {
+              return;
+            }
+
+            setInputValue(input);
             let query = "";
             if (input.startsWith("/") || input.trim() === "") {
               const queryOption: any = options.find(

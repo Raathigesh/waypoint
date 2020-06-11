@@ -143,6 +143,7 @@ export default class SourceFile {
         const aliasedPath = getAliasPathForAbsolutePath(
           this.root,
           path,
+          this.path,
           this.pathAliasMap
         );
         return {

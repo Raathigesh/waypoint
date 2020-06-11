@@ -8,6 +8,7 @@ import Preference from "./preference";
 import IndexerFailures from "./stage/IndexerFailures";
 import SymbolSearch from "./symbol-search";
 import Bookmarks from "./bookmarks";
+import IndexerStatus from "./IndexerStatus";
 
 function App() {
   const indexerStatus = useContext(indexerStatusStore);
@@ -21,20 +22,8 @@ function App() {
       <Welcome indexerStatus={indexerStatus} onOpenPreference={onOpen} />
       {indexerStatus.status === "indexed" && (
         <Fragment>
-          <Flex position="fixed" right="10px" bottom="10px" zIndex={100}>
-            <IndexerFailures />
-            <Tooltip size="small" title="Preference" position="bottom">
-              <IconButton
-                variant="outline"
-                size="sm"
-                onClick={onOpen}
-                aria-label="Settings"
-                icon="settings"
-                marginLeft="10px"
-              />
-            </Tooltip>
-          </Flex>
           <Flex direction="column" height="100vh" flexGrow={1}>
+            <IndexerStatus onOpen={onOpen as any} />
             <SymbolSearch />
             <Bookmarks />
           </Flex>

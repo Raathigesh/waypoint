@@ -4,6 +4,7 @@ import { ResizableBox } from "react-resizable";
 
 export default function WidgetFrame({
   title,
+  subTitle,
   Icon,
   height,
   width,
@@ -41,21 +42,27 @@ export default function WidgetFrame({
         draggableOpts={{}}
       >
         <Flex
-          backgroundColor="white"
+          backgroundColor="#F9F9F9"
           direction="column"
           height="100%"
           borderStyle="solid"
         >
-          <Flex
-            backgroundColor="#fbfbfb"
-            borderRadius="3px"
-            padding="8px"
-            mb="10px"
-            alignItems="center"
-          >
-            <Icon size={13} />
-            <Flex ml="5px" fontSize="14px" fontWeight={400}>
-              {title}
+          <Flex borderRadius="3px" padding="8px" alignItems="center">
+            <Flex
+              borderRadius="5px"
+              backgroundColor="#5935B7"
+              padding="9px"
+              mr="3px"
+            >
+              <Icon size={14} color="#F9F9F9" />
+            </Flex>
+            <Flex flexDirection="column">
+              <Flex ml="5px" fontSize="13px" fontWeight={700} color="#5935B7">
+                {title}
+              </Flex>
+              <Flex ml="5px" fontSize="11px" color="gray">
+                {subTitle}
+              </Flex>
             </Flex>
           </Flex>
           <Flex padding="8px" direction="column" overflow="auto">

@@ -17,7 +17,13 @@ export default withResizeDetector(
   observer(function Bookmarks({ width, height }: Props) {
     const bookmarks = useContext(bookmarksStore);
     return (
-      <WidgetFrame title="Bookmark" Icon={Bookmark} height={200} width={width}>
+      <WidgetFrame
+        title="Bookmark"
+        subTitle="Bookmark symbols show up here"
+        Icon={Bookmark}
+        height={height / 2 - 63}
+        width={width}
+      >
         <Flex overflow="auto" direction="column" flexGrow={1}>
           {bookmarks.items.map(item => (
             <Flex width="100%">

@@ -25,16 +25,12 @@ export default function SymbolItem({
 
   return (
     <PseudoBox
-      p="8px"
+      p="7px"
       width="100%"
-      borderRadius="3px"
-      borderStyle="solid"
-      borderWidth="1px"
-      borderColor="gray.200"
-      backgroundColor="#fafafa"
-      mb="3px"
+      borderBottom="1px solid #f4f4f4"
+      backgroundColor="#ffffff"
       cursor="pointer"
-      _hover={{ backgroundColor: "blue.100" }}
+      _hover={{ backgroundColor: "gray.50" }}
       onClick={() => {
         openFile(filePath, location);
       }}
@@ -49,7 +45,14 @@ export default function SymbolItem({
             alignItems="center"
           >
             <SymbolKindIcon kind={kind} size="12px" />
-            <Box marginLeft="5px">{name}</Box>
+            <Box
+              marginLeft="5px"
+              color="#393939"
+              fontWeight={600}
+              fontSize={13}
+            >
+              {name}
+            </Box>
           </Flex>
 
           <Flex marginRight="5px">
@@ -59,7 +62,6 @@ export default function SymbolItem({
               position="bottom"
             >
               <IconButton
-                variant="outline"
                 size="xs"
                 onClick={(e: any) => {
                   e.stopPropagation();
@@ -68,12 +70,13 @@ export default function SymbolItem({
                 aria-label="Add"
                 icon="small-add"
                 marginLeft="10px"
+                border="1px solid #d7d7d7"
+                backgroundColor="white"
               />
             </Tooltip>
             {onBookmark && (
               <Tooltip size="small" title="Add to bookmark" position="bottom">
                 <IconButton
-                  variant="outline"
                   size="xs"
                   onClick={(e: any) => {
                     e.stopPropagation();
@@ -82,6 +85,8 @@ export default function SymbolItem({
                   aria-label="Bookmark"
                   icon={() => <Bookmark size={"11px"} />}
                   marginLeft="10px"
+                  border="1px solid #d7d7d7"
+                  backgroundColor="white"
                 />
               </Tooltip>
             )}
@@ -92,7 +97,6 @@ export default function SymbolItem({
                 position="bottom"
               >
                 <IconButton
-                  variant="outline"
                   size="xs"
                   onClick={(e: any) => {
                     e.stopPropagation();
@@ -101,6 +105,8 @@ export default function SymbolItem({
                   aria-label="Bookmark"
                   icon={() => <Trash2 size={"11px"} />}
                   marginLeft="10px"
+                  border="1px solid #d7d7d7"
+                  backgroundColor="white"
                 />
               </Tooltip>
             )}
