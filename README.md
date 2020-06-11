@@ -27,6 +27,8 @@ Waypoint is a VSCode extension for finding the things you need faster
   - Bookmark your symbols and get back to them when you need to.
 - **Filter while you search**
   - While searching you can filter by various symbol types such as classes, functions, variables and types.
+- **Import symbols to the current file**
+  - Import a symbol from bookmarks or search results into the current file with a click of a button.
 
 <br />
 
@@ -43,8 +45,12 @@ When you open the extension, you will be prompted to configure and index your pr
 
 - Click on "Configure project" to open the Preference panel.
   - Add the folders you want to index
-  - If you use path alias (like Webpack's resolve rules), make sure to add those as well
 - Click "Start Indexing"
+
+**Optionally,** add your path alias
+
+- If you use path alias (like Webpack's resolve rules), make sure to add those as well in the preference panel.
+  - This will be used when importing symbols.
 
 <br/>
 
