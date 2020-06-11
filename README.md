@@ -15,17 +15,17 @@
 </div>
 <br/>
 
-Waypoint is a VSCode extension for finding the things you need faster.
+Waypoint is a VSCode extension for finding the things you need faster
 
 <br />
 
 ## Features
 
-- Blazing fast symbol search
+- **Blazing fast symbol search**
   - Waypoint indexes your entire codebase and allows you to locate your symbols really fast.
-- Bookmark your symbols
+- **Bookmark your symbols**
   - Bookmark your symbols and get back to them when you need to.
-- Filter while you search
+- **Filter while you search**
   - While searching you can filter by various symbol types such as classes, functions, variables and types.
 
 <br />
