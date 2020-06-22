@@ -57,3 +57,14 @@ export async function startIndexing(
   });
   return result;
 }
+
+export async function stopIndexing() {
+  const query = gql`
+    query {
+      stopReIndex
+    }
+  `;
+
+  const result = await sendQuery<{ indexingStatus: string }>(query, {});
+  return result;
+}

@@ -27,6 +27,7 @@ import { GqlLocation } from "entities/GqlLocation";
 import { GqlIndexerStatus } from "entities/GqlIndexerStatus";
 import { Uri } from "vscode";
 import { OpenFileArgs } from "./OpenFileArgs";
+import ConfigResolver from "../ConfigResolver";
 
 @Service()
 @Resolver(GqlSearchResult)
@@ -46,6 +47,15 @@ export default class SymbolsResolver {
     });
     vscode.workspace.onDidSaveTextDocument(e => {
       indexer.indexFile(e.fileName);
+    });
+
+    const configResolver = new ConfigResolver();
+    const pathMap = JSON.parse(configResolver.getPathMap() || "{}");
+    const directories = JSON.parse(configResolver.getDirectories());
+
+    this.reindex({
+      items: pathMap.items,
+      directories
     });
   }
 
@@ -74,6 +84,12 @@ export default class SymbolsResolver {
     };
     await this.indexer.parse(project);
     return "OK";
+  }
+
+  @Query(returns => String)
+  public stopReIndex() {
+    this.indexer.killAllWorkers();
+    return "Ok";
   }
 
   @Query(returns => GqlIndexerStatus)

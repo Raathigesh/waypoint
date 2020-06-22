@@ -9,7 +9,7 @@ import ESModuleItem, { Marker } from "./ESModuleItem";
 import { readFile, Stats } from "fs";
 import { findAbsoluteFilePathWhichExists } from "./fileResolver";
 import { dirname, join } from "path";
-import { run } from "./WorkerRunner";
+import { WorkerRunner } from "./WorkerRunner";
 
 @Service()
 export default class Indexer {
@@ -20,6 +20,11 @@ export default class Indexer {
   public indexedFileCount: number = 0;
   public failures: ParseFailure[] = [];
   public workerJSFile: string | undefined;
+  public workerRunner: WorkerRunner;
+
+  constructor() {
+    this.workerRunner = new WorkerRunner();
+  }
 
   public async parse(project: Project) {
     this.status = "indexing";
@@ -45,7 +50,7 @@ export default class Indexer {
     }
 
     if (this.project) {
-      await run(
+      await this.workerRunner.run(
         {
           files: filesToIndex,
           pathAlias: this.project?.pathAlias,
@@ -207,6 +212,17 @@ export default class Indexer {
         return acc + line + "\n";
       }, "");
     }
+  }
+
+  public killAllWorkers() {
+    this.workerRunner.kilAll();
+
+    setTimeout(() => {
+      this.status = "none";
+      this.indexedFileCount = 0;
+      this.totalFiles = 0;
+      this.failures = [];
+    }, 1000);
   }
 
   private async readProjectFiles(root: string) {

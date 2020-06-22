@@ -19,17 +19,11 @@ function App() {
 
   return (
     <Flex bg="white" flexDirection="column" minHeight="100vh" flexGrow={1}>
-      <Welcome indexerStatus={indexerStatus} onOpenPreference={onOpen} />
-      {indexerStatus.status === "indexed" && (
-        <Fragment>
-          <Flex direction="column" height="100vh" flexGrow={1}>
-            <IndexerStatus onOpen={onOpen as any} />
-            <SymbolSearch />
-            <Bookmarks />
-          </Flex>
-        </Fragment>
-      )}
-
+      <Flex direction="column" height="100vh" flexGrow={1}>
+        <IndexerStatus onOpen={onOpen as any} />
+        <SymbolSearch />
+        <Bookmarks />
+      </Flex>
       <Preference isOpen={isOpen} onClose={onClose} />
     </Flex>
   );
