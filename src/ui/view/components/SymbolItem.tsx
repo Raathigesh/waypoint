@@ -27,6 +27,8 @@ export default function SymbolItem({
     <PseudoBox
       p="7px"
       width="100%"
+      marginBottom="2px"
+      borderRadius="4px"
       borderBottom="1px solid #f4f4f4"
       backgroundColor="#ffffff"
       cursor="pointer"

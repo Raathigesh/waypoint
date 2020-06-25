@@ -47,13 +47,17 @@ export default withResizeDetector(
     const customStyles = {
       container: (provided: any) => ({
         ...provided,
-        width: "100%"
+        width: "100%",
+        borderColor: "#f0f0f0"
       }),
       control: (provided: any) => ({
         ...provided,
         borderColor: "inherit",
         borderRadius: "4px 4px 0px 0px",
-        boxShadow: "none"
+        boxShadow: "none",
+        "&:hover": {
+          borderColor: "#f0f0f0"
+        }
       }),
       menu: (provided: any) => ({
         ...provided,
@@ -64,7 +68,7 @@ export default withResizeDetector(
         borderRadius: "0px 0px 4px 4px",
         borderStyle: "solid",
         borderWidth: "0px 1px 1px 1px",
-        borderColor: "#CBD5E0"
+        borderColor: "#f0f0f0"
       }),
       option: (provided: any) => ({
         ...provided

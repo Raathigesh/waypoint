@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { Tooltip } from "react-tippy";
 import { Flex, IconButton, Progress, Text, Button } from "@chakra-ui/core";
-import { CheckCircle, Coffee, AlertTriangle } from "react-feather";
+import { CheckCircle, Coffee, AlertTriangle, Check } from "react-feather";
 import { indexerStatusStore } from "../store";
 import { stopIndexing } from "ui/store/services";
 
@@ -15,11 +15,7 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
 
   if (indexerStatus.status === "indexing") {
     return (
-      <Flex
-        flexDir="column"
-        backgroundColor="#F9F9F9"
-        borderBottom="1px solid #e7e7e7"
-      >
+      <Flex flexDir="column" borderBottom="1px solid #F9F9F9">
         <Progress
           size="sm"
           value={(indexerStatus.indexedFiles / indexerStatus.totalFiles) * 100}
@@ -55,12 +51,11 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
       <Flex
         justifyContent="space-between"
         padding="9px"
-        backgroundColor="#F9F9F9"
-        borderBottom="1px solid #e7e7e7"
+        borderBottom="1px solid #F9F9F9"
       >
         <Flex alignItems="center">
           <AlertTriangle strokeWidth={3} color="#F6AD55" size={15} />{" "}
-          <Flex ml="5px" fontSize="13px">
+          <Flex ml="5px" fontSize="13px" color="#fffff">
             Please index your project
           </Flex>
         </Flex>
@@ -80,12 +75,11 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
   return (
     <Flex
       padding="9px"
-      backgroundColor="#F9F9F9"
-      borderBottom="1px solid #e7e7e7"
+      borderBottom="1px solid #F9F9F9"
       justifyContent="space-between"
     >
       <Flex alignItems="center">
-        <CheckCircle strokeWidth={3} color="#04CA1F" size={15} />{" "}
+        <Check strokeWidth={3} color="#01B075" size={15} />{" "}
         <Flex ml="5px" fontSize="13px">
           Initial indexing completed
         </Flex>
