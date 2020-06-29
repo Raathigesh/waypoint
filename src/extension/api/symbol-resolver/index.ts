@@ -15,7 +15,7 @@ import {
   GqlSymbolInformation,
   GqlMarkers
 } from "entities/GqlSymbolInformation";
-import ESModuleItem from "indexer/ESModuleItem";
+import ESModuleItem, { Marker } from "indexer/ESModuleItem";
 import { ReIndexArgs } from "./ReIndexArgs";
 import { sep } from "path";
 import * as vscode from "vscode";
@@ -28,6 +28,7 @@ import { GqlIndexerStatus } from "entities/GqlIndexerStatus";
 import { Uri } from "vscode";
 import { OpenFileArgs } from "./OpenFileArgs";
 import ConfigResolver from "../ConfigResolver";
+import SourceFile, { isInLocation } from "indexer/SourceFile";
 
 @Service()
 @Resolver(GqlSearchResult)
@@ -297,6 +298,45 @@ export default class SymbolsResolver {
           );
         });
       }
+    }
+
+    return "";
+  }
+
+  @Query(returns => String)
+  public async getItemAtPosition(
+    @Arg("path") path: string,
+    @Arg("line") line: number,
+    @Arg("column") column: number
+  ) {
+    const file = this.indexer.files[path];
+
+    let markerInLocation: Marker | null = null;
+
+    for (const symbol of file.symbols) {
+      for (const marker of symbol.markers) {
+        const inLocation = isInLocation(marker.location, {
+          start: {
+            line,
+            column
+          },
+          end: {
+            line,
+            column
+          }
+        });
+
+        if (inLocation) {
+          markerInLocation = marker;
+          break;
+        }
+      }
+    }
+
+    if (markerInLocation) {
+      return {
+        code: this.getCode(markerInLocation.filePath, markerInLocation.name)
+      };
     }
 
     return "";

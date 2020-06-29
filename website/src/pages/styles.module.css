@@ -1,0 +1,113 @@
+/* stylelint-disable docusaurus/copyright-header */
+
+/**
+ * CSS files with the .module.css suffix will be treated as CSS modules
+ * and scoped locally.
+ */
+
+.container {
+  padding: 50px;
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.wrapper {
+  width: 900px;
+}
+
+@media screen and (max-width: 966px) {
+  .wrapper {
+    width: 100%;
+  }
+}
+
+.heroCopy {
+  font-family: "Manjari", sans-serif;
+  font-size: 40px;
+  text-align: center;
+  margin-top: 40px;
+  font-weight: 800;
+}
+
+.name {
+  font-family: "Sofia", cursive;
+  font-size: 80px;
+  color: #18184f;
+}
+
+.heroCopySubText {
+  font-weight: 600;
+  font-size: 20px;
+  color: #f05e7b;
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 40px;
+  padding: 20px;
+}
+
+.action {
+  border: none;
+  border-radius: 3px;
+  font-size: 17px;
+  padding: 15px;
+  background-color: #d14d80;
+  color: white;
+}
+
+.action:hover {
+  cursor: pointer;
+  background-color: #af3a84;
+}
+
+.feature {
+  display: flex;
+  margin-top: 150px;
+  font-family: "Manjari", sans-serif;
+  color: #18184f;
+}
+
+@media screen and (max-width: 966px) {
+  .feature {
+    flex-direction: column;
+  }
+}
+
+.featureText {
+  margin-right: 20px;
+  font-size: 20px;
+}
+
+.featureSubText {
+  margin-top: 5px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #5b5ba2;
+}
+
+.featureHeader {
+  font-weight: 700;
+}
+
+.video {
+  border-radius: 4px;
+  border: 1px solid #d14d80;
+  box-shadow: 10px 10px #18184f;
+  height: 400px;
+}
+
+@media screen and (max-width: 966px) {
+  .video {
+    width: 100%;
+  }
+}
+
+.bottom {
+  margin-top: 100px;
+  font-size: 12px;
+  color: gray;
+}

@@ -121,7 +121,7 @@ export default class SourceFile {
 
   public getSymbolInPosition(position: GqlLocation) {
     return this.symbols.find(
-      sym => sym.location && this.isInLocation(sym.location, position)
+      sym => sym.location && isInLocation(sym.location, position)
     );
   }
 
@@ -251,7 +251,7 @@ export default class SourceFile {
         specifier.references.forEach(reference => {
           if (
             reference.location &&
-            this.isInLocation(location, reference.location)
+            isInLocation(location, reference.location)
           ) {
             symbol.markers.push({
               filePath: findAbsoluteFilePathWhichExists(
@@ -289,7 +289,7 @@ export default class SourceFile {
           if (
             reference.node.loc &&
             symbol.location &&
-            this.isInLocation(symbol.location, reference.node.loc)
+            isInLocation(symbol.location, reference.node.loc)
           ) {
             const existingMarker = symbol.markers.find(
               marker => marker.name === name
@@ -380,34 +380,6 @@ export default class SourceFile {
     });
   }
 
-  private isInLocation(locationA: GqlLocation, locationB: GqlLocation) {
-    const {
-      start: locAStart = { line: 0, column: 0 },
-      end: locAEnd = { line: 0, column: 0 }
-    } = locationA;
-
-    const {
-      start: locBStart = { line: 0, column: 0 },
-      end: locBEnd = { line: 0, column: 0 }
-    } = locationB;
-
-    let isStartWithIn = false;
-    if (locBStart.line > locAStart.line) {
-      isStartWithIn = true;
-    } else if (locBStart.line === locAStart.line) {
-      isStartWithIn = locBStart.column >= locAStart.column;
-    }
-
-    let isEndWithIn = false;
-    if (locBEnd.line < locAEnd.line) {
-      isEndWithIn = true;
-    } else if (locBEnd.line === locAEnd.line) {
-      isEndWithIn = locBEnd.column <= locAEnd.column;
-    }
-
-    return isStartWithIn && isEndWithIn;
-  }
-
   private adjustLocation(
     functionLocation: GqlLocation,
     markerLocation: GqlLocation
@@ -435,4 +407,32 @@ export default class SourceFile {
 
     return newLocation;
   }
+}
+
+export function isInLocation(locationA: GqlLocation, locationB: GqlLocation) {
+  const {
+    start: locAStart = { line: 0, column: 0 },
+    end: locAEnd = { line: 0, column: 0 }
+  } = locationA;
+
+  const {
+    start: locBStart = { line: 0, column: 0 },
+    end: locBEnd = { line: 0, column: 0 }
+  } = locationB;
+
+  let isStartWithIn = false;
+  if (locBStart.line > locAStart.line) {
+    isStartWithIn = true;
+  } else if (locBStart.line === locAStart.line) {
+    isStartWithIn = locBStart.column >= locAStart.column;
+  }
+
+  let isEndWithIn = false;
+  if (locBEnd.line < locAEnd.line) {
+    isEndWithIn = true;
+  } else if (locBEnd.line === locAEnd.line) {
+    isEndWithIn = locBEnd.column <= locAEnd.column;
+  }
+
+  return isStartWithIn && isEndWithIn;
 }
