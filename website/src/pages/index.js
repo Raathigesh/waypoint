@@ -20,47 +20,84 @@ function Home() {
           </div>
         </div>
         <div className={styles.actions}>
-          <button className={styles.action}>Get the extension</button>
+          <button
+            className={styles.action}
+            onClick={() =>
+              window.open(
+                "https://marketplace.visualstudio.com/items?itemName=Raathigeshan.waypoint",
+                "_blank"
+              )
+            }
+          >
+            Get the extension
+          </button>
+          <div className={styles.gap} />
+          <button
+            className={styles.action}
+            onClick={() => {
+              window.open("/docs", "_self");
+            }}
+          >
+            View docs
+          </button>
+          <div className={styles.gap} />
+          <button
+            className={styles.action}
+            onClick={() =>
+              window.open("https://github.com/Raathigesh/waypoint", "_blank")
+            }
+          >
+            Github
+          </button>
         </div>
-        <div className={styles.feature}>
-          <div className={styles.featureText}>
-            <div className={styles.featureHeader}>
-              Blazing fast symbol search
+      </div>
+      <div className={styles.bottomContainer}>
+        <div className={styles.wrapper}>
+          <div className={styles.feature} style={{ marginTop: "30px" }}>
+            <div className={styles.featureText}>
+              <div className={styles.featureHeader}>
+                Blazing fast symbol search
+              </div>
+              <div className={styles.featureSubText}>
+                Find symbols blazing fast. You can also apply filters such as
+                <span className={styles.highlight}>functions</span>,{" "}
+                <span className={styles.highlight}>classes</span> or{" "}
+                <span className={styles.highlight}>types</span> to filter out
+                unwanted items.
+              </div>
             </div>
-            <div className={styles.featureSubText}>
-              The search indexes your source files and allows to search symbols
-              blazing fast. You can also apply filters such as functions,
-              classes or types to filter out unwanted items.
-            </div>
+            <video
+              className={styles.video}
+              alt="Search"
+              loop={true}
+              autoPlay={true}
+              muted={true}
+              src={useBaseUrl("videos/search.mp4")}
+            />
           </div>
-          <video
-            className={styles.video}
-            alt="Search"
-            loop={true}
-            autoPlay={true}
-            muted={true}
-            src={useBaseUrl("videos/search.mp4")}
-          />
-        </div>
-        <div className={styles.feature}>
-          <div className={styles.featureText}>
-            <div className={styles.featureHeader}>
-              Bookmark symbols and get back to them
+          <div className={styles.feature}>
+            <div className={styles.featureText}>
+              <div className={styles.featureHeader}>Bookmark symbols</div>
+              <div className={styles.featureSubText}>
+                You can add symbols to the bookmark panel from the search
+                results or by{" "}
+                <span className={styles.highlight}>
+                  {" "}
+                  right clicking on the file{" "}
+                </span>{" "}
+                itself.
+              </div>
             </div>
-            <div className={styles.featureSubText}>
-              You add add symbols to the bookmark panel from search results or
-              by right clicking on the file itself.
-            </div>
+            <video
+              className={styles.video}
+              alt="Search"
+              height="400px"
+              loop={true}
+              autoPlay={true}
+              muted={true}
+              src={useBaseUrl("videos/bookmark.mp4")}
+            />
           </div>
-          <video
-            className={styles.video}
-            alt="Search"
-            height="400px"
-            loop={true}
-            autoPlay={true}
-            muted={true}
-            src={useBaseUrl("videos/bookmark.mp4")}
-          />
         </div>
       </div>
       <div className={styles.bottom}>

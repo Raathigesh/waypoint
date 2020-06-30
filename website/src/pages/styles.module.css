@@ -6,15 +6,24 @@
  */
 
 .container {
-  padding: 50px;
   display: flex;
   align-items: center;
   flex-direction: column;
   justify-content: center;
+  background-color: #f8f9fd;
 }
 
 .wrapper {
-  width: 900px;
+  padding: 50px;
+  width: 1000px;
+}
+
+.bottomContainer {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  background-color: #18184f;
 }
 
 @media screen and (max-width: 966px) {
@@ -35,9 +44,11 @@
   font-family: "Sofia", cursive;
   font-size: 80px;
   color: #18184f;
+  margin-top: -50px;
 }
 
 .heroCopySubText {
+  margin-top: 10px;
   font-weight: 600;
   font-size: 20px;
   color: #f05e7b;
@@ -46,15 +57,29 @@
 .actions {
   display: flex;
   justify-content: center;
-  margin-top: 40px;
-  padding: 20px;
+  margin-top: 15px;
+  padding: 30px;
+}
+
+.gap {
+  width: 10px;
+}
+
+.highlight {
+  background-color: #f8f9fd;
+  color: #18184f;
+  padding-left: 3px;
+  margin-left: 3px;
+  padding-right: 3px;
+  margin-right: 3px;
+  border-radius: 3px;
 }
 
 .action {
   border: none;
   border-radius: 3px;
   font-size: 17px;
-  padding: 15px;
+  padding: 10px;
   background-color: #d14d80;
   color: white;
 }
@@ -68,7 +93,7 @@
   display: flex;
   margin-top: 150px;
   font-family: "Manjari", sans-serif;
-  color: #18184f;
+  color: #f8f9fd;
 }
 
 @media screen and (max-width: 966px) {
@@ -79,14 +104,19 @@
 
 .featureText {
   margin-right: 20px;
+  font-family: "Sen", sans-serif;
+  font-weight: 700;
   font-size: 20px;
+  margin-bottom: 10px;
 }
 
 .featureSubText {
+  font-family: "Sen", sans-serif;
   margin-top: 5px;
   font-size: 16px;
   font-weight: 600;
-  color: #5b5ba2;
+  color: #f8f9fd;
+  font-weight: 400;
 }
 
 .featureHeader {
@@ -95,8 +125,8 @@
 
 .video {
   border-radius: 4px;
-  border: 1px solid #d14d80;
-  box-shadow: 10px 10px #18184f;
+  border: 1px solid #f8f9fd;
+  box-shadow: 10px 10px #070735;
   height: 400px;
 }
 
@@ -107,7 +137,8 @@
 }
 
 .bottom {
-  margin-top: 100px;
+  margin-top: 50px;
+  margin-bottom: 50px;
   font-size: 12px;
   color: gray;
 }
