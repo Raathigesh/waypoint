@@ -13,7 +13,10 @@ function Home() {
     <div className={styles.container}>
       <div className={styles.wrapper}>
         <div className={styles.heroCopy}>
-          <img height="150px" src={useBaseUrl("img/WaypointLogo.png")} />
+          <img
+            className={styles.logo}
+            src={useBaseUrl("img/WaypointLogo.png")}
+          />
           <div className={styles.name}>Waypoint</div>
           <div className={styles.heroCopySubText}>
             A VSCode extension to help navigate your JS codebase

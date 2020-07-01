@@ -1,4 +1,5 @@
 import { Resolver, Mutation, Arg, Query } from "type-graphql";
+import * as vscode from "vscode";
 const Conf = require("conf");
 import { Service } from "typedi";
 
@@ -11,7 +12,7 @@ export default class ConfigResolver {
   });
 
   getKeyForPathMaps() {
-    return `pathMaps.${process.env.projectRoot}`;
+    return `pathMaps.${vscode.workspace.rootPath}`;
   }
 
   @Mutation(returns => String)
@@ -41,7 +42,7 @@ export default class ConfigResolver {
   }
 
   getKeyForDirectories() {
-    return "directories";
+    return `directories.${vscode.workspace.rootPath}`;
   }
 
   @Mutation(returns => String)
@@ -56,7 +57,7 @@ export default class ConfigResolver {
   }
 
   getKeyForStageConfig() {
-    return "stage";
+    return `stage.${vscode.workspace.rootPath}`;
   }
 
   @Mutation(returns => String)

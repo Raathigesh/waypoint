@@ -88,7 +88,9 @@ export default class Indexer {
             queryType === "" ||
             (queryTypes.includes("func") &&
               symbol.kind === "FunctionDeclaration") ||
-            (queryTypes.includes("type") && symbol.kind === "TypeAlias") ||
+            (queryTypes.includes("type") &&
+              (symbol.kind === "TypeAlias" ||
+                symbol.kind === "TSInterfaceDeclaration")) ||
             (queryTypes.includes("var") &&
               symbol.kind === "VariableDeclaration") ||
             (queryTypes.includes("class") && symbol.kind === "ClassDeclaration")
@@ -232,6 +234,11 @@ export default class Indexer {
       );
 
       function ignoreFunc(path: string, stats: Stats) {
+        // if no directories are configured, just ignore node_modules
+        if (indexableDirectories.length === 0) {
+          return path.includes("node_modules");
+        }
+
         if (stats.isDirectory()) {
           return (
             !indexableDirectories.some(indexableDirectory =>

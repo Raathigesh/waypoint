@@ -7,7 +7,8 @@ import {
   Identifier,
   Program,
   ExportNamedDeclaration,
-  ExportDefaultDeclaration
+  ExportDefaultDeclaration,
+  InterfaceDeclaration
 } from "babel-types";
 import { readFile } from "fs";
 import { promisify } from "util";
@@ -55,6 +56,7 @@ export default class SourceFile {
   ): Promise<ParseFailure | ParseResult> {
     try {
       this.path = filePath;
+      console.log("Indexing", filePath);
       this.root = root;
       this.pathAliasMap = pathAliasMap;
 
@@ -86,6 +88,10 @@ export default class SourceFile {
         },
         TypeAlias: (path: NodePath<TypeAlias>) => {
           this.extractTypeAlias(path);
+        },
+        TSInterfaceDeclaration: (path: NodePath<InterfaceDeclaration>) => {
+          console.log("Interface ><><><><><>");
+          this.extractInterfaceDeclaration(path);
         },
         ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
           this.extractImport(path, pathAliasMap, root);
@@ -207,6 +213,12 @@ export default class SourceFile {
       path.node.loc,
       isParentDefaultExport
     );
+  }
+
+  private extractInterfaceDeclaration(path: NodePath<InterfaceDeclaration>) {
+    const name = path.node.id.name;
+    console.log("INTERFACE", name);
+    this.createSymbol(name, path.node.type, path.node.loc, false);
   }
 
   private extractExportNamedDeclaration(

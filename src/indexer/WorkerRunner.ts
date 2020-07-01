@@ -54,6 +54,8 @@ export class WorkerRunner {
         file.importStatements = result.importStatements;
         file.symbols = result.symbols;
 
+        console.log("FILE RESULT", result.path, result.symbols);
+
         cb(file);
       });
 

@@ -47,11 +47,33 @@
   margin-top: -50px;
 }
 
+@media screen and (max-width: 966px) {
+  .name {
+    font-size: 40px;
+  }
+}
+
+.logo {
+  height: 150px;
+}
+
+@media screen and (max-width: 966px) {
+  .logo {
+    height: 75px;
+  }
+}
+
 .heroCopySubText {
   margin-top: 10px;
   font-weight: 600;
   font-size: 20px;
   color: #f05e7b;
+}
+
+@media screen and (max-width: 966px) {
+  .heroCopySubText {
+    font-size: 15px;
+  }
 }
 
 .actions {
@@ -80,13 +102,20 @@
   border-radius: 3px;
   font-size: 17px;
   padding: 10px;
-  background-color: #d14d80;
+  background-color: #18184f;
   color: white;
+}
+
+@media screen and (max-width: 966px) {
+  .action {
+    padding: 5px;
+    font-size: 13px;
+  }
 }
 
 .action:hover {
   cursor: pointer;
-  background-color: #af3a84;
+  background-color: #43436a;
 }
 
 .feature {
@@ -125,7 +154,6 @@
 
 .video {
   border-radius: 4px;
-  border: 1px solid #f8f9fd;
   box-shadow: 10px 10px #070735;
   height: 400px;
 }
