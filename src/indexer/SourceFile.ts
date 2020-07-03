@@ -56,7 +56,6 @@ export default class SourceFile {
   ): Promise<ParseFailure | ParseResult> {
     try {
       this.path = filePath;
-      console.log("Indexing", filePath);
       this.root = root;
       this.pathAliasMap = pathAliasMap;
 
@@ -157,7 +156,7 @@ export default class SourceFile {
             line: (lastImportDeclaration.node.loc?.end.line || 0) + 1,
             column: 0
           },
-          content: `import {${symbol}} from '${aliasedPath}' \n`
+          content: `import {${symbol}} from '${aliasedPath}';\n`
         };
       }
 

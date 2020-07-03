@@ -290,6 +290,7 @@ export default class SymbolsResolver {
     if (this.activeEditorPath) {
       const currentFile = this.indexer.files[this.activeEditorPath];
       const result = await currentFile.insertImportStatement(symbol, path);
+
       if (result && this.activeEditor) {
         this.activeEditor.edit(editBuilder => {
           editBuilder.insert(

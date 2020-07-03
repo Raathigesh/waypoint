@@ -43,16 +43,32 @@ export function getAliasPathForAbsolutePath(
   Object.entries(pathAliasMap).forEach(([alias, path]) => {
     const normalizedPath = normalize(join(root, path));
     if (absolutePath.startsWith(normalizedPath)) {
-      substitutedPath = absolutePath.replace(normalizedPath, alias);
+      const replacedPath = absolutePath.replace(normalizedPath, "");
+      if (!replacedPath.startsWith(sep)) {
+        alias = `${alias}/`;
+      }
+      substitutedPath = join(alias, replacedPath);
     }
 
     substitutedPath = convertPathToES6ImportPath(substitutedPath);
-    if (substitutedPath.endsWith("index.js")) {
-      substitutedPath = substitutedPath.replace(`${sep}index.js`, "");
+  });
+
+  ["index.js", "index.tsx", "index.ts", "index.jsx"].forEach(indexFile => {
+    if (substitutedPath.endsWith(indexFile)) {
+      substitutedPath = substitutedPath.replace(`${sep}${indexFile}`, "");
     }
   });
+
+  [".js", ".tsx", ".ts", ".jsx"].forEach(extension => {
+    if (substitutedPath.endsWith(extension)) {
+      substitutedPath = substitutedPath.replace(`${extension}`, "");
+    }
+  });
+
   if (normalize(absolutePath) === substitutedPath) {
-    return relative(dirname(currentFilePath), absolutePath);
+    return convertPathToES6ImportPath(
+      relative(dirname(currentFilePath), absolutePath)
+    );
   }
   return substitutedPath;
 }
