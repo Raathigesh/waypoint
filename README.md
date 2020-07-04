@@ -2,10 +2,10 @@
 <img  src="https://raw.githubusercontent.com/Raathigesh/waypoint/master/docs/assets/logo.png" width="600px">
 
 <p align="center">
-  A VSCode extension for <em>finding</em> things faster in JavaScript codebases
+  VSCode extension for navigating JS codebases
 </p>
 <br/>
-<img  src="https://raw.githubusercontent.com/Raathigesh/waypoint/master/docs/assets/demo.png">
+<img style="border-radius: 5px;"  src="https://raw.githubusercontent.com/Raathigesh/waypoint/master/docs/assets/demo.png">
 
 <br/>
 <br/>
@@ -15,42 +15,33 @@
 </div>
 <br/>
 
-Waypoint is a VSCode extension for finding the things you need faster
+Waypoint is a VSCode extension which aims to make navigating JS codebases easier by providing you with delightful tools.
 
 <br />
 
 ## Features
 
-- **Blazing fast symbol search**
-  - Waypoint indexes your entire codebase and allows you to locate your symbols really fast.
-- **Bookmark your symbols**
-  - Bookmark your symbols and get back to them when you need to.
-- **Filter while you search**
-  - While searching you can filter by various symbol types such as classes, functions, variables and types.
-- **Import symbols to the current file**
+- 💨 **Fast symbol search**
+  - Find the function, class, type or variable you are looking for faster than ever.
+- 🎲 **Filter while you search**
+  - Filter your search results by applying filters such as classes, functions, variables and types.
+- 🔖 **Bookmark your symbols**
+  - Bookmark your symbols for later.
+- 📑 **Import symbols to the current file**
   - Import a symbol from bookmarks or search results into the current file with a click of a button.
 
 <br />
 
 ## Getting started
 
-### Install and activate
-
 - Install the extension from [marketplace](https://marketplace.visualstudio.com/items?itemName=Raathigeshan.waypoint).
 - Click on the Waypoint icon on the top right corner of any file to open the Waypoint panel.
 
-### Configure and index your project
+<br />
 
-When you open the extension, you will be prompted to configure and index your project.
+## Configuration
 
-- Click on "Configure project" to open the Preference panel.
-  - Add the folders you want to index
-- Click "Start Indexing"
-
-**Optionally,** add your path alias
-
-- If you use path alias (like Webpack's resolve rules), make sure to add those as well in the preference panel.
-  - This will be used when importing symbols.
+Read the docs for [additional configurations](https://waypoint.netlify.app/docs/).
 
 <br/>
 
