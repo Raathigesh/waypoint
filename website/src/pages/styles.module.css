@@ -104,6 +104,7 @@
   padding: 10px;
   background-color: #18184f;
   color: white;
+  text-decoration: none;
 }
 
 @media screen and (max-width: 966px) {
@@ -114,6 +115,8 @@
 }
 
 .action:hover {
+  text-decoration: none;
+  color: white;
   cursor: pointer;
   background-color: #43436a;
 }
@@ -154,7 +157,6 @@
 
 .video {
   border-radius: 4px;
-  box-shadow: 10px 10px #070735;
   height: 400px;
 }
 

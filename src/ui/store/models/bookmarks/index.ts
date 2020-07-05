@@ -2,12 +2,25 @@ import { types, flow } from "mobx-state-tree";
 import { Bookmark } from "./Bookmark";
 import { getMarkers } from "ui/store/services/search";
 import { GqlSymbolInformation } from "entities/GqlSymbolInformation";
+import { getBookmarksConfig } from "ui/store/services/config";
+
+export interface BookmarksJSON {
+  name: string;
+  path: string;
+}
 
 const Bookmarks = types
   .model("IndexerStatus", {
     items: types.array(Bookmark)
   })
   .actions(self => {
+    const afterCreate = flow(function*() {
+      const bookmarks: BookmarksJSON[] = yield getBookmarksConfig();
+      bookmarks.forEach(bookmark => {
+        addBookmark(bookmark.name, bookmark.path);
+      });
+    });
+
     const addBookmark = flow(function*(name: string, path: string) {
       const symbolWithMakers: GqlSymbolInformation = yield getMarkers(
         path,
@@ -42,9 +55,18 @@ const Bookmarks = types
       }
     };
 
+    const getItemsForPersisting = () => {
+      return self.items.map(item => ({
+        name: item.name,
+        path: item.filePath
+      }));
+    };
+
     return {
+      afterCreate,
       addBookmark,
-      removeBookmark
+      removeBookmark,
+      getItemsForPersisting
     };
   });
 

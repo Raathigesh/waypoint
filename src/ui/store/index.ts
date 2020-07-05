@@ -4,7 +4,11 @@ import { DependencyGraph } from "./models/DependencyGraph";
 import { IndexerStatus } from "./models/IndexerStatus";
 import { PathMap } from "./models/PathMap";
 import { onSnapshot } from "mobx-state-tree";
-import { setPathMap, setStageConfig } from "./services/config";
+import {
+  setPathMap,
+  setStageConfig,
+  setBookmarksConfig
+} from "./services/config";
 import { App } from "./models/app";
 import { listenToMessages } from "ui/util/graphql";
 import { getActiveFile, getActiveSymbolForFile } from "./services/file";
@@ -64,4 +68,9 @@ listenToMessages(async (event: string) => {
     // dependencyGraph.setCurrentSymbol(symbol.name, symbol.filePath);
     bookmarks.addBookmark(symbol.name, symbol.filePath);
   }
+});
+
+onSnapshot(bookmarks.items, () => {
+  const items = bookmarks.getItemsForPersisting();
+  setBookmarksConfig(items);
 });

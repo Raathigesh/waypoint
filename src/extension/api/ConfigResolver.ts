@@ -70,4 +70,19 @@ export default class ConfigResolver {
   public getStageConfig() {
     return this.conf.get(this.getKeyForStageConfig()) || null;
   }
+
+  getKeyForBookmarksConfig() {
+    return `bookmarks.${vscode.workspace.rootPath}`;
+  }
+
+  @Mutation(returns => String)
+  public setBookmarksConfig(@Arg("value") value: string) {
+    this.conf.set(this.getKeyForBookmarksConfig(), value);
+    return "";
+  }
+
+  @Query(returns => String, { nullable: true })
+  public getBookmarksConfig() {
+    return this.conf.get(this.getKeyForBookmarksConfig()) || null;
+  }
 }

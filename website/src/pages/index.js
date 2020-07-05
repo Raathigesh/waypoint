@@ -1,9 +1,9 @@
 import React from "react";
 import clsx from "clsx";
 import Layout from "@theme/Layout";
-import Link from "@docusaurus/Link";
 import useDocusaurusContext from "@docusaurus/useDocusaurusContext";
 import useBaseUrl from "@docusaurus/useBaseUrl";
+import Link from "@docusaurus/Link";
 import styles from "./styles.module.css";
 
 function Home() {
@@ -35,14 +35,9 @@ function Home() {
             Get the extension
           </button>
           <div className={styles.gap} />
-          <button
-            className={styles.action}
-            onClick={() => {
-              window.open("/docs", "_self");
-            }}
-          >
-            View docs
-          </button>
+          <Link className={styles.action} to="/docs">
+            View Docs
+          </Link>
           <div className={styles.gap} />
           <button
             className={styles.action}
@@ -62,11 +57,11 @@ function Home() {
                 Blazing fast symbol search
               </div>
               <div className={styles.featureSubText}>
-                Find symbols blazing fast. You can also apply filters such as
+                Find symbols fast. Apply filters such as
                 <span className={styles.highlight}>functions</span>,{" "}
                 <span className={styles.highlight}>classes</span> or{" "}
-                <span className={styles.highlight}>types</span> to filter out
-                unwanted items.
+                <span className={styles.highlight}>types</span> to narrow your
+                search.
               </div>
             </div>
             <video

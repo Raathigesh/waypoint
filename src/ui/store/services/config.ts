@@ -1,6 +1,7 @@
 import gql from "graphql-tag";
 import { sendQuery, sendMutation } from "ui/util/graphql";
 import { PersistableStage } from "../models/DependencyGraph";
+import { BookmarksJSON } from "../models/bookmarks";
 
 export async function setPathMap(pathMap: string) {
   const query = gql`
@@ -94,4 +95,29 @@ export async function getStageConfig() {
   return result.getStageConfig
     ? (JSON.parse(result.getStageConfig) as PersistableStage)
     : null;
+}
+
+export async function setBookmarksConfig(stage: BookmarksJSON[]) {
+  const query = gql`
+    mutation SetBookmarksConfig($value: String!) {
+      setBookmarksConfig(value: $value)
+    }
+  `;
+
+  await sendMutation(query, {
+    value: JSON.stringify(stage)
+  });
+}
+
+export async function getBookmarksConfig() {
+  const query = gql`
+    query {
+      getBookmarksConfig
+    }
+  `;
+
+  const result = await sendQuery<{ getBookmarksConfig: string }>(query, {});
+  return result.getBookmarksConfig
+    ? (JSON.parse(result.getBookmarksConfig) as BookmarksJSON[])
+    : [];
 }
