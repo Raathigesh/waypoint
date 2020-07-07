@@ -3,7 +3,6 @@ import { observer } from "mobx-react-lite";
 import { Tooltip } from "react-tippy";
 import {
   Flex,
-  IconButton,
   useDisclosure,
   Tabs,
   TabList,
@@ -12,9 +11,8 @@ import {
   TabPanel
 } from "@chakra-ui/core";
 import { indexerStatusStore } from "../store";
-import Welcome from "./welcome";
 import Preference from "./preference";
-import IndexerFailures from "./stage/IndexerFailures";
+
 import SymbolSearch from "./symbol-search";
 import Bookmarks from "./bookmarks";
 import IndexerStatus from "./IndexerStatus";

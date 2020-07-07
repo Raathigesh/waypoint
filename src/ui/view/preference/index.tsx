@@ -18,7 +18,7 @@ import {
   Code
 } from "@chakra-ui/core";
 import { pathMapStore, indexerStatusStore, appStore } from "ui/store";
-import { Coffee, Activity } from "react-feather";
+import { Coffee, Activity, Play } from "react-feather";
 
 interface Props {
   isOpen?: boolean;
@@ -35,14 +35,16 @@ function Preference({ isOpen, onClose }: Props) {
   };
 
   return (
-    <Drawer size="md" isOpen={isOpen} placement="right" onClose={onClose}>
+    <Drawer size="lg" isOpen={isOpen} placement="right" onClose={onClose}>
       <DrawerOverlay />
       <DrawerContent>
         <DrawerCloseButton />
-        <DrawerHeader>Preference</DrawerHeader>
+        <DrawerHeader fontWeight={400}>Preference</DrawerHeader>
 
         <DrawerBody>
-          <Heading size="sm">Directories to index</Heading>
+          <Heading size="sm" fontWeight={400}>
+            Directories to index
+          </Heading>
           <Text fontSize="12px">
             Path should be relative to the folder opened in VSCode
           </Text>
@@ -66,6 +68,7 @@ function Preference({ isOpen, onClose }: Props) {
                     aria-label="Search database"
                     size="xs"
                     icon="close"
+                    variant="outline"
                     onClick={() => app.removeDirectory(id)}
                   />
                 </Flex>
@@ -74,7 +77,7 @@ function Preference({ isOpen, onClose }: Props) {
           </Flex>
           <Flex justifyContent="flex-end" marginTop="5px" marginBottom="5px">
             <Button
-              rightIcon="plus-square"
+              leftIcon="plus-square"
               variant="outline"
               size="xs"
               onClick={() => app.addDirectory("")}
@@ -82,9 +85,10 @@ function Preference({ isOpen, onClose }: Props) {
               Add another
             </Button>
           </Flex>
-          <Divider />
 
-          <Heading size="sm">Module resolution mapping</Heading>
+          <Heading size="sm" fontWeight={400}>
+            Import alias configuration
+          </Heading>
           <Text fontSize="12px">
             If you use custom module alias in your bundler, please add them
             here. First value is the alias (e.g: <Code>components</Code>). The
@@ -117,6 +121,7 @@ function Preference({ isOpen, onClose }: Props) {
                     aria-label="Search database"
                     size="xs"
                     icon="close"
+                    variant="outline"
                     onClick={() => pathMap.remove(item.id)}
                   />
                 </Flex>
@@ -125,7 +130,7 @@ function Preference({ isOpen, onClose }: Props) {
           </Flex>
           <Flex justifyContent="flex-end" marginTop="5px" marginBottom="5px">
             <Button
-              rightIcon="plus-square"
+              leftIcon="plus-square"
               variant="outline"
               size="xs"
               onClick={() => pathMap.addNewItem("", "")}
@@ -133,15 +138,16 @@ function Preference({ isOpen, onClose }: Props) {
               Add another
             </Button>
           </Flex>
-          <Divider />
 
-          <Heading size="sm">Re-indexer</Heading>
+          <Heading size="sm" fontWeight={400}>
+            Indexer
+          </Heading>
           <Text fontSize="12px">Run the code indexer</Text>
           <Button
+            size="sm"
             marginTop="10px"
-            leftIcon={Activity}
+            leftIcon={Play}
             variant="outline"
-            width="180px"
             onClick={() => indexerStatus.initiateIndexing()}
           >
             Start Indexing

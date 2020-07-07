@@ -2,7 +2,6 @@ import { types, flow, getEnv } from "mobx-state-tree";
 import { indexerStatus, startIndexing } from "../services";
 import { PathMap } from "./PathMap";
 import { App } from "./app";
-import { DependencyGraph } from "./DependencyGraph";
 import { GqlIndexerStatus } from "entities/GqlIndexerStatus";
 const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -37,17 +36,7 @@ export const IndexerStatus = types
     });
 
     const pollForStatus: () => Promise<any> = flow(function*() {
-      const env: {
-        dependencyGraph: typeof DependencyGraph.Type;
-      } = getEnv(self);
       const status: GqlIndexerStatus = yield indexerStatus();
-
-      if (
-        (status.status === "indexed" && self.status === "indexing") ||
-        status.status === "indexed"
-      ) {
-        env.dependencyGraph.initializeStage();
-      }
 
       self.status = status.status;
       self.indexedFiles = status.indexedFileCount;

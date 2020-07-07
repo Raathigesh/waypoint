@@ -2,8 +2,16 @@ import React, { useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { Tooltip } from "react-tippy";
 import { Flex, IconButton, Progress, Text, Button } from "@chakra-ui/core";
-import { CheckCircle, Coffee, AlertTriangle, Check } from "react-feather";
-import { indexerStatusStore } from "../store";
+import {
+  CheckCircle,
+  Coffee,
+  AlertTriangle,
+  Check,
+  Smile,
+  Play,
+  Settings
+} from "react-feather";
+import { indexerStatusStore, preferenceStore } from "../store";
 import { stopIndexing } from "ui/store/services";
 
 interface Props {
@@ -12,6 +20,58 @@ interface Props {
 
 export default observer(function IndexerStatus({ onOpen }: Props) {
   const indexerStatus = useContext(indexerStatusStore);
+  const preference = useContext(preferenceStore);
+
+  if (!preference.startIndexingOnStarUp) {
+    return (
+      <Flex flexDir="column" borderBottom="1px solid #F9F9F9" padding="9px">
+        <Flex justifyContent="space-between">
+          <Flex alignItems="center">
+            <Flex fontSize="13px" flexDir="column">
+              <Flex fontSize="15px" mb="5px">
+                <Smile strokeWidth={1} size={20} /> Hi there, Welcome to
+                Waypoint.
+              </Flex>
+              <Flex>
+                By default Waypoint indexes all your .js, .ts, .jsx and .tsx
+                files. Also node_modules are ignored.
+              </Flex>
+              <Flex>
+                Optionally you can configure which folders to index (e.g: ./src)
+                in the preference panel.
+              </Flex>
+            </Flex>
+          </Flex>
+        </Flex>
+        <Flex mt="10px">
+          <Button
+            size="xs"
+            variant="outline"
+            onClick={() => {
+              preference.setIndexingOnStartUp(true);
+              indexerStatus.initiateIndexing();
+            }}
+            marginRight="15px"
+          >
+            <Play strokeWidth={1} size={15} />
+            All good. Start indexing.
+          </Button>
+
+          <Button
+            size="xs"
+            variant="outline"
+            onClick={() => {
+              preference.setIndexingOnStartUp(true);
+              onOpen();
+            }}
+          >
+            <Settings strokeWidth={1} size={15} />
+            Set directories to index
+          </Button>
+        </Flex>
+      </Flex>
+    );
+  }
 
   if (indexerStatus.status === "indexing") {
     return (

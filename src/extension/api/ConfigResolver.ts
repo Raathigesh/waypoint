@@ -26,19 +26,19 @@ export default class ConfigResolver {
     return this.conf.get(this.getKeyForPathMaps()) || "";
   }
 
-  getKeyForFontSize() {
-    return "fontsize";
+  getKeyForPreference() {
+    return `preference.${vscode.workspace.rootPath}`;
   }
 
   @Mutation(returns => String)
-  public setFontSize(@Arg("value") value: string) {
-    this.conf.set(this.getKeyForFontSize(), value);
+  public setPreference(@Arg("value") value: string) {
+    this.conf.set(this.getKeyForPreference(), value);
     return "";
   }
 
   @Query(returns => String)
-  public getFontSize() {
-    return this.conf.get(this.getKeyForFontSize()) || "";
+  public getPreference() {
+    return this.conf.get(this.getKeyForPreference()) || "{}";
   }
 
   getKeyForDirectories() {
@@ -54,21 +54,6 @@ export default class ConfigResolver {
   @Query(returns => String)
   public getDirectories() {
     return this.conf.get(this.getKeyForDirectories()) || "[]";
-  }
-
-  getKeyForStageConfig() {
-    return `stage.${vscode.workspace.rootPath}`;
-  }
-
-  @Mutation(returns => String)
-  public setStageConfig(@Arg("value") value: string) {
-    this.conf.set(this.getKeyForStageConfig(), value);
-    return "";
-  }
-
-  @Query(returns => String, { nullable: true })
-  public getStageConfig() {
-    return this.conf.get(this.getKeyForStageConfig()) || null;
   }
 
   getKeyForBookmarksConfig() {

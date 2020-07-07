@@ -1,7 +1,7 @@
 import gql from "graphql-tag";
 import { sendQuery, sendMutation } from "ui/util/graphql";
-import { PersistableStage } from "../models/DependencyGraph";
 import { BookmarksJSON } from "../models/bookmarks";
+import { PreferenceJSON } from "../models/Preference";
 
 export async function setPathMap(pathMap: string) {
   const query = gql`
@@ -26,27 +26,27 @@ export async function getPathMap() {
   return result.getPathMap;
 }
 
-export async function setFontSize(fontSize: string) {
+export async function setPreference(preference: PreferenceJSON) {
   const query = gql`
-    mutation SetFontSize($value: String!) {
-      setFontSize(value: $value)
+    mutation SetPreference($value: String!) {
+      setPreference(value: $value)
     }
   `;
 
   await sendMutation(query, {
-    value: fontSize
+    value: JSON.stringify(preference)
   });
 }
 
-export async function getFontSize() {
+export async function getPreference() {
   const query = gql`
     query {
-      getFontSize
+      getPreference
     }
   `;
 
-  const result = await sendQuery<{ getFontSize: string }>(query, {});
-  return result.getFontSize;
+  const result = await sendQuery<{ getPreference: string }>(query, {});
+  return JSON.parse(result.getPreference);
 }
 
 export async function setDirectories(directories: string[]) {
@@ -70,31 +70,6 @@ export async function getDirectories() {
 
   const result = await sendQuery<{ getDirectories: string }>(query, {});
   return JSON.parse(result.getDirectories) as string[];
-}
-
-export async function setStageConfig(stage: PersistableStage) {
-  const query = gql`
-    mutation SetStageConfig($value: String!) {
-      setStageConfig(value: $value)
-    }
-  `;
-
-  await sendMutation(query, {
-    value: JSON.stringify(stage)
-  });
-}
-
-export async function getStageConfig() {
-  const query = gql`
-    query {
-      getStageConfig
-    }
-  `;
-
-  const result = await sendQuery<{ getStageConfig: string }>(query, {});
-  return result.getStageConfig
-    ? (JSON.parse(result.getStageConfig) as PersistableStage)
-    : null;
 }
 
 export async function setBookmarksConfig(stage: BookmarksJSON[]) {

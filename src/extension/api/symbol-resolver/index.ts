@@ -53,11 +53,14 @@ export default class SymbolsResolver {
     const configResolver = new ConfigResolver();
     const pathMap = JSON.parse(configResolver.getPathMap() || "{}");
     const directories = JSON.parse(configResolver.getDirectories());
+    const preference = JSON.parse(configResolver.getPreference());
 
-    this.reindex({
-      items: pathMap.items,
-      directories
-    });
+    if (preference.startIndexingOnStarUp) {
+      this.reindex({
+        items: pathMap.items,
+        directories
+      });
+    }
   }
 
   @Query(returns => GqlSearchResult)
