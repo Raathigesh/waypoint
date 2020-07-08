@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { observer } from "mobx-react-lite";
 import { Tooltip } from "react-tippy";
-import { Flex, IconButton, Progress, Text, Button } from "@chakra-ui/core";
+import { Flex, IconButton, Progress, Text, Button, Box } from "@chakra-ui/core";
 import {
   CheckCircle,
   Coffee,
@@ -24,29 +24,38 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
 
   if (!preference.startIndexingOnStarUp) {
     return (
-      <Flex flexDir="column" borderBottom="1px solid #F9F9F9" padding="9px">
+      <Flex
+        flexDir="column"
+        color="#F9F9F9"
+        borderBottom="1px solid #F9F9F9"
+        padding="9px"
+        backgroundColor="#18184F"
+      >
         <Flex justifyContent="space-between">
           <Flex alignItems="center">
             <Flex fontSize="13px" flexDir="column">
-              <Flex fontSize="15px" mb="5px">
-                <Smile strokeWidth={1} size={20} /> Hi there, Welcome to
-                Waypoint.
+              <Flex fontSize="18px" mb="5px">
+                Hi there, Welcome to Waypoint!
               </Flex>
               <Flex>
-                By default Waypoint indexes all your .js, .ts, .jsx and .tsx
-                files. Also node_modules are ignored.
+                By default Waypoint indexes all the .js, .ts, .jsx and .tsx
+                files in your root folder but all node_modules are ignored.
               </Flex>
               <Flex>
-                Optionally you can configure which folders to index (e.g: ./src)
-                in the preference panel.
+                Optionally, you can configure which folders to index (e.g:
+                ./src) in the preference panel.
               </Flex>
             </Flex>
           </Flex>
         </Flex>
-        <Flex mt="10px">
+        <Flex mt="20px" mb="10px">
           <Button
-            size="xs"
+            size="sm"
             variant="outline"
+            fontWeight={400}
+            _hover={{
+              backgroundColor: "#AF3A83"
+            }}
             onClick={() => {
               preference.setIndexingOnStartUp(true);
               indexerStatus.initiateIndexing();
@@ -54,19 +63,23 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
             marginRight="15px"
           >
             <Play strokeWidth={1} size={15} />
-            All good. Start indexing.
+            <Box ml="5px">All good. Start indexing.</Box>
           </Button>
 
           <Button
-            size="xs"
+            size="sm"
             variant="outline"
+            fontWeight={400}
+            _hover={{
+              backgroundColor: "#AF3A83"
+            }}
             onClick={() => {
               preference.setIndexingOnStartUp(true);
               onOpen();
             }}
           >
             <Settings strokeWidth={1} size={15} />
-            Set directories to index
+            <Box ml="5px">Set folders to index</Box>
           </Button>
         </Flex>
       </Flex>

@@ -3,7 +3,7 @@
   "displayName": "Waypoint",
   "description": "Blazing fast symbol search for JavaScript in VSCode",
   "publisher": "raathigeshan",
-  "version": "0.29.0",
+  "version": "0.30.0",
   "engines": {
     "vscode": "^1.33.0"
   },
@@ -120,6 +120,7 @@
     "react": "^16.8.6",
     "react-ace": "^8.0.0",
     "react-archer": "^1.5.0",
+    "react-contextmenu": "^2.14.0",
     "react-dom": "^16.8.6",
     "react-draggable": "^4.2.0",
     "react-feather": "^1.1.6",

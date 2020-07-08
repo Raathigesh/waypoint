@@ -219,7 +219,14 @@ export default class SymbolsResolver {
   public async getActiveSymbolForFile() {
     const item = new GqlSymbolInformation();
     if (this.activeEditorPath && this.activeEditor?.selection.active) {
-      const activeFile = this.indexer.files[this.activeEditorPath];
+      let activeFile = this.indexer.files[this.activeEditorPath];
+
+      if (!activeFile) {
+        // if the file is not available, try to index this file
+        this.indexer.indexFile(this.activeEditorPath);
+        activeFile = this.indexer.files[this.activeEditorPath];
+      }
+
       const location: GqlLocation = {
         start: {
           line: this.activeEditor?.selection.active.line,
