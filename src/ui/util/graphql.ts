@@ -1,5 +1,5 @@
 import { pipe, subscribe } from "wonka";
-import { getClient } from "common/messaging/graphql";
+import { getClient } from "common/graphql";
 import { createRequest } from "urql";
 import { DocumentNode } from "graphql";
 import gql from "graphql-tag";

@@ -90,10 +90,10 @@ function Preference({ isOpen, onClose }: Props) {
             Import alias configuration
           </Heading>
           <Text fontSize="12px">
-            If you use custom module alias in your bundler, please add them
-            here. First value is the alias (e.g: <Code>components</Code>). The
-            second value is the relative path which points to the actual
-            directory (e.g: <Code fontSize="12px">./src/components</Code>).
+            If you use custom module alias in your bundler, add them here. First
+            value is the alias (e.g: components). The second value is the
+            relative path which points to the actual directory (e.g:
+            ./src/components).
           </Text>
           <Flex flexGrow={1} flexDirection="column" marginTop="10px">
             {pathMap.items.map(item => {

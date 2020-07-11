@@ -1,16 +1,7 @@
 import React from "react";
 import { Flex } from "@chakra-ui/core";
-import { ResizableBox } from "react-resizable";
 
-export default function WidgetFrame({
-  title,
-  subTitle,
-  Icon,
-  height,
-  width,
-  children,
-  mb
-}: any) {
+export default function WidgetFrame({ children, mb }: any) {
   return (
     <Flex mb={mb} height="calc(100vh - 80px)">
       <Flex

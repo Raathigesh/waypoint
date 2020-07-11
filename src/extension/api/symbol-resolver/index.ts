@@ -22,7 +22,6 @@ import * as vscode from "vscode";
 import { GqlProjectInfo } from "entities/GqlProjectInfo";
 import { existsSync } from "fs";
 import { GqlFile } from "entities/GqlFile";
-import { pubSub } from "common/pubSub";
 import { GqlLocation } from "entities/GqlLocation";
 import { GqlIndexerStatus } from "entities/GqlIndexerStatus";
 import { Uri } from "vscode";

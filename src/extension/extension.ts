@@ -6,9 +6,18 @@ import { Container } from "typedi";
 import { startApiServer } from "./api";
 import { pubSub } from "common/pubSub";
 const getPort = require("get-port");
+import TelemetryReporter from "vscode-extension-telemetry";
+const packageJSON = require("../../package.json");
 
 let isServerRunning = false;
 let port = 0;
+
+const extensionId = "waypoint";
+const extensionVersion = packageJSON.version;
+const key = "46773bdf-6391-4142-91b2-471574b947eb";
+
+// telemetry reporter
+let reporter: any;
 
 export function activate(context: vscode.ExtensionContext) {
   let disposable = vscode.commands.registerCommand("waypoint.showPanel", () => {
@@ -27,9 +36,20 @@ export function activate(context: vscode.ExtensionContext) {
   }
   context.subscriptions.push(disposable);
   context.subscriptions.push(disposableAddSymbolToStage);
+
+  reporter = new TelemetryReporter(extensionId, extensionVersion, key);
+  if (process.env.dev) {
+    reporter.sendTelemetryEvent("activate");
+  }
+  context.subscriptions.push(reporter);
 }
 
-export function deactivate() {}
+export function deactivate() {
+  // This will ensure all pending events get flushed
+  if (reporter) {
+    reporter.dispose();
+  }
+}
 
 async function initialize(context: vscode.ExtensionContext) {
   Container.set("extension-context", context);

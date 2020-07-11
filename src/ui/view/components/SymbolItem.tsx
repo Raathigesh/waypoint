@@ -4,8 +4,10 @@ import { Bookmark, Trash2, Plus } from "react-feather";
 import { Tooltip } from "react-tippy";
 import { openFile, insertImport } from "ui/store/services/file";
 import { ContextMenu, MenuItem, ContextMenuTrigger } from "react-contextmenu";
+
 import SymbolKindIcon from "./SymbolKindIcon";
 import { appStore } from "ui/store";
+import SymbolMenu from "./SymbolMenu";
 
 export default function SymbolItem({
   filePath,
@@ -136,23 +138,7 @@ export default function SymbolItem({
               onBookmark(name, filePath);
             }}
           >
-            <PseudoBox
-              style={{
-                backgroundColor: "#18184F",
-                padding: "8px",
-                borderRadius: "3px 3px 0px 0px",
-                color: "white",
-                fontSize: "12px"
-              }}
-              _hover={{
-                backgroundColor: "#373775 !important"
-              }}
-            >
-              <Flex alignItems="center">
-                <Bookmark size={12} strokeWidth="1px" />
-                <Box ml="5px">Bookmark</Box>
-              </Flex>
-            </PseudoBox>
+            <SymbolMenu Icon={Bookmark} name="Bookmark" />
           </MenuItem>
         )}
         {onRemoveBookmark && (
@@ -164,23 +150,7 @@ export default function SymbolItem({
             }}
             data={{ name, filePath }}
           >
-            <PseudoBox
-              style={{
-                backgroundColor: "#18184F",
-                padding: "8px",
-                color: "white",
-                borderRadius: "3px 3px 0px 0px",
-                fontSize: "12px"
-              }}
-              _hover={{
-                backgroundColor: "#373775 !important"
-              }}
-            >
-              <Flex alignItems="center">
-                <Trash2 size={12} strokeWidth="1px" />
-                <Box ml="5px">Remove bookmark</Box>
-              </Flex>
-            </PseudoBox>
+            <SymbolMenu Icon={Trash2} name="Remove bookmark" />
           </MenuItem>
         )}
         <MenuItem
@@ -190,23 +160,7 @@ export default function SymbolItem({
             insertImport(name, filePath);
           }}
         >
-          <PseudoBox
-            style={{
-              backgroundColor: "#18184F",
-              padding: "8px",
-              borderRadius: "0px 0px 3px 3px",
-              color: "white",
-              fontSize: "12px"
-            }}
-            _hover={{
-              backgroundColor: "#373775 !important"
-            }}
-          >
-            <Flex alignItems="center">
-              <Plus size={12} strokeWidth="1px" />
-              <Box ml="5px">Import symbol into active file</Box>
-            </Flex>
-          </PseudoBox>
+          <SymbolMenu Icon={Plus} name="Import symbol into active file" />
         </MenuItem>
       </ContextMenu>
     </PseudoBox>

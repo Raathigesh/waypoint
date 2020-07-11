@@ -1,5 +1,4 @@
-import { Uri, ExtensionContext } from "vscode";
-import { join } from "path";
+import { ExtensionContext } from "vscode";
 
 export default class ContentProvider {
   getDevServerContent() {
@@ -21,11 +20,6 @@ export default class ContentProvider {
   }
 
   getProdContent(context: ExtensionContext, port: number) {
-    const unBundleDiskPath = Uri.file(
-      join(context.extensionPath, "out", "ui", "ui.bundle.js")
-    );
-    const unBundlePath = unBundleDiskPath.with({ scheme: "vscode-resource" });
-
     return `
     <!DOCTYPE html>
 <html lang="en">
