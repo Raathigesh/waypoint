@@ -35,6 +35,7 @@ export interface ParseFailure {
 
 export interface ParseResult {
   path: string;
+  lastIndexedTime: number | null;
   symbols: ESModuleItem[];
   importStatements: ImportStatement[];
   exportStatements: ExportStatement[];
@@ -48,6 +49,7 @@ export default class SourceFile {
   public programScope: Scope | undefined;
   public root: string = "";
   public pathAliasMap: { [alias: string]: string } = {};
+  public lastIndexedTime: number | null = null;
 
   public async parse(
     filePath: string,
@@ -110,14 +112,18 @@ export default class SourceFile {
       return {
         filePath,
         error: e.toString(),
+        lastIndexedTime: this.lastIndexedTime,
         path: this.path,
         symbols: this.symbols || [],
         importStatements: this.importStatements || [],
         exportStatements: this.exportStatements || []
       };
+    } finally {
+      this.setCurrentTimeAsLastIndexed();
     }
     return {
       path: this.path,
+      lastIndexedTime: this.lastIndexedTime,
       symbols: this.symbols || [],
       importStatements: this.importStatements || [],
       exportStatements: this.exportStatements || []
@@ -164,6 +170,30 @@ export default class SourceFile {
     } catch (e) {
       console.log("Parsing failed", this.path, e);
     }
+  }
+
+  public setCurrentTimeAsLastIndexed() {
+    this.lastIndexedTime = new Date().getTime();
+  }
+
+  public asJSON(): ParseResult {
+    return {
+      path: this.path,
+      symbols: this.symbols,
+      importStatements: this.importStatements,
+      exportStatements: this.exportStatements,
+      lastIndexedTime: this.lastIndexedTime
+    };
+  }
+
+  public static getFileFromJSON(jsonObj: ParseResult) {
+    const file = new SourceFile();
+    file.path = jsonObj.path;
+    file.symbols = jsonObj.symbols;
+    file.lastIndexedTime = jsonObj.lastIndexedTime;
+    file.importStatements = jsonObj.importStatements;
+    file.exportStatements = jsonObj.exportStatements;
+    return file;
   }
 
   private extractFunctionDeclaration(path: NodePath<FunctionDeclaration>) {

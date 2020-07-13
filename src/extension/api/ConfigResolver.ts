@@ -2,6 +2,7 @@ import { Resolver, Mutation, Arg, Query } from "type-graphql";
 import * as vscode from "vscode";
 const Conf = require("conf");
 import { Service } from "typedi";
+import { ParseResult } from "indexer/SourceFile";
 
 @Resolver()
 @Service()
@@ -69,5 +70,18 @@ export default class ConfigResolver {
   @Query(returns => String, { nullable: true })
   public getBookmarksConfig() {
     return this.conf.get(this.getKeyForBookmarksConfig()) || null;
+  }
+
+  getKeyForCache() {
+    return `cache.${vscode.workspace.rootPath}`;
+  }
+
+  public setCache(value: { [path: string]: ParseResult }) {
+    this.conf.set(this.getKeyForCache(), value);
+    return "";
+  }
+
+  public getCache() {
+    return this.conf.get(this.getKeyForCache()) || null;
   }
 }

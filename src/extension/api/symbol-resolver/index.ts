@@ -34,6 +34,7 @@ import SourceFile, { isInLocation } from "indexer/SourceFile";
 export default class SymbolsResolver {
   private activeEditorPath: string | undefined;
   private activeEditor: vscode.TextEditor | undefined;
+  private configResolver: ConfigResolver;
 
   constructor(
     private readonly container: ContainerInstance,
@@ -49,10 +50,10 @@ export default class SymbolsResolver {
       indexer.indexFile(e.fileName);
     });
 
-    const configResolver = new ConfigResolver();
-    const pathMap = JSON.parse(configResolver.getPathMap() || "{}");
-    const directories = JSON.parse(configResolver.getDirectories());
-    const preference = JSON.parse(configResolver.getPreference());
+    this.configResolver = new ConfigResolver();
+    const pathMap = JSON.parse(this.configResolver.getPathMap() || "{}");
+    const directories = JSON.parse(this.configResolver.getDirectories());
+    const preference = JSON.parse(this.configResolver.getPreference());
 
     if (preference.startIndexingOnStarUp) {
       this.reindex({
@@ -69,6 +70,8 @@ export default class SymbolsResolver {
 
   @Mutation(returns => String)
   public async reindex(@Args() { items, directories }: ReIndexArgs) {
+    const indexCache = this.configResolver.getCache();
+
     let pathAlias = {};
     if (items) {
       pathAlias = items.reduce(
@@ -85,7 +88,8 @@ export default class SymbolsResolver {
       pathAlias,
       directories
     };
-    await this.indexer.parse(project);
+    await this.indexer.parse(project, indexCache);
+    this.configResolver.setCache(this.indexer.getCache());
     return "OK";
   }
 

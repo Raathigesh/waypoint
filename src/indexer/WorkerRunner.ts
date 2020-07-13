@@ -55,6 +55,7 @@ export class WorkerRunner {
         file.exportStatements = result.exportStatements;
         file.importStatements = result.importStatements;
         file.symbols = result.symbols;
+        file.lastIndexedTime = result.lastIndexedTime;
 
         console.log("FILE RESULT", result.path, result.symbols);
 

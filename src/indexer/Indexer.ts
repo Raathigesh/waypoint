@@ -3,10 +3,10 @@ const fuzzysort = require("fuzzysort");
 import { promisify } from "util";
 import { Service } from "typedi";
 import Project from "./Project";
-import SourceFile, { ParseFailure } from "./SourceFile";
+import SourceFile, { ParseFailure, ParseResult } from "./SourceFile";
 import { getFileType } from "indexer/util";
 import ESModuleItem, { Marker } from "./ESModuleItem";
-import { readFile, Stats } from "fs";
+import { readFile, Stats, statSync } from "fs";
 import { findAbsoluteFilePathWhichExists } from "./fileResolver";
 import { dirname, join } from "path";
 import { WorkerRunner } from "./WorkerRunner";
@@ -26,21 +26,55 @@ export default class Indexer {
     this.workerRunner = new WorkerRunner();
   }
 
-  public async parse(project: Project) {
+  public async parse(
+    project: Project,
+    cache?: { [path: string]: ParseResult }
+  ) {
     this.status = "indexing";
     this.project = project;
     this.failures = [];
 
     const files = await this.readProjectFiles(project.root);
-    this.totalFiles = files.length;
 
-    const supportedFiles = files.filter(
+    let supportedFiles = files.filter(
       filePath => getFileType(filePath) !== "UNSUPPORTED"
     );
 
-    this.indexedFileCount = 0;
+    if (cache) {
+      supportedFiles = this.getModifiedFilesForIndexing(supportedFiles, cache);
+    }
+    this.totalFiles = supportedFiles.length;
 
+    this.indexedFileCount = 0;
     return this.relaxedIndexer(supportedFiles);
+  }
+
+  public getModifiedFilesForIndexing(
+    allSupportedFiles: string[],
+    cache: { [path: string]: ParseResult }
+  ) {
+    const fileToIndex: string[] = [];
+
+    allSupportedFiles.forEach(filePath => {
+      if (cache[filePath]) {
+        const cachedFile = cache[filePath];
+        const stat = statSync(cachedFile.path);
+
+        if (!cachedFile.lastIndexedTime) {
+          fileToIndex.push(filePath);
+        } else if (stat.mtimeMs > cachedFile.lastIndexedTime) {
+          fileToIndex.push(filePath);
+        } else {
+          // add cached file to index
+          const fileObj = SourceFile.getFileFromJSON(cachedFile);
+          this.files[filePath] = fileObj;
+        }
+      } else {
+        fileToIndex.push(filePath);
+      }
+    });
+
+    return fileToIndex;
   }
 
   public async relaxedIndexer(filesToIndex: string[]) {
@@ -225,6 +259,16 @@ export default class Indexer {
       this.totalFiles = 0;
       this.failures = [];
     }, 1000);
+  }
+
+  public getCache() {
+    return Object.values(this.files).reduce(
+      (acc: { [path: string]: ParseResult }, file) => {
+        acc[file.path] = file.asJSON();
+        return acc;
+      },
+      {}
+    );
   }
 
   private async readProjectFiles(root: string) {
