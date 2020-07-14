@@ -43,7 +43,7 @@ function Preference({ isOpen, onClose }: Props) {
 
                 <DrawerBody>
                     <Heading size="sm" fontWeight={400}>
-                        Directories to index
+                        Folders to index
                     </Heading>
                     <Text fontSize="12px">
                         Path should be relative to the folder opened in VSCode

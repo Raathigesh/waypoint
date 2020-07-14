@@ -1,7 +1,7 @@
 ---
 id: doc4
-title: Choose directories to index
-sidebar_label: Choose directories to index
+title: Choose folders to index
+sidebar_label: Choose folders to index
 ---
 
 You can write content using [GitHub-flavored Markdown syntax](https://github.github.com/gfm/).
@@ -42,16 +42,16 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 
 1. First ordered list item
 1. Another item
-   - Unordered sub-list.
+    - Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
-   1. Ordered sub-list
+    1. Ordered sub-list
 1. And another item.
 
-- Unordered list can use asterisks
+-   Unordered list can use asterisks
 
-* Or minuses
+*   Or minuses
 
-- Or pluses
+-   Or pluses
 
 ---
 
@@ -83,18 +83,18 @@ Some text to show that the reference links can follow later.
 
 Here's our logo (hover to see the title text):
 
-Inline-style: ![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 1")
+Inline-style: ![alt text](https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png 'Logo Title Text 1')
 
 Reference-style: ![alt text][logo]
 
-[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png "Logo Title Text 2"
+[logo]: https://github.com/adam-p/markdown-here/raw/master/src/common/images/icon48.png 'Logo Title Text 2'
 
 ---
 
 ## Code
 
 ```javascript
-var s = "JavaScript syntax highlighting";
+var s = 'JavaScript syntax highlighting';
 alert(s);
 ```
 
@@ -110,7 +110,7 @@ But let's throw in a <b>tag</b>.
 
 ```js {2}
 function highlightMe() {
-  console.log("This line can be highlighted!");
+    console.log('This line can be highlighted!');
 }
 ```
 

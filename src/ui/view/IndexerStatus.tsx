@@ -64,7 +64,7 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
                         marginRight="15px"
                     >
                         <Play strokeWidth={1} size={15} />
-                        <Box ml="5px">All good. Start indexing.</Box>
+                        <Box ml="5px">Start indexing</Box>
                     </Button>
 
                     <Button
@@ -161,9 +161,9 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
             justifyContent="space-between"
         >
             <Flex alignItems="center">
-                <Check strokeWidth={3} color="#01B075" size={15} />{' '}
+                <Check strokeWidth={3} color="#01B075" size={15} />
                 <Flex ml="5px" fontSize="13px">
-                    Initial indexing completed
+                    Indexing completed
                 </Flex>
             </Flex>
             <Tooltip size="small" title="Preference" position="bottom">
