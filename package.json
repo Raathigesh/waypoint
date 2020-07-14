@@ -1,195 +1,195 @@
 {
-  "name": "waypoint",
-  "displayName": "Waypoint",
-  "description": "Blazing fast symbol search for JavaScript in VSCode",
-  "publisher": "raathigeshan",
-  "version": "0.32.0",
-  "engines": {
-    "vscode": "^1.33.0"
-  },
-  "categories": [
-    "Other"
-  ],
-  "activationEvents": [
-    "*"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Raathigesh/waypoint"
-  },
-  "icon": "icons/icon.png",
-  "galleryBanner": {
-    "color": "#111111",
-    "theme": "dark"
-  },
-  "main": "./out/extension/extension.js",
-  "contributes": {
-    "commands": [
-      {
-        "command": "waypoint.showPanel",
-        "title": "Toggle Waypoint panel",
-        "icon": {
-          "dark": "./icons/bubbles.png",
-          "light": "./icons/bubbles.png"
-        }
-      },
-      {
-        "command": "waypoint.addSymbol",
-        "title": "Bookmark symbol"
-      }
+    "name": "waypoint",
+    "displayName": "Waypoint",
+    "description": "Blazing fast symbol search for JavaScript in VSCode",
+    "publisher": "raathigeshan",
+    "version": "0.33.0",
+    "engines": {
+        "vscode": "^1.33.0"
+    },
+    "categories": [
+        "Other"
     ],
-    "menus": {
-      "editor/title": [
-        {
-          "command": "waypoint.showPanel",
-          "alt": "waypoint.showPanel",
-          "group": "navigation"
-        }
-      ],
-      "editor/context": [
-        {
-          "command": "waypoint.addSymbol",
-          "alt": "waypoint.addSymbol"
-        }
-      ]
-    }
-  },
-  "scripts": {
-    "vscode:prepublish": "yarn run build",
-    "compile": "tsc -p ./",
-    "watch": "tsc -watch -p ./src/extension --project ./tsconfig.json",
-    "postinstall": "node ./node_modules/vscode/bin/install",
-    "ui": "webpack-dev-server --env.development --config ./webpack.config.js",
-    "build-ui": "webpack --env.production --config ./webpack.config.js",
-    "build": "rimraf out && yarn compile && yarn build-ui",
-    "package-ext": "vsce package --yarn",
-    "publish-ext": "vsce publish --yarn",
-    "pretty": "prettier --write  \"src/**/*.{ts,tsx}\"",
-    "test": "jest",
-    "ship": "yarn version && git push origin --tag",
-    "docs": "cd website && yarn install && yarn build"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.7.2",
-    "@babel/plugin-proposal-class-properties": "^7.4.0",
-    "@babel/plugin-proposal-decorators": "^7.6.0",
-    "@babel/plugin-proposal-object-rest-spread": "^7.4.3",
-    "@babel/plugin-proposal-optional-chaining": "^7.6.0",
-    "@babel/plugin-syntax-optional-chaining": "^7.2.0",
-    "@babel/plugin-transform-runtime": "^7.5.0",
-    "@babel/preset-env": "^7.4.3",
-    "@babel/preset-react": "^7.0.0",
-    "@babel/preset-typescript": "^7.7.2",
-    "@chakra-ui/core": "^0.4.1",
-    "@emotion/core": "^10.0.22",
-    "@emotion/styled": "^10.0.23",
-    "@types/babel-traverse": "^6.25.5",
-    "@types/jest": "^24.0.21",
-    "@types/mocha": "^2.2.42",
-    "@types/node": "^10.12.21",
-    "@types/react": "^16.8.14",
-    "@types/react-dom": "^16.8.4",
-    "@types/react-resizable": "^1.7.2",
-    "@types/react-resize-detector": "^4.2.0",
-    "@types/react-router-dom": "^4.3.3",
-    "ace-builds": "^1.4.7",
-    "babel-loader": "^8.0.5",
-    "babel-plugin-styled-components": "^1.10.0",
-    "cross-env": "^5.2.0",
-    "css-loader": "^2.1.1",
-    "d3-shape": "^1.3.5",
-    "dagre": "^0.8.4",
-    "emotion-theming": "^10.0.19",
-    "file-loader": "^3.0.1",
-    "graphql-tag": "^2.10.1",
-    "html-webpack-plugin": "^3.2.0",
-    "html-webpack-template": "^6.2.0",
-    "husky": "^3.0.9",
-    "jest": "^24.9.0",
-    "lodash.debounce": "^4.0.8",
-    "mobx": "^5.14.2",
-    "mobx-react-lite": "^1.4.1",
-    "mobx-state-tree": "^3.15.0",
-    "mobx-utils": "^5.4.1",
-    "monaco-editor": "^0.19.0",
-    "monaco-editor-webpack-plugin": "^1.8.1",
-    "monaco-themes": "^0.3.3",
-    "prettier": "^1.19.1",
-    "pretty-quick": "^2.0.0",
-    "re-resizable": "^6.1.1",
-    "react": "^16.8.6",
-    "react-ace": "^8.0.0",
-    "react-archer": "^1.5.0",
-    "react-contextmenu": "^2.14.0",
-    "react-dom": "^16.8.6",
-    "react-draggable": "^4.2.0",
-    "react-feather": "^1.1.6",
-    "react-monaco-editor": "^0.32.1",
-    "react-rnd": "^10.1.3",
-    "react-router-dom": "^5.0.0",
-    "react-select": "^3.0.8",
-    "react-spring": "^8.0.27",
-    "react-syntax-highlighter": "^11.0.2",
-    "react-tippy": "^1.2.3",
-    "rimraf": "^2.6.3",
-    "slate": "^0.57.1",
-    "slate-history": "^0.57.1",
-    "slate-react": "^0.57.1",
-    "style-loader": "^0.23.1",
-    "terser-webpack-plugin": "^2.3.5",
-    "typescript": "^3.7.2",
-    "url-loader": "^3.0.0",
-    "vscode": "^1.1.28",
-    "webpack": "^4.30.0",
-    "webpack-cli": "^3.3.1",
-    "webpack-dev-server": "^3.3.1"
-  },
-  "dependencies": {
-    "@babel/generator": "^7.7.4",
-    "@babel/traverse": "^7.4.3",
-    "conf": "^6.2.0",
-    "fuzzysort": "^1.1.4",
-    "get-port": "^5.1.1",
-    "graphql": "^14.3.1",
-    "graphql-yoga": "^1.17.4",
-    "module-alias": "^2.2.0",
-    "nanoid": "^2.0.3",
-    "node-fetch": "^2.6.0",
-    "pify": "^4.0.1",
-    "react": "^16.8.6",
-    "recursive-readdir": "^2.2.2",
-    "reflect-metadata": "^0.1.13",
-    "subscriptions-transport-ws": "^0.9.16",
-    "tmp": "^0.1.0",
-    "type-graphql": "^0.17.4",
-    "typedi": "^0.8.0",
-    "urql": "^1.0.5",
-    "vscode-extension-telemetry": "^0.1.6",
-    "wonka": "^3.2.0",
-    "ws": "^7.1.1"
-  },
-  "resolutions": {
-    "graphql": "^14.3.1"
-  },
-  "_moduleAliases": {
-    "common": "./out/common",
-    "entities": "./out/entities",
-    "indexer": "./out/indexer"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged"
-    }
-  },
-  "jest": {
-    "testPathIgnorePatterns": [
-      "/node_modules/",
-      "/out/"
+    "activationEvents": [
+        "*"
     ],
-    "moduleNameMapper": {
-      "^common(.*)$": "<rootDir>/src/common$1",
-      "^entities(.*)$": "<rootDir>/src/entities$1",
-      "^indexer(.*)$": "<rootDir>/src/indexer$1"
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Raathigesh/waypoint"
+    },
+    "icon": "icons/icon.png",
+    "galleryBanner": {
+        "color": "#111111",
+        "theme": "dark"
+    },
+    "main": "./out/extension/extension.js",
+    "contributes": {
+        "commands": [
+            {
+                "command": "waypoint.showPanel",
+                "title": "Toggle Waypoint panel",
+                "icon": {
+                    "dark": "./icons/bubbles.png",
+                    "light": "./icons/bubbles.png"
+                }
+            },
+            {
+                "command": "waypoint.addSymbol",
+                "title": "Bookmark symbol"
+            }
+        ],
+        "menus": {
+            "editor/title": [
+                {
+                    "command": "waypoint.showPanel",
+                    "alt": "waypoint.showPanel",
+                    "group": "navigation"
+                }
+            ],
+            "editor/context": [
+                {
+                    "command": "waypoint.addSymbol",
+                    "alt": "waypoint.addSymbol"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "yarn run build",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./src/extension --project ./tsconfig.json",
+        "postinstall": "node ./node_modules/vscode/bin/install",
+        "ui": "webpack-dev-server --env.development --config ./webpack.config.js",
+        "build-ui": "webpack --env.production --config ./webpack.config.js",
+        "build": "rimraf out && yarn compile && yarn build-ui",
+        "package-ext": "vsce package --yarn",
+        "publish-ext": "vsce publish --yarn",
+        "pretty": "prettier --write  \"src/**/*.{ts,tsx}\"",
+        "test": "jest",
+        "ship": "yarn version && git push origin --tag",
+        "docs": "cd website && yarn install && yarn build"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.7.2",
+        "@babel/plugin-proposal-class-properties": "^7.4.0",
+        "@babel/plugin-proposal-decorators": "^7.6.0",
+        "@babel/plugin-proposal-object-rest-spread": "^7.4.3",
+        "@babel/plugin-proposal-optional-chaining": "^7.6.0",
+        "@babel/plugin-syntax-optional-chaining": "^7.2.0",
+        "@babel/plugin-transform-runtime": "^7.5.0",
+        "@babel/preset-env": "^7.4.3",
+        "@babel/preset-react": "^7.0.0",
+        "@babel/preset-typescript": "^7.7.2",
+        "@chakra-ui/core": "^0.4.1",
+        "@emotion/core": "^10.0.22",
+        "@emotion/styled": "^10.0.23",
+        "@types/babel-traverse": "^6.25.5",
+        "@types/jest": "^24.0.21",
+        "@types/mocha": "^2.2.42",
+        "@types/node": "^10.12.21",
+        "@types/react": "^16.8.14",
+        "@types/react-dom": "^16.8.4",
+        "@types/react-resizable": "^1.7.2",
+        "@types/react-resize-detector": "^4.2.0",
+        "@types/react-router-dom": "^4.3.3",
+        "ace-builds": "^1.4.7",
+        "babel-loader": "^8.0.5",
+        "babel-plugin-styled-components": "^1.10.0",
+        "cross-env": "^5.2.0",
+        "css-loader": "^2.1.1",
+        "d3-shape": "^1.3.5",
+        "dagre": "^0.8.4",
+        "emotion-theming": "^10.0.19",
+        "file-loader": "^3.0.1",
+        "graphql-tag": "^2.10.1",
+        "html-webpack-plugin": "^3.2.0",
+        "html-webpack-template": "^6.2.0",
+        "husky": "^3.0.9",
+        "jest": "^24.9.0",
+        "lodash.debounce": "^4.0.8",
+        "mobx": "^5.14.2",
+        "mobx-react-lite": "^1.4.1",
+        "mobx-state-tree": "^3.15.0",
+        "mobx-utils": "^5.4.1",
+        "monaco-editor": "^0.19.0",
+        "monaco-editor-webpack-plugin": "^1.8.1",
+        "monaco-themes": "^0.3.3",
+        "prettier": "^1.19.1",
+        "pretty-quick": "^2.0.0",
+        "re-resizable": "^6.1.1",
+        "react": "^16.8.6",
+        "react-ace": "^8.0.0",
+        "react-archer": "^1.5.0",
+        "react-contextmenu": "^2.14.0",
+        "react-dom": "^16.8.6",
+        "react-draggable": "^4.2.0",
+        "react-feather": "^1.1.6",
+        "react-monaco-editor": "^0.32.1",
+        "react-rnd": "^10.1.3",
+        "react-router-dom": "^5.0.0",
+        "react-select": "^3.0.8",
+        "react-spring": "^8.0.27",
+        "react-syntax-highlighter": "^11.0.2",
+        "react-tippy": "^1.2.3",
+        "rimraf": "^2.6.3",
+        "slate": "^0.57.1",
+        "slate-history": "^0.57.1",
+        "slate-react": "^0.57.1",
+        "style-loader": "^0.23.1",
+        "terser-webpack-plugin": "^2.3.5",
+        "typescript": "^3.7.2",
+        "url-loader": "^3.0.0",
+        "vscode": "^1.1.28",
+        "webpack": "^4.30.0",
+        "webpack-cli": "^3.3.1",
+        "webpack-dev-server": "^3.3.1"
+    },
+    "dependencies": {
+        "@babel/generator": "^7.7.4",
+        "@babel/traverse": "^7.4.3",
+        "conf": "^6.2.0",
+        "fuzzysort": "^1.1.4",
+        "get-port": "^5.1.1",
+        "graphql": "^14.3.1",
+        "graphql-yoga": "^1.17.4",
+        "module-alias": "^2.2.0",
+        "nanoid": "^2.0.3",
+        "node-fetch": "^2.6.0",
+        "pify": "^4.0.1",
+        "react": "^16.8.6",
+        "recursive-readdir": "^2.2.2",
+        "reflect-metadata": "^0.1.13",
+        "subscriptions-transport-ws": "^0.9.16",
+        "tmp": "^0.1.0",
+        "type-graphql": "^0.17.4",
+        "typedi": "^0.8.0",
+        "urql": "^1.0.5",
+        "vscode-extension-telemetry": "^0.1.6",
+        "wonka": "^3.2.0",
+        "ws": "^7.1.1"
+    },
+    "resolutions": {
+        "graphql": "^14.3.1"
+    },
+    "_moduleAliases": {
+        "common": "./out/common",
+        "entities": "./out/entities",
+        "indexer": "./out/indexer"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "pretty-quick --staged"
+        }
+    },
+    "jest": {
+        "testPathIgnorePatterns": [
+            "/node_modules/",
+            "/out/"
+        ],
+        "moduleNameMapper": {
+            "^common(.*)$": "<rootDir>/src/common$1",
+            "^entities(.*)$": "<rootDir>/src/entities$1",
+            "^indexer(.*)$": "<rootDir>/src/indexer$1"
+        }
     }
-  }
 }
