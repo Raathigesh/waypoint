@@ -150,23 +150,26 @@ export default class SourceFile {
       });
 
       const lastImportDeclaration = importDeclarationPaths.pop();
+
+      let lineNumber = 0;
       if (lastImportDeclaration) {
-        const aliasedPath = getAliasPathForAbsolutePath(
-          this.root,
-          path,
-          this.path,
-          this.pathAliasMap
-        );
-        return {
-          position: {
-            line: (lastImportDeclaration.node.loc?.end.line || 0) + 1,
-            column: 0
-          },
-          content: `import {${symbol}} from '${aliasedPath}';\n`
-        };
+        lineNumber = lastImportDeclaration.node.loc?.end.line || 0;
       }
 
-      return null;
+      const aliasedPath = getAliasPathForAbsolutePath(
+        this.root,
+        path,
+        this.path,
+        this.pathAliasMap
+      );
+
+      return {
+        position: {
+          line: lineNumber + 1,
+          column: 0
+        },
+        content: `import {${symbol}} from '${aliasedPath}';\n`
+      };
     } catch (e) {
       console.log("Parsing failed", this.path, e);
     }
