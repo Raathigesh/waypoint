@@ -1,1 +1,1 @@
-export type FileType = "JS" | "TS" | "JSX" | "TSX" | "UNSUPPORTED";
+export type FileType = 'JS' | 'TS' | 'JSX' | 'TSX' | 'UNSUPPORTED';

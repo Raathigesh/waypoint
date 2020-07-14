@@ -1,40 +1,40 @@
-import { resolve } from "path";
-import Indexer from "indexer/Indexer";
-import Project from "indexer/Project";
-import { santizePath } from "indexer/util";
-import { Marker } from "indexer/ESModuleItem";
+import { resolve } from 'path';
+import Indexer from 'indexer/Indexer';
+import Project from 'indexer/Project';
+import { santizePath } from 'indexer/util';
+import { Marker } from 'indexer/ESModuleItem';
 
 const waitForIndexer = () =>
-  new Promise(resolve => {
-    setTimeout(() => {
-      resolve();
-    }, 2000);
-  });
+    new Promise(resolve => {
+        setTimeout(() => {
+            resolve();
+        }, 2000);
+    });
 
-describe("Indexer", () => {
-  it("should link re-exported symbols", async () => {
-    const project: Project = {
-      root: resolve(__dirname, "./project"),
-      pathAlias: {},
-      directories: ["."]
-    };
-    const indexer = new Indexer();
-    indexer.workerJSFile = "../../out/indexer/Worker.js";
-    await indexer.parse(project);
-    await waitForIndexer();
+describe('Indexer', () => {
+    it('should link re-exported symbols', async () => {
+        const project: Project = {
+            root: resolve(__dirname, './project'),
+            pathAlias: {},
+            directories: ['.'],
+        };
+        const indexer = new Indexer();
+        indexer.workerJSFile = '../../out/indexer/Worker.js';
+        await indexer.parse(project);
+        await waitForIndexer();
 
-    const functionA = indexer.getSymbolWithMarkers(
-      resolve(__dirname, "./project/a.js"),
-      "functionA"
-    );
+        const functionA = indexer.getSymbolWithMarkers(
+            resolve(__dirname, './project/a.js'),
+            'functionA'
+        );
 
-    expect({
-      ...functionA,
-      path: santizePath(project.root, functionA?.path),
-      markers: functionA?.markers.map((marker: Marker) => ({
-        ...marker,
-        filePath: santizePath(project.root, marker.filePath)
-      }))
-    }).toMatchSnapshot();
-  });
+        expect({
+            ...functionA,
+            path: santizePath(project.root, functionA?.path),
+            markers: functionA?.markers.map((marker: Marker) => ({
+                ...marker,
+                filePath: santizePath(project.root, marker.filePath),
+            })),
+        }).toMatchSnapshot();
+    });
 });

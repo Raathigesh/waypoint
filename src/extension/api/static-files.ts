@@ -1,11 +1,11 @@
-import { join } from "path";
-import { readdirSync } from "fs";
+import { join } from 'path';
+import { readdirSync } from 'fs';
 
 export function initializeStaticRoutes(express: any, port: number) {
-  const uiDirectory = join(__dirname, "../../ui");
-  const files = readdirSync(uiDirectory);
+    const uiDirectory = join(__dirname, '../../ui');
+    const files = readdirSync(uiDirectory);
 
-  const htmlContent = `
+    const htmlContent = `
   <!DOCTYPE html>
   <html lang="en">
     <head>
@@ -25,14 +25,14 @@ export function initializeStaticRoutes(express: any, port: number) {
   </html>
         `;
 
-  express.get("/", (req: any, res: any) => {
-    res.set("Content-Type", "text/html");
-    res.send(htmlContent);
-  });
-
-  files.forEach(fileName => {
-    express.get(`/${fileName}`, (req: any, res: any) => {
-      return res.sendFile(join(uiDirectory, fileName));
+    express.get('/', (req: any, res: any) => {
+        res.set('Content-Type', 'text/html');
+        res.send(htmlContent);
     });
-  });
+
+    files.forEach(fileName => {
+        express.get(`/${fileName}`, (req: any, res: any) => {
+            return res.sendFile(join(uiDirectory, fileName));
+        });
+    });
 }

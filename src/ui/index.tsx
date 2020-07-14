@@ -1,12 +1,12 @@
-import React from "react";
-import { render } from "react-dom";
-import App from "./App";
+import React from 'react';
+import { render } from 'react-dom';
+import App from './App';
 
-render(<App />, document.getElementById("root"));
+render(<App />, document.getElementById('root'));
 
 if ((module as any).hot) {
-  (module as any).hot.accept("./App", () => {
-    const NextApp = require("./App").default;
-    render(<NextApp />, document.getElementById("root"));
-  });
+    (module as any).hot.accept('./App', () => {
+        const NextApp = require('./App').default;
+        render(<NextApp />, document.getElementById('root'));
+    });
 }

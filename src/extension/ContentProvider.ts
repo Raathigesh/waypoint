@@ -1,8 +1,8 @@
-import { ExtensionContext } from "vscode";
+import { ExtensionContext } from 'vscode';
 
 export default class ContentProvider {
-  getDevServerContent() {
-    return `
+    getDevServerContent() {
+        return `
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -17,10 +17,10 @@ export default class ContentProvider {
   </body>
 </html>
       `;
-  }
+    }
 
-  getProdContent(context: ExtensionContext, port: number) {
-    return `
+    getProdContent(context: ExtensionContext, port: number) {
+        return `
     <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -39,13 +39,13 @@ export default class ContentProvider {
   </body>
 </html>
     `;
-  }
-
-  getContent(context: ExtensionContext, port: number) {
-    if (process.env.dev) {
-      return this.getDevServerContent();
     }
 
-    return this.getProdContent(context, port);
-  }
+    getContent(context: ExtensionContext, port: number) {
+        if (process.env.dev) {
+            return this.getDevServerContent();
+        }
+
+        return this.getProdContent(context, port);
+    }
 }
