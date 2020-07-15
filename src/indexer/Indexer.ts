@@ -43,18 +43,20 @@ export default class Indexer {
         if (cache) {
             supportedFiles = this.getModifiedFilesForIndexing(
                 supportedFiles,
-                cache
+                cache,
+                project
             );
         }
         this.totalFiles = supportedFiles.length;
 
         this.indexedFileCount = 0;
-        return this.relaxedIndexer(supportedFiles);
+        return this.relaxedIndexer(supportedFiles, project);
     }
 
     public getModifiedFilesForIndexing(
         allSupportedFiles: string[],
-        cache: { [path: string]: ParseResult }
+        cache: { [path: string]: ParseResult },
+        project: Project
     ) {
         const fileToIndex: string[] = [];
 
@@ -69,7 +71,11 @@ export default class Indexer {
                     fileToIndex.push(filePath);
                 } else {
                     // add cached file to index
-                    const fileObj = SourceFile.getFileFromJSON(cachedFile);
+                    const fileObj = SourceFile.getFileFromJSON(
+                        cachedFile,
+                        project.root,
+                        project.pathAlias
+                    );
                     this.files[filePath] = fileObj;
                 }
             } else {
@@ -80,7 +86,7 @@ export default class Indexer {
         return fileToIndex;
     }
 
-    public async relaxedIndexer(filesToIndex: string[]) {
+    public async relaxedIndexer(filesToIndex: string[], project: Project) {
         if (filesToIndex.length === 0) {
             this.status = 'indexed';
             return;
@@ -95,6 +101,8 @@ export default class Indexer {
                 },
                 (file: SourceFile) => {
                     this.indexedFileCount += 1;
+                    file.root = project.root;
+                    file.pathAliasMap = project.pathAlias;
                     this.files[file.path] = file;
                 },
                 this.workerJSFile

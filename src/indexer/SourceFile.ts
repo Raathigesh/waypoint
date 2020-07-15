@@ -113,6 +113,7 @@ export default class SourceFile {
             this.linkLocalSymbols(root, pathAliasMap);
         } catch (e) {
             console.log('Parsing failed', filePath, e);
+            this.setCurrentTimeAsLastIndexed();
             return {
                 filePath,
                 error: e.toString(),
@@ -146,13 +147,11 @@ export default class SourceFile {
             const ast = this.getAST(content.toString(), this.path);
 
             const importDeclarationPaths: NodePath<ImportDeclaration>[] = [];
-
             traverse(ast, {
                 ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
                     importDeclarationPaths.push(path);
                 },
             });
-
             const lastImportDeclaration = importDeclarationPaths.pop();
 
             let lineNumber = 0;
@@ -169,7 +168,7 @@ export default class SourceFile {
 
             return {
                 position: {
-                    line: lineNumber + 1,
+                    line: lineNumber,
                     column: 0,
                 },
                 content: `import {${symbol}} from '${aliasedPath}';\n`,
@@ -193,8 +192,14 @@ export default class SourceFile {
         };
     }
 
-    public static getFileFromJSON(jsonObj: ParseResult) {
+    public static getFileFromJSON(
+        jsonObj: ParseResult,
+        root: string,
+        pathAliasMap: { [alias: string]: string }
+    ) {
         const file = new SourceFile();
+        file.root = root;
+        file.pathAliasMap = pathAliasMap;
         file.path = jsonObj.path;
         file.symbols = jsonObj.symbols;
         file.lastIndexedTime = jsonObj.lastIndexedTime;

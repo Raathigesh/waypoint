@@ -132,32 +132,40 @@ export default observer(function SymbolSearch() {
 
                     return (
                         <Flex alignItems="center">
-                            Showing results for
-                            <Text fontWeight={600} ml="5px" mr="5px">
-                                {value}
-                            </Text>
-                            <Text fontWeight={500} color="#c3c3c3">
-                                |
-                            </Text>
-                            <Text color="#2a69ac" ml="5px" fontSize="12px">
-                                <Flex>
-                                    Press{' '}
-                                    <Text fontWeight={700} ml="5px" mr="5px">
-                                        enter
-                                    </Text>{' '}
-                                    (
-                                    <CornerDownLeft
-                                        color="#718096"
-                                        size="12px"
-                                        style={{ marginTop: '5px' }}
-                                    />
-                                    ) and type{' '}
-                                    <Text fontWeight={700} ml="5px" mr="5px">
-                                        /
-                                    </Text>{' '}
-                                    to apply filters
-                                </Flex>
-                            </Text>
+                            <Flex>
+                                <Text
+                                    isTruncated
+                                    color="#2a69ac"
+                                    ml="5px"
+                                    fontSize="12px"
+                                >
+                                    <Flex>
+                                        Press{' '}
+                                        <Text
+                                            fontWeight={700}
+                                            ml="5px"
+                                            mr="5px"
+                                        >
+                                            enter
+                                        </Text>{' '}
+                                        (
+                                        <CornerDownLeft
+                                            color="#718096"
+                                            size="12px"
+                                            style={{ marginTop: '5px' }}
+                                        />
+                                        ) and type{' '}
+                                        <Text
+                                            fontWeight={700}
+                                            ml="5px"
+                                            mr="5px"
+                                        >
+                                            /
+                                        </Text>{' '}
+                                        to apply filters
+                                    </Flex>
+                                </Text>
+                            </Flex>
                         </Flex>
                     );
                 }}

@@ -52,7 +52,7 @@ onSnapshot(bookmarks.items, () => {
 });
 
 const preference = Preference.create({
-    startIndexingOnStarUp: false,
+    startIndexingOnStarUp: true,
 });
 export const preferenceStore = createContext(preference);
 
