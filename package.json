@@ -81,6 +81,7 @@
         "@babel/preset-react": "^7.0.0",
         "@babel/preset-typescript": "^7.7.2",
         "@chakra-ui/core": "^0.4.1",
+        "@changesets/cli": "^2.9.2",
         "@emotion/core": "^10.0.22",
         "@emotion/styled": "^10.0.23",
         "@types/babel-traverse": "^6.25.5",
