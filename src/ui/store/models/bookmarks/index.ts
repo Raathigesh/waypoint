@@ -1,8 +1,9 @@
-import { types, flow } from 'mobx-state-tree';
+import { types, flow, getEnv } from 'mobx-state-tree';
 import { Bookmark } from './Bookmark';
 import { getMarkers } from 'ui/store/services/search';
 import { GqlSymbolInformation } from 'entities/GqlSymbolInformation';
 import { getBookmarksConfig } from 'ui/store/services/config';
+import { IndexerStatus } from '../IndexerStatus';
 
 export interface BookmarksJSON {
     name: string;
@@ -10,11 +11,28 @@ export interface BookmarksJSON {
 }
 
 const Bookmarks = types
-    .model('IndexerStatus', {
+    .model('Bookmarks', {
         items: types.array(Bookmark),
     })
     .actions(self => {
+        const env: {
+            indexStatus: typeof IndexerStatus.Type;
+        } = getEnv(self);
+
+        const waitForIndexerToComplete = flow(function*() {
+            return new Promise(resolve => {
+                env.indexStatus.registerIndexedCallback(() => {
+                    resolve();
+                });
+            });
+        });
+
         const afterCreate = flow(function*() {
+            yield waitForIndexerToComplete();
+            restoreSavedBookmarks();
+        });
+
+        const restoreSavedBookmarks = flow(function*() {
             const bookmarks: BookmarksJSON[] = yield getBookmarksConfig();
             bookmarks.forEach(bookmark => {
                 addBookmark(bookmark.name, bookmark.path);
@@ -64,6 +82,7 @@ const Bookmarks = types
 
         return {
             afterCreate,
+            restoreSavedBookmarks,
             addBookmark,
             removeBookmark,
             getItemsForPersisting,

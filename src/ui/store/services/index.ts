@@ -46,17 +46,27 @@ export async function indexerStatus() {
 
 export async function startIndexing(
     pathMap: PathMapItem[],
-    directories: string[]
+    directories: string[],
+    ignoreCache: boolean
 ) {
     const mutation = gql`
-        mutation Reindex($items: [PathMapItem!], $directories: [String!]) {
-            reindex(items: $items, directories: $directories)
+        mutation Reindex(
+            $items: [PathMapItem!]
+            $directories: [String!]
+            $ignoreCache: Boolean!
+        ) {
+            reindex(
+                items: $items
+                directories: $directories
+                ignoreCache: $ignoreCache
+            )
         }
     `;
 
     const result = await sendMutation<{ indexingStatus: string }>(mutation, {
         items: pathMap,
         directories,
+        ignoreCache,
     });
     return result;
 }

@@ -22,6 +22,19 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
     const indexerStatus = useContext(indexerStatusStore);
     const preference = useContext(preferenceStore);
 
+    const preferenceIcon = (
+        <Tooltip size="small" title="Preference" position="bottom">
+            <IconButton
+                size="xs"
+                onClick={onOpen}
+                aria-label="Settings"
+                icon="settings"
+                marginLeft="10px"
+                backgroundColor="#FFFFFF"
+            />
+        </Tooltip>
+    );
+
     if (!preference.startIndexingOnStarUp) {
         return (
             <Flex
@@ -150,6 +163,7 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
                 >
                     Start indexing
                 </Button>
+                {preferenceIcon}
             </Flex>
         );
     }
@@ -166,16 +180,7 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
                     Indexing completed
                 </Flex>
             </Flex>
-            <Tooltip size="small" title="Preference" position="bottom">
-                <IconButton
-                    size="xs"
-                    onClick={onOpen}
-                    aria-label="Settings"
-                    icon="settings"
-                    marginLeft="10px"
-                    backgroundColor="#FFFFFF"
-                />
-            </Tooltip>
+            {preferenceIcon}
         </Flex>
     );
 });

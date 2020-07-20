@@ -16,4 +16,7 @@ export class ReIndexArgs {
 
     @Field(returns => [String], { nullable: true })
     directories: string[] = [];
+
+    @Field(returns => Boolean, { nullable: true })
+    ignoreCache: boolean = false;
 }

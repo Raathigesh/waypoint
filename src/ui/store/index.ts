@@ -21,15 +21,15 @@ const app = App.create({
 const pathMap = PathMap.create();
 export const pathMapStore = createContext(pathMap);
 
-export const indexerStatusStore = createContext(
-    IndexerStatus.create(
-        { status: 'none', indexedFiles: 0, totalFiles: 0 },
-        { pathMap, app }
-    )
+const indexStatus = IndexerStatus.create(
+    { status: 'none', indexedFiles: 0, totalFiles: 0 },
+    { pathMap, app }
 );
+
+export const indexerStatusStore = createContext(indexStatus);
 export const appStore = createContext(app);
 
-const bookmarks = Bookmarks.create();
+const bookmarks = Bookmarks.create({ items: [] }, { indexStatus });
 export const bookmarksStore = createContext(bookmarks);
 
 onSnapshot(

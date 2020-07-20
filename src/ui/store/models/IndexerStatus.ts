@@ -18,6 +18,8 @@ export const IndexerStatus = types
         failures: types.array(IndexerFailure),
     })
     .actions(self => {
+        let indexedCallBack: () => void = () => {};
+
         const getStatus = flow(function*() {
             const status: GqlIndexerStatus = yield indexerStatus();
             self.status = status.status;
@@ -37,7 +39,6 @@ export const IndexerStatus = types
 
         const pollForStatus: () => Promise<any> = flow(function*() {
             const status: GqlIndexerStatus = yield indexerStatus();
-
             self.status = status.status;
             self.indexedFiles = status.indexedFileCount;
             self.totalFiles = status.totalFiles;
@@ -50,6 +51,11 @@ export const IndexerStatus = types
                     })
                 );
             });
+
+            if (status.status === 'indexed') {
+                indexedCallBack();
+            }
+
             while (true && self.status === 'indexing') {
                 yield sleep(500);
                 yield pollForStatus();
@@ -67,11 +73,21 @@ export const IndexerStatus = types
                     alias: item.alias,
                     path: item.path,
                 })),
-                [...env.app.directories.values()]
+                [...env.app.directories.values()],
+                true // ignore cache when re-indexing from the UI
             );
             self.status = 'indexing';
             pollForStatus();
         });
 
-        return { getStatus, pollForStatus, initiateIndexing };
+        const registerIndexedCallback = (cb: () => void) => {
+            indexedCallBack = cb;
+        };
+
+        return {
+            getStatus,
+            pollForStatus,
+            initiateIndexing,
+            registerIndexedCallback,
+        };
     });

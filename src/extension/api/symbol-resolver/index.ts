@@ -59,6 +59,7 @@ export default class SymbolsResolver {
             this.reindex({
                 items: pathMap.items,
                 directories,
+                ignoreCache: false,
             });
         }
     }
@@ -69,8 +70,10 @@ export default class SymbolsResolver {
     }
 
     @Mutation(returns => String)
-    public async reindex(@Args() { items, directories }: ReIndexArgs) {
-        const indexCache = this.configResolver.getCache();
+    public async reindex(
+        @Args() { items, directories, ignoreCache }: ReIndexArgs
+    ) {
+        const indexCache = ignoreCache ? {} : this.configResolver.getCache();
 
         let pathAlias = {};
         if (items) {
