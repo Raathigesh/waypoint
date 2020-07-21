@@ -51,28 +51,30 @@ export default class SourceFile {
     public pathAliasMap: { [alias: string]: string } = {};
     public lastIndexedTime: number | null = null;
 
-    public async parse(
+    constructor(
         filePath: string,
         pathAliasMap: { [alias: string]: string },
         root: string
-    ): Promise<ParseFailure | ParseResult> {
-        try {
-            this.path = filePath;
-            this.root = root;
-            this.pathAliasMap = pathAliasMap;
+    ) {
+        this.path = filePath;
+        this.root = root;
+        this.pathAliasMap = pathAliasMap;
+    }
 
-            const content = await promisify(readFile)(filePath);
+    public async parse(): Promise<ParseFailure | ParseResult> {
+        try {
+            const content = await promisify(readFile)(this.path);
             const size = content.byteLength;
 
             // if the file is too big, don't try to parse it
             if (size === 500000) {
                 return {
-                    filePath,
+                    filePath: this.path,
                     error: 'File is too big to parse. Ignoring.',
                 };
             }
 
-            const ast = this.getAST(content.toString(), filePath);
+            const ast = this.getAST(content.toString(), this.path);
 
             traverse(ast, {
                 Program: (path: NodePath<Program>) => {
@@ -97,7 +99,7 @@ export default class SourceFile {
                     this.extractInterfaceDeclaration(path);
                 },
                 ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
-                    this.extractImport(path, pathAliasMap, root);
+                    this.extractImport(path, this.pathAliasMap, this.root);
                 },
                 ExportNamedDeclaration: (
                     path: NodePath<ExportNamedDeclaration>
@@ -110,12 +112,12 @@ export default class SourceFile {
                     this.extractDefaultExportDeclaration(path);
                 },
             });
-            this.linkLocalSymbols(root, pathAliasMap);
+            this.linkLocalSymbols(this.root, this.pathAliasMap);
         } catch (e) {
-            console.log('Parsing failed', filePath, e);
+            console.log('Parsing failed', this.path, e);
             this.setCurrentTimeAsLastIndexed();
             return {
-                filePath,
+                filePath: this.path,
                 error: e.toString(),
                 lastIndexedTime: this.lastIndexedTime,
                 path: this.path,
@@ -177,10 +179,7 @@ export default class SourceFile {
         root: string,
         pathAliasMap: { [alias: string]: string }
     ) {
-        const file = new SourceFile();
-        file.root = root;
-        file.pathAliasMap = pathAliasMap;
-        file.path = jsonObj.path;
+        const file = new SourceFile(jsonObj.path, pathAliasMap, root);
         file.symbols = jsonObj.symbols;
         file.lastIndexedTime = jsonObj.lastIndexedTime;
         file.importStatements = jsonObj.importStatements;
@@ -238,7 +237,6 @@ export default class SourceFile {
 
     private extractInterfaceDeclaration(path: NodePath<InterfaceDeclaration>) {
         const name = path.node.id.name;
-        console.log('INTERFACE', name);
         this.createSymbol(name, path.node.type, path.node.loc, false);
     }
 

@@ -48,10 +48,7 @@ export class WorkerRunner {
                 silent: true,
             });
             worker.on('message', (result: ParseResult) => {
-                const file = new SourceFile();
-                file.pathAliasMap = pathAlias;
-                file.root = root;
-                file.path = result.path;
+                const file = new SourceFile(result.path, pathAlias, root);
                 file.exportStatements = result.exportStatements;
                 file.importStatements = result.importStatements;
                 file.symbols = result.symbols;

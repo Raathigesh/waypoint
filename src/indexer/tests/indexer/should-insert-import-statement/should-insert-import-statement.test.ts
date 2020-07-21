@@ -11,16 +11,16 @@ const waitForIndexer = () =>
 
 describe('SourceFile', () => {
     it('should insert import statement', async () => {
-        const sourceFile = new SourceFile();
-        await waitForIndexer();
-
-        sourceFile.parse(
+        const sourceFile = new SourceFile(
             resolve(__dirname, './project/a.js'),
             {
                 'views/item': './',
             },
             resolve(__dirname, './project')
         );
+        await waitForIndexer();
+
+        sourceFile.parse();
 
         const results = await sourceFile.insertImportStatement(
             'functionB',
@@ -32,16 +32,16 @@ describe('SourceFile', () => {
     });
 
     it('should insert import statement 2', async () => {
-        const sourceFile = new SourceFile();
-        await waitForIndexer();
-
-        sourceFile.parse(
+        const sourceFile = new SourceFile(
             resolve(__dirname, './project/a.js'),
             {
                 'views/item': './',
             },
             resolve(__dirname, './project')
         );
+        await waitForIndexer();
+
+        sourceFile.parse();
 
         const results = await sourceFile.insertImportStatement(
             'functionB',

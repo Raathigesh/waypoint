@@ -116,9 +116,13 @@ export default class Indexer {
             return;
         }
 
-        const sourceFile = new SourceFile();
+        const sourceFile = new SourceFile(
+            path,
+            this.project.pathAlias,
+            this.project.root
+        );
         this.files[path] = sourceFile;
-        sourceFile.parse(path, this.project.pathAlias, this.project.root);
+        sourceFile.parse();
     }
 
     public search(query: string, queryType: string) {
