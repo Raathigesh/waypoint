@@ -14,7 +14,7 @@ import { WorkerRunner } from './WorkerRunner';
 @Service()
 export default class Indexer {
     public files: { [path: string]: SourceFile } = {};
-    public status: 'none' | 'indexed' | 'indexing' = 'none';
+    public status: 'needs_indexing' | 'indexed' | 'indexing' = 'needs_indexing';
     public project: Project | undefined;
     public totalFiles: number = 0;
     public indexedFileCount: number = 0;
@@ -272,7 +272,7 @@ export default class Indexer {
         this.workerRunner.kilAll();
 
         setTimeout(() => {
-            this.status = 'none';
+            this.status = 'needs_indexing';
             this.indexedFileCount = 0;
             this.totalFiles = 0;
             this.failures = [];

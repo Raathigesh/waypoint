@@ -10,6 +10,7 @@ import {
     Smile,
     Play,
     Settings,
+    Loader,
 } from 'react-feather';
 import { indexerStatusStore, preferenceStore } from '../store';
 import { stopIndexing } from 'ui/store/services';
@@ -141,7 +142,7 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
         );
     }
 
-    if (indexerStatus.status === 'none') {
+    if (indexerStatus.status === 'needs_indexing') {
         return (
             <Flex
                 justifyContent="space-between"
@@ -166,6 +167,22 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
                 {preferenceIcon}
             </Flex>
         );
+    }
+
+    if (indexerStatus.status === 'none') {
+        <Flex
+            padding="9px"
+            borderBottom="1px solid #F9F9F9"
+            justifyContent="space-between"
+        >
+            <Flex alignItems="center">
+                <Loader strokeWidth={3} color="#AF3A83" size={15} />
+                <Flex ml="5px" fontSize="13px">
+                    Loading....
+                </Flex>
+            </Flex>
+            {preferenceIcon}
+        </Flex>;
     }
 
     return (
