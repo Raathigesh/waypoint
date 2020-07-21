@@ -316,16 +316,8 @@ export default class SymbolsResolver {
                 path
             );
 
-            if (result && this.activeEditor) {
-                this.activeEditor.edit(editBuilder => {
-                    editBuilder.insert(
-                        new vscode.Position(
-                            result.position.line,
-                            result.position.column
-                        ),
-                        result.content
-                    );
-                });
+            if (result) {
+                return result.content;
             }
         }
 

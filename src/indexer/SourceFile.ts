@@ -143,22 +143,6 @@ export default class SourceFile {
 
     public async insertImportStatement(symbol: string, path: string) {
         try {
-            const content = await promisify(readFile)(this.path);
-            const ast = this.getAST(content.toString(), this.path);
-
-            const importDeclarationPaths: NodePath<ImportDeclaration>[] = [];
-            traverse(ast, {
-                ImportDeclaration: (path: NodePath<ImportDeclaration>) => {
-                    importDeclarationPaths.push(path);
-                },
-            });
-            const lastImportDeclaration = importDeclarationPaths.pop();
-
-            let lineNumber = 0;
-            if (lastImportDeclaration) {
-                lineNumber = lastImportDeclaration.node.loc?.end.line || 0;
-            }
-
             const aliasedPath = getAliasPathForAbsolutePath(
                 this.root,
                 path,
@@ -167,10 +151,6 @@ export default class SourceFile {
             );
 
             return {
-                position: {
-                    line: lineNumber,
-                    column: 0,
-                },
                 content: `import {${symbol}} from '${aliasedPath}';\n`,
             };
         } catch (e) {

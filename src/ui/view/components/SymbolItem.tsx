@@ -1,8 +1,9 @@
 import React, { useContext } from 'react';
-import { PseudoBox, Flex, Box, IconButton } from '@chakra-ui/core';
+import { PseudoBox, Flex, Box, IconButton, useToast } from '@chakra-ui/core';
 import { Bookmark, Trash2, Plus } from 'react-feather';
 import { Tooltip } from 'react-tippy';
 import { openFile, insertImport } from 'ui/store/services/file';
+import copy from 'copy-to-clipboard';
 import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 
 import SymbolKindIcon from './SymbolKindIcon';
@@ -24,6 +25,7 @@ export default function SymbolItem({
     onBookmark?: (name: string, path: string) => void;
     onRemoveBookmark?: (name: string, path: string) => void;
 }) {
+    const toast = useToast();
     const projectInfo = useContext(appStore);
 
     const id = `${name}${filePath}${
@@ -68,17 +70,39 @@ export default function SymbolItem({
                         <Flex marginRight="5px">
                             <Tooltip
                                 size="small"
-                                title="Import symbol into active  file"
+                                title="Copy import statement to clipboard"
                                 position="bottom"
                             >
                                 <IconButton
                                     size="xs"
                                     onClick={(e: any) => {
                                         e.stopPropagation();
-                                        insertImport(name, filePath);
+                                        insertImport(name, filePath).then(
+                                            content => {
+                                                copy(content);
+
+                                                if (content.trim() === '') {
+                                                    toast({
+                                                        description:
+                                                            'Please select an active file.',
+                                                        status: 'warning',
+                                                        duration: 5000,
+                                                        isClosable: true,
+                                                    });
+                                                } else {
+                                                    toast({
+                                                        description:
+                                                            'Copied to clipboard',
+                                                        status: 'success',
+                                                        duration: 3000,
+                                                        isClosable: true,
+                                                    });
+                                                }
+                                            }
+                                        );
                                     }}
-                                    aria-label="Add"
-                                    icon="small-add"
+                                    aria-label="copy"
+                                    icon="copy"
                                     marginLeft="10px"
                                     border="1px solid #d7d7d7"
                                     backgroundColor="white"

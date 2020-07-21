@@ -122,9 +122,9 @@ export async function insertImport(symbol: string, path: string) {
         }
     `;
 
-    const results = await sendMutation<any>(mutation, {
+    const results = await sendMutation<{ insertImport: string }>(mutation, {
         symbol,
         path,
     });
-    return {};
+    return results.insertImport;
 }
