@@ -17,6 +17,8 @@
 
 Waypoint is a VSCode extension which aims to make navigating JS codebases easier by providing you with delightful tools.
 
+Join [waypoint community discord](https://discord.gg/4TN27KK) to discuss ways to improve or to ask questions.
+
 <br />
 
 ## Features
@@ -29,6 +31,8 @@ Waypoint is a VSCode extension which aims to make navigating JS codebases easier
   - Bookmark your symbols for later.
 - 📑 **Import symbols to the current file**
   - Import a symbol from bookmarks or search results into the current file with a click of a button.
+- ⬜ **Supports JS, TS and Flow**
+  - Supports JavaScript, TypeScript and Flow codebases.
 
 <br />
 
