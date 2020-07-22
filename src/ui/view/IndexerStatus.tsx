@@ -155,34 +155,38 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
                         Please index your project
                     </Flex>
                 </Flex>
-                <Button
-                    size="xs"
-                    variant="outline"
-                    onClick={() => {
-                        indexerStatus.initiateIndexing();
-                    }}
-                >
-                    Start indexing
-                </Button>
-                {preferenceIcon}
+                <Flex alignItems="center">
+                    <Button
+                        size="xs"
+                        variant="outline"
+                        onClick={() => {
+                            indexerStatus.initiateIndexing();
+                        }}
+                    >
+                        Start indexing
+                    </Button>
+                    {preferenceIcon}
+                </Flex>
             </Flex>
         );
     }
 
     if (indexerStatus.status === 'none') {
-        <Flex
-            padding="9px"
-            borderBottom="1px solid #F9F9F9"
-            justifyContent="space-between"
-        >
-            <Flex alignItems="center">
-                <Loader strokeWidth={3} color="#AF3A83" size={15} />
-                <Flex ml="5px" fontSize="13px">
-                    Loading....
+        return (
+            <Flex
+                padding="9px"
+                borderBottom="1px solid #F9F9F9"
+                justifyContent="space-between"
+            >
+                <Flex alignItems="center">
+                    <Loader strokeWidth={3} color="#AF3A83" size={15} />
+                    <Flex ml="5px" fontSize="13px">
+                        Loading....
+                    </Flex>
                 </Flex>
+                {preferenceIcon}
             </Flex>
-            {preferenceIcon}
-        </Flex>;
+        );
     }
 
     return (
