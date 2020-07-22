@@ -127,31 +127,47 @@ export default class Indexer {
 
     public search(query: string, queryType: string) {
         try {
-            let searchQuery = query;
+            let searchTokens = query
+                .split(/(\s+)/)
+                .filter(item => item.trim() !== '');
+
+            const searchQuery =
+                searchTokens.length === 1 ? query : searchTokens[0];
+            const folderQuery =
+                searchTokens.length > 1 ? searchTokens[1] : null;
             const queryTypes = queryType.split(':');
 
             let results: ESModuleItem[] = [];
-            Object.entries(this.files).forEach(([, file]) => {
-                file.symbols.forEach(symbol => {
-                    if (
-                        queryType === '' ||
-                        (queryTypes.includes('func') &&
-                            symbol.kind === 'FunctionDeclaration') ||
-                        (queryTypes.includes('type') &&
-                            (symbol.kind === 'TypeAlias' ||
-                                symbol.kind === 'TSInterfaceDeclaration')) ||
-                        (queryTypes.includes('var') &&
-                            symbol.kind === 'VariableDeclaration') ||
-                        (queryTypes.includes('class') &&
-                            symbol.kind === 'ClassDeclaration')
-                    ) {
-                        results.push({
-                            ...symbol,
-                            path: file.path,
-                        });
+            Object.entries(this.files)
+                .filter(([, file]) => {
+                    if (folderQuery === null) {
+                        return true;
+                    } else {
+                        return file.path.includes(folderQuery);
                     }
+                })
+                .forEach(([, file]) => {
+                    file.symbols.forEach(symbol => {
+                        if (
+                            queryType === '' ||
+                            (queryTypes.includes('func') &&
+                                symbol.kind === 'FunctionDeclaration') ||
+                            (queryTypes.includes('type') &&
+                                (symbol.kind === 'TypeAlias' ||
+                                    symbol.kind ===
+                                        'TSInterfaceDeclaration')) ||
+                            (queryTypes.includes('var') &&
+                                symbol.kind === 'VariableDeclaration') ||
+                            (queryTypes.includes('class') &&
+                                symbol.kind === 'ClassDeclaration')
+                        ) {
+                            results.push({
+                                ...symbol,
+                                path: file.path,
+                            });
+                        }
+                    });
                 });
-            });
 
             const filteredResults = fuzzysort.go(searchQuery, results, {
                 key: 'name',
