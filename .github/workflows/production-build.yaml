@@ -17,13 +17,14 @@ jobs:
               uses: actions/setup-node@v1
               with:
                   node-version: ${{ matrix.node-version }}
-            - name: yarn install, build, and test
+            - name: yarn install, build and test
+              runs: |
+                  yarn install
+                  yarn build
+                  yarn test
+            - name: integration test
               uses: GabrielBB/xvfb-action@v1.2
               with:
-                  run: |
-                      yarn install
-                      yarn build
-                      yarn test
-                      yarn integration-ci
+                  run: yarn integration-ci
               env:
                   CI: true
