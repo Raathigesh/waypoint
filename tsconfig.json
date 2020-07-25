@@ -1,24 +1,24 @@
 {
-  "compilerOptions": {
-    "module": "commonjs",
-    "target": "es6",
-    "outDir": "out",
-    "lib": ["es6", "dom", "es2017.object", "esnext.asynciterable"],
-    "sourceMap": true,
-    "rootDir": "src",
-    "strict": true,
-    "allowSyntheticDefaultImports": true,
-    "jsx": "react",
-    "skipLibCheck": true,
-    "experimentalDecorators": true,
-    "emitDecoratorMetadata": true,
-    "resolveJsonModule": true,
-    "baseUrl": "./src",
-    "paths": {
-      "entities": ["./entities"],
-      "indexer": ["./indexer"],
-      "common": ["./common"]
-    }
-  },
-  "include": ["src"]
+    "compilerOptions": {
+        "module": "commonjs",
+        "target": "es6",
+        "outDir": "out",
+        "lib": ["es6", "dom", "es2017.object", "esnext.asynciterable"],
+        "sourceMap": true,
+        "rootDir": "src",
+        "strict": true,
+        "allowSyntheticDefaultImports": true,
+        "jsx": "react",
+        "skipLibCheck": true,
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
+        "resolveJsonModule": true,
+        "baseUrl": "./src",
+        "paths": {
+            "entities": ["./entities"],
+            "indexer": ["./indexer"],
+            "common": ["./common"]
+        }
+    },
+    "include": ["src"]
 }

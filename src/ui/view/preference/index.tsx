@@ -99,7 +99,7 @@ function Preference({ isOpen, onClose }: Props) {
                             size="xs"
                             onClick={() => app.addDirectory('')}
                         >
-                            Add another
+                            Add another folder
                         </Button>
                     </Flex>
 
@@ -168,7 +168,7 @@ function Preference({ isOpen, onClose }: Props) {
                             size="xs"
                             onClick={() => pathMap.addNewItem('', '')}
                         >
-                            Add another
+                            Add another entry
                         </Button>
                     </Flex>
 

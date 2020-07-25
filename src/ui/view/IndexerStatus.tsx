@@ -151,7 +151,12 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
             >
                 <Flex alignItems="center">
                     <AlertTriangle strokeWidth={3} color="#F6AD55" size={15} />{' '}
-                    <Flex ml="5px" fontSize="13px" color="#fffff">
+                    <Flex
+                        aria-label="please index banner"
+                        ml="5px"
+                        fontSize="13px"
+                        color="#fffff"
+                    >
                         Please index your project
                     </Flex>
                 </Flex>
