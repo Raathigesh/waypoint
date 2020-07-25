@@ -19,10 +19,11 @@ jobs:
                   node-version: ${{ matrix.node-version }}
             - name: yarn install, build, and test
               uses: GabrielBB/xvfb-action@v1.2
-              run: |
-                  yarn install
-                  yarn build
-                  yarn test
-                  yarn integration-ci
+              with:
+                  run: |
+                      yarn install
+                      yarn build
+                      yarn test
+                      yarn integration-ci
               env:
                   CI: true
