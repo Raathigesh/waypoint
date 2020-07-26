@@ -3,7 +3,7 @@
 describe('Intro', () => {
     it('Should show intro banner', () => {
         cy.visit('http://localhost:4545?resetConfig=true');
-
+        cy.wait(2000);
         cy.get('[aria-label="Settings"]').click();
         cy.findByText('Add another folder').click();
         cy.findByPlaceholderText('Directory').type('./');
