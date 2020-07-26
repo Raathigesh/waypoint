@@ -1,5 +1,5 @@
 ---
-id: doc1
+id: folder-to-index
 title: Choose which files to index
 sidebar_label: Choose files to index
 ---

@@ -1,5 +1,5 @@
 ---
-id: doc2
+id: alias-configuration
 title: Import alias configuration
 sidebar_label: Configure your import alias
 ---

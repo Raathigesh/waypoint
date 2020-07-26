@@ -1,5 +1,6 @@
 module.exports = {
-  someSidebar: {
-    "Configure your project": ["doc1", "doc2"]
-  }
+    someSidebar: {
+        'Getting started': ['getting-started'],
+        'Configure your project': ['folder-to-index', 'alias-configuration'],
+    },
 };
