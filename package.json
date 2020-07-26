@@ -70,7 +70,7 @@
         "docs": "cd website && yarn install && yarn build",
         "e2e": "node ./out/test/runTest.js",
         "cypress-open": "cypress open",
-        "cypress-run": "cypress run",
+        "cypress-run": "wait-on http://localhost:4545 && cypress run",
         "integration-ci": "concurrently -s first -k \"yarn e2e\" \"yarn cypress-run\""
     },
     "devDependencies": {
@@ -149,6 +149,7 @@
         "url-loader": "^3.0.0",
         "vscode": "^1.1.28",
         "vscode-test": "^1.4.0",
+        "wait-on": "^5.1.0",
         "webpack": "^4.30.0",
         "webpack-cli": "^3.3.1",
         "webpack-dev-server": "^3.3.1"
