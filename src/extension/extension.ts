@@ -41,7 +41,7 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(disposableAddSymbolToStage);
 
     reporter = new TelemetryReporter(extensionId, extensionVersion, key);
-    if (process.env.dev) {
+    if (!process.env.dev) {
         reporter.sendTelemetryEvent('activate');
     }
     context.subscriptions.push(reporter);
