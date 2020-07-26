@@ -3,6 +3,16 @@ import { sendQuery, sendMutation } from 'ui/util/graphql';
 import { BookmarksJSON } from '../models/bookmarks';
 import { PreferenceJSON } from '../models/Preference';
 
+export async function resetConfig() {
+    const query = gql`
+        mutation {
+            reset
+        }
+    `;
+
+    await sendMutation(query, {});
+}
+
 export async function setPathMap(pathMap: string) {
     const query = gql`
         mutation SetPathMap($value: String!) {

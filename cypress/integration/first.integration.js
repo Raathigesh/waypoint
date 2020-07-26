@@ -2,15 +2,9 @@
 
 describe('Intro', () => {
     it('Should show intro banner', () => {
-        cy.visit('http://localhost:4545/');
+        cy.visit('http://localhost:4545?resetConfig=true');
 
-        cy.get('body').then($body => {
-            if ($body.find('[aria-label="please index banner"]').length) {
-                cy.findByTestId('Settings').click();
-            } else {
-                cy.findByText('Set folders to index').click();
-            }
-        });
+        cy.get('[aria-label="Settings"]').click();
         cy.findByText('Add another folder').click();
         cy.findByPlaceholderText('Directory').type('./');
         cy.findByText('Start Indexing').click();

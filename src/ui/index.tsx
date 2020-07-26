@@ -1,6 +1,12 @@
 import React from 'react';
 import { render } from 'react-dom';
 import App from './App';
+import { resetConfig } from './store/services/config';
+
+const params = new URLSearchParams(window.location.search);
+if (params.has('resetConfig')) {
+    resetConfig();
+}
 
 render(<App />, document.getElementById('root'));
 

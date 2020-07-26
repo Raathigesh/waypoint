@@ -64,11 +64,6 @@ export default class SymbolsResolver {
         }
     }
 
-    @Query(returns => GqlSearchResult)
-    results() {
-        return new GqlSearchResult();
-    }
-
     @Mutation(returns => String)
     public async reindex(
         @Args() { items, directories, ignoreCache }: ReIndexArgs

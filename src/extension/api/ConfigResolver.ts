@@ -40,6 +40,13 @@ export default class ConfigResolver {
     }
 
     @Mutation(returns => String)
+    public reset() {
+        if (this.shouldUseInMemoryStorage()) {
+            this.inMemoryStorage = {};
+        }
+    }
+
+    @Mutation(returns => String)
     public setPathMap(@Arg('value') value: string) {
         this.set(this.getKeyForPathMaps(), value);
         return '';
