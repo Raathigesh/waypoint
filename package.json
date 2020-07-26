@@ -69,6 +69,7 @@
         "ship": "yarn version && git push origin --tag",
         "docs": "cd website && yarn install && yarn build",
         "e2e": "node ./out/test/runTest.js",
+        "cypress-open": "cypress open",
         "cypress-run": "cypress run",
         "integration-ci": "concurrently -s first -k \"yarn e2e\" \"yarn cypress-run\""
     },
