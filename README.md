@@ -21,34 +21,32 @@ Join [waypoint community discord](https://discord.gg/4TN27KK) to discuss ways to
 
 <br />
 
-## Features
-
-- 💨 **Fast symbol search**
-  - Find the function, class, type or variable you are looking for faster than ever.
-- 🎲 **Filter while you search**
-  - Filter your search results by applying filters such as classes, functions, variables and types.
-- 🔖 **Bookmark your symbols**
-  - Bookmark your symbols for later.
-- 📑 **Import symbols to the current file**
-  - Import a symbol from bookmarks or search results into the current file with a click of a button.
-- ⬜ **Supports JS, TS and Flow**
-  - Supports JavaScript, TypeScript and Flow codebases.
+-   💨 **Fast symbol search**
+    -   Find the function, class, type or variable you are looking for faster than ever.
+-   🎲 **Filter while you search**
+    -   Filter your search results by applying filters such as classes, functions, variables and types.
+-   🔖 **Bookmark your symbols**
+    -   Bookmark your symbols for later.
+-   📑 **Import symbols to the current file**
+    -   Import a symbol from bookmarks or search results into the current file with a click of a button.
+-   ⬜ **Supports JS, TS and Flow**
+    -   Supports JavaScript, TypeScript and Flow codebases.
 
 <br />
 
-## Getting started
+## Get started
 
-- Install the extension from [marketplace](https://marketplace.visualstudio.com/items?itemName=Raathigeshan.waypoint).
-- Click on the Waypoint icon on the top right corner of any file to open the Waypoint panel.
+-   Install the extension from [marketplace](https://marketplace.visualstudio.com/items?itemName=Raathigeshan.waypoint).
+-   Click on the Waypoint icon on the top right corner of any file to open the Waypoint panel.
 
 <br />
 
-## Configuration
+## Configuring your project
 
 Read the docs for [additional configurations](https://waypoint.netlify.app/docs/).
 
 <br/>
 
-## Contributing
+## Contributing to Waypoint
 
-Have a look at our [contribution guide](docs/contributing.md).
+Have a look at our [contribution guide](https://waypoint.netlify.app/docs/running-locally).
