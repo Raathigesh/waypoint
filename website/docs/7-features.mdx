@@ -1,0 +1,26 @@
+---
+id: features
+title: Search symbols
+sidebar_label: Search symbols
+---
+
+import useBaseUrl from '@docusaurus/useBaseUrl';
+
+Type your search query in the search box to search for matching symbols in your code-base. You can also apply filters such as `functions`, `classes` or `types` to narrow your search by typing the `/` character.
+
+<video
+    loop={true}
+    autoPlay={true}
+    muted={true}
+    alt="Docusaurus with Keytar"
+    src={useBaseUrl('videos/search.mp4')}
+    width="100%"
+/>
+
+## Searching symbols only in certain files
+
+For example the query `getType src/view/items` will search the symbols with `getType` in the folder `src/view/items`. The key is to separate the search query with a `space`.
+
+## Copying import statement
+
+You can copy import statement of a symbol by clicking the copy button in the search results. If you are using module alias, having the [module alias correctly configured](/docs/alias-configuration) will let you get the correct import paths.
