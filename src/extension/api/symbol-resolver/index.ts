@@ -364,5 +364,6 @@ export default class SymbolsResolver {
     @Mutation(returns => String)
     public async openURL(@Arg('url') url: string) {
         vscode.env.openExternal(vscode.Uri.parse(url));
+        return 'OK';
     }
 }
