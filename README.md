@@ -43,7 +43,7 @@ Join [waypoint community discord](https://discord.gg/4TN27KK) to discuss ways to
 
 ## Configuring your project
 
-Read the docs for [additional configurations](https://waypoint.netlify.app/docs/).
+Read the docs for [additional configurations](https://waypoint.netlify.app/docs/folder-to-index).
 
 <br/>
 
