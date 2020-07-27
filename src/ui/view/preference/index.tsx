@@ -16,9 +16,11 @@ import {
     Heading,
     Text,
     Code,
+    Link,
 } from '@chakra-ui/core';
 import { pathMapStore, indexerStatusStore, appStore } from 'ui/store';
 import { Coffee, Activity, Play } from 'react-feather';
+import { openURL } from 'ui/store/services/misc';
 
 interface Props {
     isOpen?: boolean;
@@ -46,7 +48,19 @@ function Preference({ isOpen, onClose }: Props) {
                         Folders to index
                     </Heading>
                     <Text fontSize="12px">
-                        Path should be relative to the folder opened in VSCode
+                        Path should be relative to the folder opened in VSCode.{' '}
+                        <Link
+                            color="#3f51b5"
+                            href="https://waypoint.netlify.app/docs/folder-to-index"
+                            target="_blank"
+                            onClick={() => {
+                                openURL(
+                                    'https://waypoint.netlify.app/docs/folder-to-index'
+                                );
+                            }}
+                        >
+                            Read the docs for more info.
+                        </Link>
                     </Text>
                     <Flex flexGrow={1} flexDirection="column" marginTop="10px">
                         {[...app.directories.entries()].map(
@@ -110,7 +124,19 @@ function Preference({ isOpen, onClose }: Props) {
                         If you use custom module alias in your bundler, add them
                         here. First value is the alias (e.g: components). The
                         second value is the relative path which points to the
-                        actual directory (e.g: ./src/components).
+                        actual directory (e.g: ./src/components).{' '}
+                        <Link
+                            color="#3f51b5"
+                            href="https://waypoint.netlify.app/docs/alias-configuration"
+                            target="_blank"
+                            onClick={() => {
+                                openURL(
+                                    'https://waypoint.netlify.app/docs/alias-configuration'
+                                );
+                            }}
+                        >
+                            Read the docs for more info.
+                        </Link>
                     </Text>
                     <Flex flexGrow={1} flexDirection="column" marginTop="10px">
                         {pathMap.items.map(item => {
