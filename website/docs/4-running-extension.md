@@ -5,10 +5,10 @@ sidebar_label: Running extension locally
 ---
 
 -   Checkout the repository.
--   Install node modules by executing yarn install.
--   Run yarn watch and this will compile the extension scripts.
--   Run yarn ui in a separate terminal and this will start the webpack dev server for the UI.
--   Run the Run Extension VSCode task to launch the extension.
+-   Install node modules by executing `yarn install`.
+-   Run `yarn watch` and this will compile the extension scripts.
+-   Run `yarn ui` in a separate terminal and this will start the webpack dev server for the UI.
+-   Run the `Run Extension` VSCode task to launch the extension.
 -   You can also visit `http://localhost:9000/` in the browser to view the UI separately.
 
 ## A few lines on the tech and the folder structure
