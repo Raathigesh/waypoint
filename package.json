@@ -3,7 +3,7 @@
     "displayName": "Waypoint",
     "description": "Blazing fast symbol search for JavaScript in VSCode",
     "publisher": "raathigeshan",
-    "version": "0.38.3",
+    "version": "0.38.4",
     "engines": {
         "vscode": "^1.33.0"
     },
