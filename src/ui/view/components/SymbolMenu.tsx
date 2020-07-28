@@ -10,20 +10,25 @@ export default function SymbolMenu({ Icon, name }: Props) {
     return (
         <PseudoBox
             style={{
-                backgroundColor: '#2a69ac',
-                padding: '8px',
+                backgroundColor: '#4299e1',
+                padding: '2px',
                 borderRadius: '0px 0px 0px 0px',
                 color: 'white',
                 fontSize: '12px',
             }}
-            _hover={{
-                backgroundColor: '#2a5d93 !important',
-            }}
         >
-            <Flex alignItems="center">
+            <PseudoBox
+                alignItems="center"
+                borderRadius="3px"
+                display="flex"
+                padding="5px"
+                _hover={{
+                    backgroundColor: '#90cdf4 !important',
+                }}
+            >
                 <Icon size={12} strokeWidth="2px" />
                 <Box ml="5px">{name}</Box>
-            </Flex>
+            </PseudoBox>
         </PseudoBox>
     );
 }

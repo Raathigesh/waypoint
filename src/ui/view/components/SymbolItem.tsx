@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { PseudoBox, Flex, Box, IconButton, useToast } from '@chakra-ui/core';
-import { Bookmark, Trash2, Plus } from 'react-feather';
+import { Bookmark, Trash2, Plus, Copy } from 'react-feather';
 import { Tooltip } from 'react-tippy';
 import { openFile, insertImport } from 'ui/store/services/file';
 import copy from 'copy-to-clipboard';
@@ -31,6 +31,28 @@ export default function SymbolItem({
     const id = `${name}${filePath}${
         onRemoveBookmark ? 'bookmark' : 'search'
     }${Math.random()}`;
+
+    const copyImport = () => {
+        insertImport(name, filePath).then(content => {
+            copy(content);
+
+            if (content.trim() === '') {
+                toast({
+                    description: 'Please select an active file.',
+                    status: 'warning',
+                    duration: 5000,
+                    isClosable: true,
+                });
+            } else {
+                toast({
+                    description: 'Copied to clipboard',
+                    status: 'success',
+                    duration: 3000,
+                    isClosable: true,
+                });
+            }
+        });
+    };
 
     return (
         <PseudoBox
@@ -77,29 +99,7 @@ export default function SymbolItem({
                                     size="xs"
                                     onClick={(e: any) => {
                                         e.stopPropagation();
-                                        insertImport(name, filePath).then(
-                                            content => {
-                                                copy(content);
-
-                                                if (content.trim() === '') {
-                                                    toast({
-                                                        description:
-                                                            'Please select an active file.',
-                                                        status: 'warning',
-                                                        duration: 5000,
-                                                        isClosable: true,
-                                                    });
-                                                } else {
-                                                    toast({
-                                                        description:
-                                                            'Copied to clipboard',
-                                                        status: 'success',
-                                                        duration: 3000,
-                                                        isClosable: true,
-                                                    });
-                                                }
-                                            }
-                                        );
+                                        copyImport();
                                     }}
                                     aria-label="copy"
                                     icon="copy"
@@ -185,12 +185,12 @@ export default function SymbolItem({
                     onClick={e => {
                         e.preventDefault();
                         e.stopPropagation();
-                        insertImport(name, filePath);
+                        copyImport();
                     }}
                 >
                     <SymbolMenu
-                        Icon={Plus}
-                        name="Import symbol into active file"
+                        Icon={Copy}
+                        name="Copy import statement to clipboard"
                     />
                 </MenuItem>
             </ContextMenu>

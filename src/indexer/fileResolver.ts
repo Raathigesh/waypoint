@@ -33,6 +33,24 @@ function convertPathToES6ImportPath(path: string) {
     return path.replace(new RegExp(regexSep, 'g'), '/');
 }
 
+function removeExtensionFromPath(path: string) {
+    let modifiedPath = path;
+
+    ['index.js', 'index.tsx', 'index.ts', 'index.jsx'].forEach(indexFile => {
+        if (path.endsWith(indexFile)) {
+            modifiedPath = modifiedPath.replace(`${sep}${indexFile}`, '');
+        }
+    });
+
+    ['.js', '.tsx', '.ts', '.jsx'].forEach(extension => {
+        if (modifiedPath.endsWith(extension)) {
+            modifiedPath = modifiedPath.replace(`${extension}`, '');
+        }
+    });
+
+    return modifiedPath;
+}
+
 export function getAliasPathForAbsolutePath(
     root: string,
     absolutePath: string,
@@ -53,19 +71,9 @@ export function getAliasPathForAbsolutePath(
         substitutedPath = convertPathToES6ImportPath(substitutedPath);
     });
 
-    ['index.js', 'index.tsx', 'index.ts', 'index.jsx'].forEach(indexFile => {
-        if (substitutedPath.endsWith(indexFile)) {
-            substitutedPath = substitutedPath.replace(`${sep}${indexFile}`, '');
-        }
-    });
+    substitutedPath = removeExtensionFromPath(substitutedPath);
 
-    ['.js', '.tsx', '.ts', '.jsx'].forEach(extension => {
-        if (substitutedPath.endsWith(extension)) {
-            substitutedPath = substitutedPath.replace(`${extension}`, '');
-        }
-    });
-
-    if (normalize(absolutePath) === substitutedPath) {
+    if (normalize(removeExtensionFromPath(absolutePath)) === substitutedPath) {
         return convertPathToES6ImportPath(
             relative(dirname(currentFilePath), absolutePath)
         );
