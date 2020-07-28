@@ -10,3 +10,4 @@ src/**
 website
 docs
 .babelrc
+cypress
