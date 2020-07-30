@@ -1,6 +1,6 @@
 {
   "projectName": "waypoint",
-  "projectOwner": "raathigesh",
+  "projectOwner": "Raathigesh",
   "repoType": "github",
   "repoHost": "https://github.com",
   "files": [
@@ -20,7 +20,17 @@
         "doc",
         "test"
       ]
+    },
+    {
+      "login": "saurabhdaware",
+      "name": "Saurabh Daware",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/30949385?v=4",
+      "profile": "https://saurabhdaware.in/",
+      "contributions": [
+        "code"
+      ]
     }
   ],
-  "contributorsPerLine": 7
+  "contributorsPerLine": 7,
+  "skipCi": true
 }
