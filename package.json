@@ -98,6 +98,7 @@
         "@types/react-resize-detector": "^4.2.0",
         "@types/react-router-dom": "^4.3.3",
         "ace-builds": "^1.4.7",
+        "all-contributors-cli": "^6.17.0",
         "babel-loader": "^8.0.5",
         "babel-plugin-styled-components": "^1.10.0",
         "concurrently": "^5.2.0",
