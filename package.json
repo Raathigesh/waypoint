@@ -24,6 +24,12 @@
     },
     "main": "./out/extension/extension.js",
     "contributes": {
+        "keybindings": [
+            {
+                "command": "waypoint.showPanel",
+                "key": "ctrl+k y"
+            }
+        ],
         "commands": [
             {
                 "command": "waypoint.showPanel",
