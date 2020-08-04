@@ -305,34 +305,38 @@ export default class Indexer {
         );
     }
 
+    public getIgnoreFunc(indexableDirectories: string[]) {
+        return (path: string, stats: Stats) => {
+            // if no directories are configured, just ignore node_modules
+            if (indexableDirectories.length === 0) {
+                return path.includes('node_modules');
+            }
+
+            if (stats.isDirectory()) {
+                return (
+                    !indexableDirectories.some(indexableDirectory =>
+                        indexableDirectory.includes(path)
+                    ) &&
+                    !indexableDirectories.some(indexableDirectory =>
+                        path.includes(indexableDirectory)
+                    )
+                );
+            }
+
+            return (
+                indexableDirectories.find(dir => path.includes(dir)) ===
+                    undefined || path.includes('node_modules')
+            );
+        };
+    }
+
     private async readProjectFiles(root: string) {
         if (this.project) {
             const indexableDirectories = this.project.directories.map(
                 directory => join(this.project?.root || '', directory)
             );
 
-            function ignoreFunc(path: string, stats: Stats) {
-                // if no directories are configured, just ignore node_modules
-                if (indexableDirectories.length === 0) {
-                    return path.includes('node_modules');
-                }
-
-                if (stats.isDirectory()) {
-                    return (
-                        !indexableDirectories.some(indexableDirectory =>
-                            indexableDirectory.includes(path)
-                        ) &&
-                        !indexableDirectories.some(indexableDirectory =>
-                            path.includes(indexableDirectory)
-                        )
-                    );
-                }
-
-                return (
-                    indexableDirectories.find(dir => path.includes(dir)) ===
-                        undefined || path.includes('node_modules')
-                );
-            }
+            const ignoreFunc = this.getIgnoreFunc(indexableDirectories);
 
             return new Promise<string[]>((resolve, reject) => {
                 recursiveReadDir(
