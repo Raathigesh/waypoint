@@ -1,4 +1,5 @@
 import Indexer from 'indexer/Indexer';
+import { sep } from 'path';
 
 const getMockFSStat = (isFile: boolean, isDirectory: boolean) => {
     return {
@@ -33,10 +34,10 @@ const getMockFSStat = (isFile: boolean, isDirectory: boolean) => {
 describe('Indexer ignore func', () => {
     it('should ignore node_modules folder', () => {
         const indexer = new Indexer();
-        const ignoreFunc = indexer.getIgnoreFunc([]);
+        const ignoreFunc = indexer.getIgnoreFunc([], []);
 
         const shouldIgnore = ignoreFunc(
-            'c:/dev/waypoint/node_modules/index.js',
+            `c:${sep}dev${sep}waypoint${sep}node_modules${sep}index.js`,
             getMockFSStat(true, false)
         );
         expect(shouldIgnore).toBe(true);
@@ -44,10 +45,10 @@ describe('Indexer ignore func', () => {
 
     it('should include files if no directories provided', () => {
         const indexer = new Indexer();
-        const ignoreFunc = indexer.getIgnoreFunc([]);
+        const ignoreFunc = indexer.getIgnoreFunc([], []);
 
         const shouldIgnore = ignoreFunc(
-            'c:/dev/waypoint/index.js',
+            `c:${sep}dev${sep}waypoint${sep}index.js`,
             getMockFSStat(true, false)
         );
         expect(shouldIgnore).toBe(false);
@@ -55,10 +56,13 @@ describe('Indexer ignore func', () => {
 
     it('should exclude files which are outside of the provided directory', () => {
         const indexer = new Indexer();
-        const ignoreFunc = indexer.getIgnoreFunc(['c:/dev/waypoint/src/']);
+        const ignoreFunc = indexer.getIgnoreFunc(
+            [`c:${sep}dev${sep}waypoint${sep}src${sep}`],
+            []
+        );
 
         const shouldIgnore = ignoreFunc(
-            'c:/dev/waypoint/test.js',
+            `c:${sep}dev${sep}waypoint${sep}test.js`,
             getMockFSStat(true, false)
         );
         expect(shouldIgnore).toBe(true);
@@ -66,10 +70,13 @@ describe('Indexer ignore func', () => {
 
     it('should include files which are inside of the provided directory', () => {
         const indexer = new Indexer();
-        const ignoreFunc = indexer.getIgnoreFunc(['c:/dev/waypoint/src/']);
+        const ignoreFunc = indexer.getIgnoreFunc(
+            [`c:${sep}dev${sep}waypoint${sep}src${sep}`],
+            []
+        );
 
         const shouldIgnore = ignoreFunc(
-            'c:/dev/waypoint/src/test.js',
+            `c:${sep}dev${sep}waypoint${sep}src${sep}test.js`,
             getMockFSStat(true, false)
         );
         expect(shouldIgnore).toBe(false);
@@ -77,27 +84,106 @@ describe('Indexer ignore func', () => {
 
     it('should include files which are inside of the provided directories', () => {
         const indexer = new Indexer();
-        const ignoreFunc = indexer.getIgnoreFunc([
-            'c:/dev/waypoint/src/',
-            'c:/dev/waypoint/tests/',
-        ]);
+        const ignoreFunc = indexer.getIgnoreFunc(
+            [
+                `c:${sep}dev${sep}waypoint${sep}src${sep}`,
+                `c:${sep}dev${sep}waypoint${sep}tests${sep}`,
+            ],
+            []
+        );
 
         const shouldIgnore1 = ignoreFunc(
-            'c:/dev/waypoint/src/components/view.js',
+            `c:${sep}dev${sep}waypoint${sep}src${sep}components${sep}view.js`,
             getMockFSStat(true, false)
         );
         expect(shouldIgnore1).toBe(false);
 
         const shouldIgnore2 = ignoreFunc(
-            'c:/dev/waypoint/src/tests/view.test.js',
+            `c:${sep}dev${sep}waypoint${sep}src${sep}tests${sep}view.test.js`,
             getMockFSStat(true, false)
         );
         expect(shouldIgnore2).toBe(false);
 
         const shouldIgnore3 = ignoreFunc(
-            'c:/dev/waypoint/src/tests/node_modules/view.test.js',
+            `c:${sep}dev${sep}waypoint${sep}src${sep}tests${sep}node_modules${sep}view.test.js`,
             getMockFSStat(true, false)
         );
         expect(shouldIgnore3).toBe(true);
+    });
+
+    it('should include folders', () => {
+        const indexer = new Indexer();
+        const ignoreFunc = indexer.getIgnoreFunc(
+            [`c:${sep}dev${sep}waypoint${sep}src${sep}`],
+            []
+        );
+
+        const shouldIgnore = ignoreFunc(
+            `c:${sep}dev${sep}waypoint${sep}src${sep}`,
+            getMockFSStat(false, true)
+        );
+        expect(shouldIgnore).toBe(false);
+    });
+
+    it('should include nested folders', () => {
+        const indexer = new Indexer();
+        const ignoreFunc = indexer.getIgnoreFunc(
+            [`c:${sep}dev${sep}waypoint${sep}src${sep}`],
+            []
+        );
+
+        const shouldIgnore = ignoreFunc(
+            `c:${sep}dev${sep}waypoint${sep}src${sep}components`,
+            getMockFSStat(false, true)
+        );
+        expect(shouldIgnore).toBe(false);
+    });
+
+    it('should not include files from excluded folders', () => {
+        const indexer = new Indexer();
+        const ignoreFunc = indexer.getIgnoreFunc(
+            [`c:${sep}dev${sep}waypoint${sep}src${sep}`],
+            [`c:${sep}dev${sep}waypoint${sep}dist`]
+        );
+
+        const shouldIgnore = ignoreFunc(
+            `c:${sep}dev${sep}waypoint${sep}dist${sep}index.js`,
+            getMockFSStat(true, false)
+        );
+        expect(shouldIgnore).toBe(true);
+    });
+
+    it('should not include files from nested excluded folders', () => {
+        const indexer = new Indexer();
+        const ignoreFunc = indexer.getIgnoreFunc(
+            [`c:${sep}dev${sep}waypoint${sep}src${sep}`],
+            [`c:${sep}dev${sep}waypoint${sep}src${sep}dist`]
+        );
+
+        const shouldIgnore1 = ignoreFunc(
+            `c:${sep}dev${sep}waypoint${sep}src${sep}dist${sep}index.js`,
+            getMockFSStat(true, false)
+        );
+        expect(shouldIgnore1).toBe(true);
+
+        const shouldIgnore2 = ignoreFunc(
+            `c:${sep}dev${sep}waypoint${sep}src${sep}index.js`,
+            getMockFSStat(true, false)
+        );
+        expect(shouldIgnore2).toBe(false);
+    });
+
+    it('should ignore files if the included directory is also presents in the excluded directory', () => {
+        const indexer = new Indexer();
+        const ignoreFunc = indexer.getIgnoreFunc(
+            [`c:${sep}dev${sep}waypoint${sep}src${sep}`],
+            [`c:${sep}dev${sep}waypoint${sep}src${sep}`]
+        );
+
+        const shouldIgnore = ignoreFunc(
+            `c:${sep}dev${sep}waypoint${sep}src${sep}index.js`,
+            getMockFSStat(true, false)
+        );
+        expect(shouldIgnore).toBe(true);
     });
 });

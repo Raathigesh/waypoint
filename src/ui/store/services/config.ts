@@ -82,6 +82,32 @@ export async function getDirectories() {
     return JSON.parse(result.getDirectories) as string[];
 }
 
+export async function setExcludedDirectories(directories: string[]) {
+    const query = gql`
+        mutation SetExcludedDirectories($value: String!) {
+            setExcludedDirectories(value: $value)
+        }
+    `;
+
+    await sendMutation(query, {
+        value: JSON.stringify(directories),
+    });
+}
+
+export async function getExcludedDirectories() {
+    const query = gql`
+        query {
+            getExcludedDirectories
+        }
+    `;
+
+    const result = await sendQuery<{ getExcludedDirectories: string }>(
+        query,
+        {}
+    );
+    return JSON.parse(result.getExcludedDirectories) as string[];
+}
+
 export async function setBookmarksConfig(stage: BookmarksJSON[]) {
     const query = gql`
         mutation SetBookmarksConfig($value: String!) {

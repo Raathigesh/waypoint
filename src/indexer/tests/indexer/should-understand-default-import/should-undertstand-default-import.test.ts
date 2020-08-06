@@ -17,6 +17,7 @@ describe('Indexer', () => {
             root: resolve(__dirname, './project'),
             pathAlias: {},
             directories: ['.'],
+            excludedDirectories: [],
         };
         const indexer = new Indexer();
         indexer.workerJSFile = '../../out/indexer/Worker.js';
@@ -43,6 +44,7 @@ describe('Indexer', () => {
             root: resolve(__dirname, './project'),
             pathAlias: {},
             directories: ['.'],
+            excludedDirectories: [],
         };
         const indexer = new Indexer();
         indexer.workerJSFile = '../../out/indexer/Worker.js';

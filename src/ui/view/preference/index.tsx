@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, Fragment } from 'react';
 import { observer } from 'mobx-react-lite';
 import {
     Drawer,
@@ -21,6 +21,7 @@ import {
 import { pathMapStore, indexerStatusStore, appStore } from 'ui/store';
 import { Coffee, Activity, Play } from 'react-feather';
 import { openURL } from 'ui/store/services/misc';
+import DirectoryPanel from './directory-panel';
 
 interface Props {
     isOpen?: boolean;
@@ -44,78 +45,65 @@ function Preference({ isOpen, onClose }: Props) {
                 <DrawerHeader fontWeight={400}>Preference</DrawerHeader>
 
                 <DrawerBody>
-                    <Heading size="sm" fontWeight={400}>
-                        Folders to index
-                    </Heading>
-                    <Text fontSize="12px">
-                        Path should be relative to the folder opened in VSCode.{' '}
-                        <Link
-                            color="#3f51b5"
-                            href="https://waypoint.netlify.app/docs/folder-to-index"
-                            target="_blank"
-                            onClick={() => {
-                                openURL(
-                                    'https://waypoint.netlify.app/docs/folder-to-index'
-                                );
-                            }}
-                        >
-                            Read the docs for more info.
-                        </Link>
-                    </Text>
-                    <Flex flexGrow={1} flexDirection="column" marginTop="10px">
-                        {[...app.directories.entries()].map(
-                            ([id, directory]) => {
-                                return (
-                                    <Flex
-                                        key={id}
-                                        alignItems="center"
-                                        marginBottom="5px"
+                    <DirectoryPanel
+                        entries={app.directories}
+                        header={
+                            <Fragment>
+                                <Heading size="sm" fontWeight={400}>
+                                    Folders to index
+                                </Heading>
+                                <Text fontSize="12px">
+                                    Path should be relative to the folder opened
+                                    in VSCode.{' '}
+                                    <Link
+                                        color="#3f51b5"
+                                        href="https://waypoint.netlify.app/docs/folder-to-index"
+                                        target="_blank"
+                                        onClick={() => {
+                                            openURL(
+                                                'https://waypoint.netlify.app/docs/folder-to-index'
+                                            );
+                                        }}
                                     >
-                                        <Input
-                                            value={directory}
-                                            placeholder="Directory"
-                                            size="sm"
-                                            marginRight="5px"
-                                            onKeyDown={(e: any) =>
-                                                e.stopPropagation()
-                                            }
-                                            onChange={(e: any) => {
-                                                app.changeDirectory(
-                                                    id,
-                                                    e.target.value
-                                                );
-                                            }}
-                                        />
+                                        Read the docs for more info.
+                                    </Link>
+                                </Text>
+                            </Fragment>
+                        }
+                        onAdd={value => {
+                            app.addDirectory(value);
+                        }}
+                        onChange={(id, value) => {
+                            app.changeDirectory(id, value);
+                        }}
+                        onRemove={id => {
+                            app.removeDirectory(id);
+                        }}
+                    />
 
-                                        <IconButton
-                                            marginLeft="5px"
-                                            aria-label="Search database"
-                                            size="xs"
-                                            icon="close"
-                                            variant="outline"
-                                            onClick={() =>
-                                                app.removeDirectory(id)
-                                            }
-                                        />
-                                    </Flex>
-                                );
-                            }
-                        )}
-                    </Flex>
-                    <Flex
-                        justifyContent="flex-end"
-                        marginTop="5px"
-                        marginBottom="5px"
-                    >
-                        <Button
-                            leftIcon="plus-square"
-                            variant="outline"
-                            size="xs"
-                            onClick={() => app.addDirectory('')}
-                        >
-                            Add another folder
-                        </Button>
-                    </Flex>
+                    <DirectoryPanel
+                        entries={app.excludedDirectories}
+                        header={
+                            <Fragment>
+                                <Heading size="sm" fontWeight={400}>
+                                    Folders to exclude
+                                </Heading>
+                                <Text fontSize="12px">
+                                    Path should be relative to the folder opened
+                                    in VSCode.
+                                </Text>
+                            </Fragment>
+                        }
+                        onAdd={value => {
+                            app.addExcludedDirectory(value);
+                        }}
+                        onChange={(id, value) => {
+                            app.changeExcludedDirectory(id, value);
+                        }}
+                        onRemove={id => {
+                            app.removeExcludedDirectory(id);
+                        }}
+                    />
 
                     <Heading size="sm" fontWeight={400}>
                         Import alias configuration

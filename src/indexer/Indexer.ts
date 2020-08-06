@@ -8,7 +8,7 @@ import { getFileType } from 'indexer/util';
 import ESModuleItem, { Marker } from './ESModuleItem';
 import { readFile, Stats, statSync } from 'fs';
 import { findAbsoluteFilePathWhichExists } from './fileResolver';
-import { dirname, join } from 'path';
+import { dirname, join, relative, isAbsolute, sep } from 'path';
 import { WorkerRunner } from './WorkerRunner';
 
 @Service()
@@ -305,28 +305,61 @@ export default class Indexer {
         );
     }
 
-    public getIgnoreFunc(indexableDirectories: string[]) {
+    private isChildOf(child: string, parent: string) {
+        if (child === parent) return true;
+        const parentTokens = parent.split(sep).filter(i => i.length);
+        return parentTokens.every((t, i) => child.split(sep)[i] === t);
+    }
+
+    private isPathLiesInProvidedDirectories(
+        path: string,
+        stats: Stats,
+        directories: string[]
+    ) {
+        if (stats.isDirectory()) {
+            return directories.some(directory =>
+                this.isChildOf(path, directory)
+            );
+        }
+
+        return directories.some(dir => path.includes(dir));
+    }
+
+    public getIgnoreFunc(
+        indexableDirectories: string[],
+        excludedDirectories: string[]
+    ) {
         return (path: string, stats: Stats) => {
             // if no directories are configured, just ignore node_modules
-            if (indexableDirectories.length === 0) {
+            if (
+                indexableDirectories.length === 0 &&
+                excludedDirectories.length === 0
+            ) {
+                // if it's a file from node_modules, return true so it will be ignored
                 return path.includes('node_modules');
             }
 
-            if (stats.isDirectory()) {
-                return (
-                    !indexableDirectories.some(indexableDirectory =>
-                        indexableDirectory.includes(path)
-                    ) &&
-                    !indexableDirectories.some(indexableDirectory =>
-                        path.includes(indexableDirectory)
-                    )
+            // when the directories are provided, still we return true if the file is in node_modules
+            if (path.includes('node_modules')) {
+                return true;
+            }
+
+            if (
+                this.isPathLiesInProvidedDirectories(
+                    path,
+                    stats,
+                    indexableDirectories
+                )
+            ) {
+                // even if the file belongs to a director which should be indexed, it should not belong to a directory which is excluded
+                return this.isPathLiesInProvidedDirectories(
+                    path,
+                    stats,
+                    excludedDirectories
                 );
             }
 
-            return (
-                indexableDirectories.find(dir => path.includes(dir)) ===
-                    undefined || path.includes('node_modules')
-            );
+            return true;
         };
     }
 
@@ -336,7 +369,14 @@ export default class Indexer {
                 directory => join(this.project?.root || '', directory)
             );
 
-            const ignoreFunc = this.getIgnoreFunc(indexableDirectories);
+            const excludedDirectories = this.project.excludedDirectories.map(
+                directory => join(this.project?.root || '', directory)
+            );
+
+            const ignoreFunc = this.getIgnoreFunc(
+                indexableDirectories,
+                excludedDirectories
+            );
 
             return new Promise<string[]>((resolve, reject) => {
                 recursiveReadDir(

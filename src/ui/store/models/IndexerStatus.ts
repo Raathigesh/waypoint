@@ -74,6 +74,7 @@ export const IndexerStatus = types
                     path: item.path,
                 })),
                 [...env.app.directories.values()],
+                [...env.app.excludedDirectories.values()],
                 true // ignore cache when re-indexing from the UI
             );
             self.status = 'indexing';

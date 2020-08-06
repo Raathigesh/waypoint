@@ -87,6 +87,21 @@ export default class ConfigResolver {
         return this.get(this.getKeyForDirectories()) || '[]';
     }
 
+    getKeyForExcludedDirectories() {
+        return `excluded-directories.${vscode.workspace.rootPath}`;
+    }
+
+    @Mutation(returns => String)
+    public setExcludedDirectories(@Arg('value') value: string) {
+        this.set(this.getKeyForExcludedDirectories(), value);
+        return '';
+    }
+
+    @Query(returns => String)
+    public getExcludedDirectories() {
+        return this.get(this.getKeyForExcludedDirectories()) || '[]';
+    }
+
     getKeyForBookmarksConfig() {
         return `bookmarks.${vscode.workspace.rootPath}`;
     }

@@ -53,12 +53,16 @@ export default class SymbolsResolver {
         this.configResolver = new ConfigResolver();
         const pathMap = JSON.parse(this.configResolver.getPathMap() || '{}');
         const directories = JSON.parse(this.configResolver.getDirectories());
+        const excludedDirectories = JSON.parse(
+            this.configResolver.getExcludedDirectories()
+        );
         const preference = JSON.parse(this.configResolver.getPreference());
 
         if (preference.startIndexingOnStarUp) {
             this.reindex({
                 items: pathMap.items,
                 directories,
+                excludedDirectories,
                 ignoreCache: false,
             });
         }
@@ -66,7 +70,8 @@ export default class SymbolsResolver {
 
     @Mutation(returns => String)
     public async reindex(
-        @Args() { items, directories, ignoreCache }: ReIndexArgs
+        @Args()
+        { items, directories, excludedDirectories, ignoreCache }: ReIndexArgs
     ) {
         const indexCache = ignoreCache ? {} : this.configResolver.getCache();
 
@@ -81,10 +86,18 @@ export default class SymbolsResolver {
             );
         }
 
+        const filteredDirectories = directories.filter(
+            item => item.trim() !== ''
+        );
+        const filteredExcludedDirectories = excludedDirectories.filter(
+            item => item.trim() !== ''
+        );
+
         const project: Project = {
             root: process.env.projectRoot || '',
             pathAlias,
-            directories,
+            directories: filteredDirectories,
+            excludedDirectories: filteredExcludedDirectories,
         };
         await this.indexer.parse(project, indexCache);
         this.configResolver.setCache(this.indexer.getCache());
