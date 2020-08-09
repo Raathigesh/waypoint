@@ -70,6 +70,7 @@ function Preference({ isOpen, onClose }: Props) {
                                 </Text>
                             </Fragment>
                         }
+                        addNewLabel="Add another folder"
                         onAdd={value => {
                             app.addDirectory(value);
                         }}
@@ -94,6 +95,7 @@ function Preference({ isOpen, onClose }: Props) {
                                 </Text>
                             </Fragment>
                         }
+                        addNewLabel="Add another excluded folder"
                         onAdd={value => {
                             app.addExcludedDirectory(value);
                         }}

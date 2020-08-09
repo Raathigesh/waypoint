@@ -14,12 +14,20 @@ import { observer } from 'mobx-react-lite';
 interface Props {
     header: any;
     entries: Instance<IMSTMap<any>>;
+    addNewLabel: string;
     onChange: (id: string, value: string) => void;
     onRemove: (id: string) => void;
     onAdd: (value: string) => void;
 }
 
-function DirectoryPanel({ header, entries, onChange, onRemove, onAdd }: Props) {
+function DirectoryPanel({
+    header,
+    entries,
+    addNewLabel,
+    onChange,
+    onRemove,
+    onAdd,
+}: Props) {
     return (
         <Fragment>
             {header}
@@ -57,7 +65,7 @@ function DirectoryPanel({ header, entries, onChange, onRemove, onAdd }: Props) {
                     size="xs"
                     onClick={() => onAdd('')}
                 >
-                    Add another folder
+                    {addNewLabel}
                 </Button>
             </Flex>
         </Fragment>
