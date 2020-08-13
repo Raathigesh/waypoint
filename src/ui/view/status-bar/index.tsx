@@ -12,8 +12,9 @@ import {
     Settings,
     Loader,
 } from 'react-feather';
-import { indexerStatusStore, preferenceStore } from '../store';
+import { indexerStatusStore, preferenceStore } from '../../store';
 import { stopIndexing } from 'ui/store/services';
+import TopStatusBar from './status';
 
 interface Props {
     onOpen: () => void;
@@ -31,7 +32,8 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
                 aria-label="Settings"
                 icon="settings"
                 marginLeft="10px"
-                backgroundColor="#FFFFFF"
+                backgroundColor="button.background"
+                color="button.foreground"
             />
         </Tooltip>
     );
@@ -117,92 +119,66 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
                     isAnimated
                     hasStripe
                 />
-                <Flex
-                    padding="10px"
-                    alignItems="center"
-                    justifyContent="space-between"
-                >
-                    <Flex alignItems="center">
-                        <Coffee size={12} />
-                        <Text marginLeft="5px" fontSize={12} textAlign="center">
-                            Indexing in progress ({indexerStatus.indexedFiles}{' '}
-                            of {indexerStatus.totalFiles})
-                        </Text>
-                    </Flex>
-                    <Button
-                        size="xs"
-                        variant="outline"
-                        onClick={() => {
-                            stopIndexing();
-                        }}
-                    >
-                        Stop
-                    </Button>
-                </Flex>
+
+                <TopStatusBar
+                    icon={<Coffee size={12} />}
+                    label={`Indexing in progress (${indexerStatus.indexedFiles}) of ${indexerStatus.totalFiles})`}
+                    rightActions={
+                        <Button
+                            size="xs"
+                            variant="outline"
+                            onClick={() => {
+                                stopIndexing();
+                            }}
+                        >
+                            Stop
+                        </Button>
+                    }
+                />
             </Flex>
         );
     }
 
     if (indexerStatus.status === 'needs_indexing') {
         return (
-            <Flex
-                justifyContent="space-between"
-                padding="9px"
-                borderBottom="1px solid #F9F9F9"
-            >
-                <Flex alignItems="center">
-                    <AlertTriangle strokeWidth={3} color="#F6AD55" size={15} />{' '}
-                    <Flex ml="5px" fontSize="13px" color="#fffff">
-                        Please index your project
+            <TopStatusBar
+                icon={
+                    <AlertTriangle strokeWidth={3} color="#F6AD55" size={15} />
+                }
+                label="Please index your project"
+                rightActions={
+                    <Flex alignItems="center">
+                        <Button
+                            size="xs"
+                            variant="outline"
+                            onClick={() => {
+                                indexerStatus.initiateIndexing();
+                            }}
+                        >
+                            Start indexing
+                        </Button>
+                        {preferenceIcon}
                     </Flex>
-                </Flex>
-                <Flex alignItems="center">
-                    <Button
-                        size="xs"
-                        variant="outline"
-                        onClick={() => {
-                            indexerStatus.initiateIndexing();
-                        }}
-                    >
-                        Start indexing
-                    </Button>
-                    {preferenceIcon}
-                </Flex>
-            </Flex>
+                }
+            />
         );
     }
 
     if (indexerStatus.status === 'none') {
         return (
-            <Flex
-                padding="9px"
-                borderBottom="1px solid #F9F9F9"
-                justifyContent="space-between"
-            >
-                <Flex alignItems="center">
-                    <Loader strokeWidth={3} color="#AF3A83" size={15} />
-                    <Flex ml="5px" fontSize="13px">
-                        Loading....
-                    </Flex>
-                </Flex>
-                {preferenceIcon}
-            </Flex>
+            <TopStatusBar
+                icon={<Loader strokeWidth={3} color="#AF3A83" size={15} />}
+                label="Loading...."
+                rightActions={preferenceIcon}
+            />
         );
     }
 
     return (
-        <Flex
-            padding="9px"
-            borderBottom="1px solid #F9F9F9"
-            justifyContent="space-between"
-        >
-            <Flex alignItems="center">
-                <Check strokeWidth={3} color="#01B075" size={15} />
-                <Flex ml="5px" fontSize="13px">
-                    Indexing completed
-                </Flex>
-            </Flex>
-            {preferenceIcon}
-        </Flex>
+        <TopStatusBar
+            icon={<Check strokeWidth={3} color="#01B075" size={15} />}
+            label="Indexing completed"
+            rightActions={preferenceIcon}
+        />
     );
 });

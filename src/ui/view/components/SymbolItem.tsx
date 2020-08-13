@@ -9,6 +9,39 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu';
 import SymbolKindIcon from './SymbolKindIcon';
 import { appStore } from 'ui/store';
 import SymbolMenu from './SymbolMenu';
+import { useCSSVarColor, LightenDarkenColor } from './useThemeColor';
+
+interface ActionIconProps {
+    tooltip: string;
+    onClick: () => void;
+    icon: any;
+}
+
+function ActionIcon({ tooltip, onClick, icon }: ActionIconProps) {
+    const bg = useCSSVarColor('button.background');
+    const foreground = useCSSVarColor('button.foreground');
+
+    return (
+        <Tooltip size="small" title={tooltip} position="bottom">
+            <IconButton
+                size="xs"
+                onClick={(e: any) => {
+                    e.stopPropagation();
+                    onClick();
+                }}
+                backgroundColor={bg}
+                color={foreground}
+                border={`1px solid ${LightenDarkenColor(bg, 100)}`}
+                aria-label="copy"
+                icon={icon}
+                marginLeft="10px"
+                _hover={{
+                    backgroundColor: LightenDarkenColor(bg, -20),
+                }}
+            />
+        </Tooltip>
+    );
+}
 
 export default function SymbolItem({
     filePath,
@@ -54,16 +87,18 @@ export default function SymbolItem({
         });
     };
 
+    const bg = useCSSVarColor('background.secondary');
+    const fontColor = useCSSVarColor('text.primary');
+
     return (
         <PseudoBox
             p="7px"
             width="100%"
             marginBottom="2px"
             borderRadius="4px"
-            borderBottom="1px solid #f4f4f4"
-            backgroundColor="#ffffff"
+            bg={bg}
             cursor="pointer"
-            _hover={{ backgroundColor: 'gray.50' }}
+            _hover={{ backgroundColor: LightenDarkenColor(bg, -15) }}
             onClick={() => {
                 openFile(filePath, location);
             }}
@@ -81,7 +116,7 @@ export default function SymbolItem({
                             <SymbolKindIcon kind={kind} size="12px" />
                             <Box
                                 marginLeft="5px"
-                                color="#393939"
+                                color={fontColor}
                                 fontWeight={600}
                                 fontSize={13}
                             >
@@ -90,68 +125,39 @@ export default function SymbolItem({
                         </Flex>
 
                         <Flex marginRight="5px">
-                            <Tooltip
-                                size="small"
-                                title="Copy import statement to clipboard"
-                                position="bottom"
-                            >
-                                <IconButton
-                                    size="xs"
-                                    onClick={(e: any) => {
-                                        e.stopPropagation();
-                                        copyImport();
-                                    }}
-                                    aria-label="copy"
-                                    icon="copy"
-                                    marginLeft="10px"
-                                    border="1px solid #d7d7d7"
-                                    backgroundColor="white"
-                                />
-                            </Tooltip>
+                            <ActionIcon
+                                tooltip="Copy import statement to clipboard"
+                                onClick={() => {
+                                    copyImport();
+                                }}
+                                icon="copy"
+                            />
+
                             {onBookmark && (
-                                <Tooltip
-                                    size="small"
-                                    title="Add to bookmark"
-                                    position="bottom"
-                                >
-                                    <IconButton
-                                        size="xs"
-                                        onClick={(e: any) => {
-                                            e.stopPropagation();
-                                            onBookmark(name, filePath);
-                                        }}
-                                        aria-label="Bookmark"
-                                        icon={() => <Bookmark size={'11px'} />}
-                                        marginLeft="10px"
-                                        border="1px solid #d7d7d7"
-                                        backgroundColor="white"
-                                    />
-                                </Tooltip>
+                                <ActionIcon
+                                    tooltip="Add to bookmark"
+                                    onClick={() => {
+                                        onBookmark(name, filePath);
+                                    }}
+                                    icon={() => <Bookmark size={'11px'} />}
+                                />
                             )}
                             {onRemoveBookmark && (
-                                <Tooltip
-                                    size="small"
-                                    title="Remove from bookmark"
-                                    position="bottom"
-                                >
-                                    <IconButton
-                                        size="xs"
-                                        onClick={(e: any) => {
-                                            e.stopPropagation();
-                                            onRemoveBookmark(name, filePath);
-                                        }}
-                                        aria-label="Bookmark"
-                                        icon={() => <Trash2 size={'11px'} />}
-                                        marginLeft="10px"
-                                        border="1px solid #d7d7d7"
-                                        backgroundColor="white"
-                                    />
-                                </Tooltip>
+                                <ActionIcon
+                                    tooltip="Remove from bookmark"
+                                    onClick={() => {
+                                        onRemoveBookmark(name, filePath);
+                                    }}
+                                    icon={() => <Trash2 size={'11px'} />}
+                                />
                             )}
                         </Flex>
                     </Flex>
                     {filePath && (
-                        <Flex fontSize={11} color="gray.600">
+                        <Flex
+                            fontSize={11}
+                            color={LightenDarkenColor(fontColor, 20)}
+                        >
                             {filePath.replace(projectInfo.root, '')}
                         </Flex>
                     )}

@@ -11,6 +11,7 @@ import SymbolItem from '../components/SymbolItem';
 import { observer } from 'mobx-react-lite';
 import { bookmarksStore } from 'ui/store';
 import WidgetFrame from '../components/WidgetFrame';
+import { useCSSVarColor } from '../components/useThemeColor';
 
 export interface SearchResult {
     value: string;
@@ -26,6 +27,12 @@ export default observer(function SymbolSearch() {
     const [options, setOptions] = useState([]);
     const bookmarks = useContext(bookmarksStore);
     const [inputValue, setInputValue] = useState('');
+
+    const selectBgColor = useCSSVarColor('input.background');
+    const selectTextColor = useCSSVarColor('text.primary');
+    const backgroundSecondary = useCSSVarColor('background.secondary');
+    const backgroundPrimary = useCSSVarColor('background.primary');
+    const selectBorderColor = useCSSVarColor('background.secondary');
 
     const promiseOptions = useRef(
         debounce(async (inputValue: string, type: string) => {
@@ -46,39 +53,42 @@ export default observer(function SymbolSearch() {
         container: (provided: any) => ({
             ...provided,
             width: '100%',
-            borderColor: '#f0f0f0',
+            borderColor: selectBorderColor,
         }),
         control: (provided: any) => ({
             ...provided,
             borderColor: 'inherit',
             borderRadius: '4px 4px 0px 0px',
             boxShadow: 'none',
+            backgroundColor: selectBgColor,
+
             '&:hover': {
-                borderColor: '#f0f0f0',
+                borderColor: selectBorderColor,
             },
         }),
         menu: (provided: any) => ({
             ...provided,
-            backgroundColor: '#ffff',
             boxShadow: 'none',
             position: 'initial',
             marginTop: '0px',
             borderRadius: '0px 0px 4px 4px',
             borderStyle: 'solid',
             borderWidth: '0px 1px 1px 1px',
-            borderColor: '#f0f0f0',
+            borderColor: selectBorderColor,
+            backgroundColor: selectBgColor,
         }),
-        option: (provided: any) => ({
+        menuList: (provided: any) => ({
             ...provided,
+            borderColor: selectBorderColor,
         }),
         multiValue: (provided: any) => ({
             ...provided,
-            backgroundColor: '#eaf2fc',
+            backgroundColor: selectBgColor,
             borderRadius: '3px',
         }),
         input: (provided: any) => ({
             ...provided,
-            color: '#666666',
+            color: selectTextColor,
         }),
         noOptionsMessage: (provided: any) => ({
             ...provided,
@@ -88,6 +98,15 @@ export default observer(function SymbolSearch() {
             ...provided,
             fontSize: '13px',
         }),
+        option: (provided: any, state: any) => {
+            console.log(state);
+            return {
+                ...provided,
+                backgroundColor: state.isFocused
+                    ? backgroundPrimary
+                    : backgroundSecondary,
+            };
+        },
     };
 
     const SearchIconComponent = () => (
@@ -102,15 +121,19 @@ export default observer(function SymbolSearch() {
             <Flex alignItems="center" justifyContent="space-between">
                 <Flex alignItems="center">
                     <Flex marginRight="5px" marginTop="1px">
-                        <Icon kind={item.kind} size="12px" />
+                        <Icon
+                            kind={item.kind}
+                            size="12px"
+                            color={selectTextColor}
+                        />
                     </Flex>
-                    <Flex color="gray.800" fontSize={13} mr="1px">
+                    <Flex color={selectTextColor} fontSize={13} mr="1px">
                         {item.label}
                     </Flex>
                 </Flex>
                 {options.context === 'menu' && (
                     <Flex>
-                        <CornerDownLeft color="#718096" size="12px" />
+                        <CornerDownLeft color={selectTextColor} size="12px" />
                     </Flex>
                 )}
             </Flex>
@@ -135,7 +158,7 @@ export default observer(function SymbolSearch() {
                             <Flex>
                                 <Text
                                     isTruncated
-                                    color="#2a69ac"
+                                    color={selectTextColor}
                                     ml="5px"
                                     fontSize="12px"
                                 >
@@ -150,7 +173,7 @@ export default observer(function SymbolSearch() {
                                         </Text>{' '}
                                         (
                                         <CornerDownLeft
-                                            color="#718096"
+                                            color={selectTextColor}
                                             size="12px"
                                             style={{ marginTop: '5px' }}
                                         />

@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, Fragment } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
-import { Tooltip } from 'react-tippy';
 import {
     Flex,
     useDisclosure,
@@ -9,14 +8,18 @@ import {
     Tab,
     TabPanels,
     TabPanel,
+    useTheme,
 } from '@chakra-ui/core';
 import { indexerStatusStore } from '../store';
 import Preference from './preference';
 
 import SymbolSearch from './symbol-search';
 import Bookmarks from './bookmarks';
-import IndexerStatus from './IndexerStatus';
-import { Book, Search, Bookmark } from 'react-feather';
+import IndexerStatus from './status-bar';
+import { Search, Bookmark } from 'react-feather';
+import { useCSSVarColor } from './components/useThemeColor';
+
+const TabsComponent: any = Tabs;
 
 function App() {
     const indexerStatus = useContext(indexerStatusStore);
@@ -25,13 +28,26 @@ function App() {
         indexerStatus.pollForStatus();
     }, []);
 
+    const tabHeaderColor = useCSSVarColor('text.primary');
+    const variableColor = useCSSVarColor('button.background');
+
     return (
-        <Flex bg="white" flexDirection="column" minHeight="100vh" flexGrow={1}>
+        <Flex
+            bg="background.primary"
+            color="text.primary"
+            flexDirection="column"
+            minHeight="100vh"
+            flexGrow={1}
+        >
             <Flex direction="column" height="100vh" flexGrow={1}>
                 <IndexerStatus onOpen={onOpen as any} />
-                <Tabs isFitted>
+                <TabsComponent isFitted>
                     <TabList>
                         <Tab
+                            _selected={{
+                                borderBottom: '2px solid',
+                                borderBottomColor: variableColor,
+                            }}
                             padding="0px"
                             _focus={{
                                 boxShadow: 'none',
@@ -43,17 +59,21 @@ function App() {
                                 alignItems="center"
                             >
                                 <Flex borderRadius="5px" padding="9px" mr="3px">
-                                    <Search size={20} color="#2a69ac" />
+                                    <Search size={20} stroke={tabHeaderColor} />
                                 </Flex>
                                 <Flex flexDirection="column">
                                     <Flex
                                         ml="5px"
                                         fontSize="13px"
-                                        color="#2a69ac"
+                                        color="text.primary"
                                     >
                                         Search
                                     </Flex>
-                                    <Flex ml="5px" fontSize="11px" color="gray">
+                                    <Flex
+                                        ml="5px"
+                                        fontSize="11px"
+                                        color="text.primary"
+                                    >
                                         Search symbols with filters
                                     </Flex>
                                 </Flex>
@@ -61,6 +81,10 @@ function App() {
                         </Tab>
                         <Tab
                             padding="0px"
+                            _selected={{
+                                borderBottom: '2px solid',
+                                borderBottomColor: variableColor,
+                            }}
                             _focus={{
                                 boxShadow: 'none',
                             }}
@@ -71,17 +95,24 @@ function App() {
                                 alignItems="center"
                             >
                                 <Flex borderRadius="5px" padding="9px" mr="3px">
-                                    <Bookmark size={20} color="#2a69ac" />
+                                    <Bookmark
+                                        size={20}
+                                        stroke={tabHeaderColor}
+                                    />
                                 </Flex>
                                 <Flex flexDirection="column">
                                     <Flex
                                         ml="5px"
                                         fontSize="13px"
-                                        color="#2a69ac"
+                                        color="text.primary"
                                     >
                                         Bookmark
                                     </Flex>
-                                    <Flex ml="5px" fontSize="11px" color="gray">
+                                    <Flex
+                                        ml="5px"
+                                        fontSize="11px"
+                                        color="text.primary"
+                                    >
                                         Bookmarked items
                                     </Flex>
                                 </Flex>
@@ -97,7 +128,7 @@ function App() {
                             <Bookmarks />
                         </TabPanel>
                     </TabPanels>
-                </Tabs>
+                </TabsComponent>
             </Flex>
             <Preference isOpen={isOpen} onClose={onClose} />
         </Flex>

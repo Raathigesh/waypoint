@@ -1,173 +1,167 @@
-import { theme, DefaultTheme } from '@chakra-ui/core';
+import { theme } from '@chakra-ui/core';
 
-const colors = {
-    transparent: 'transparent',
-    current: 'currentColor',
-    black: '#34312D',
-    white: '#fff',
-
-    whiteAlpha: {
-        50: 'rgba(255, 255, 255, 0.04)',
-        100: 'rgba(255, 255, 255, 0.06)',
-        200: 'rgba(255, 255, 255, 0.08)',
-        300: 'rgba(255, 255, 255, 0.16)',
-        400: 'rgba(255, 255, 255, 0.24)',
-        500: 'rgba(255, 255, 255, 0.36)',
-        600: 'rgba(255, 255, 255, 0.48)',
-        700: 'rgba(255, 255, 255, 0.64)',
-        800: 'rgba(255, 255, 255, 0.80)',
-        900: 'rgba(255, 255, 255, 0.92)',
+const CSSVariableNames = {
+    background: {
+        primary: '--vscode-tab-activeBackground',
+        secondary: '--vscode-list-hoverBackground',
     },
-
-    blackAlpha: {
-        50: 'rgba(0, 0, 0, 0.04)',
-        100: 'rgba(0, 0, 0, 0.06)',
-        200: 'rgba(0, 0, 0, 0.08)',
-        300: 'rgba(0, 0, 0, 0.16)',
-        400: 'rgba(0, 0, 0, 0.24)',
-        500: 'rgba(0, 0, 0, 0.36)',
-        600: 'rgba(0, 0, 0, 0.48)',
-        700: 'rgba(0, 0, 0, 0.64)',
-        800: 'rgba(0, 0, 0, 0.80)',
-        900: 'rgba(0, 0, 0, 0.92)',
+    input: {
+        background: '--vscode-input-background',
+        border: '--vscode-input-border',
     },
-
-    gray: {
-        0: '#FFFFFF',
-        50: '#F1F5F9',
-        100: '#EDF2F7',
-        200: '#E2E8F0',
-        300: '#CBD5E0',
-        400: '#A0AEC0',
-        500: '#718096',
-        600: '#4A5568',
-        700: '#2D3748',
-        800: '#1A202C',
-        900: '#171923',
-        1000: '#34312D',
+    button: {
+        background: '--vscode-button-background',
+        foreground: '--vscode-button-foreground',
     },
-
-    red: {
-        50: '#fff5f5',
-        100: '#fed7d7',
-        200: '#feb2b2',
-        300: '#fc8181',
-        400: '#f56565',
-        500: '#e53e3e',
-        600: '#c53030',
-        700: '#9b2c2c',
-        800: '#822727',
-        900: '#63171b',
-    },
-
-    orange: {
-        50: '#E3E3E2',
-        100: '#FEEBC8',
-        200: '#FBD38D',
-        300: '#F6AD55',
-        400: '#F3AB07',
-        500: '#DD6B20',
-        600: '#C05621',
-        700: '#9C4221',
-        800: '#7B341E',
-        900: '#652B19',
-    },
-
-    yellow: {
-        50: '#fffff0',
-        100: '#fefcbf',
-        200: '#EDDA72', //
-        300: '#f6e05e',
-        400: '#ecc94b',
-        500: '#d69e2e',
-        600: '#b7791f',
-        700: '#975a16',
-        800: '#744210',
-        900: '#5F370E',
-    },
-
-    green: {
-        50: '#f0fff4',
-        100: '#c6f6d5',
-        200: '#9ae6b4',
-        300: '#68d391',
-        400: '#48bb78',
-        500: '#38a169',
-        600: '#2f855a',
-        700: '#276749',
-        800: '#22543d',
-        900: '#1C4532',
-    },
-
-    teal: {
-        50: '#E6FFFA',
-        100: '#B2F5EA',
-        200: '#81E6D9',
-        300: '#4FD1C5',
-        400: '#38B2AC',
-        500: '#319795',
-        600: '#2C7A7B',
-        700: '#285E61',
-        800: '#234E52',
-        900: '#1D4044',
-    },
-
-    blue: {
-        50: '#ebf8ff',
-        100: '#ceedff',
-        200: '#90cdf4',
-        300: '#63b3ed',
-        400: '#4299e1',
-        500: '#3182ce',
-        600: '#2a69ac',
-        700: '#1e4e8c',
-        800: '#153e75',
-        900: '#3D72DE', //
-    },
-
-    cyan: {
-        50: '#EDFDFD',
-        100: '#C4F1F9',
-        200: '#9DECF9',
-        300: '#76E4F7',
-        400: '#0BC5EA',
-        500: '#00B5D8',
-        600: '#00A3C4',
-        700: '#0987A0',
-        800: '#086F83',
-        900: '#065666',
-    },
-
-    purple: {
-        50: '#faf5ff',
-        100: '#e9d8fd',
-        200: '#d6bcfa',
-        300: '#b794f4',
-        400: '#9f7aea',
-        500: '#805ad5',
-        600: '#6b46c1',
-        700: '#553c9a',
-        800: '#44337a',
-        900: '#322659',
-    },
-
-    pink: {
-        50: '#fff5f7',
-        100: '#fed7e2',
-        200: '#fbb6ce',
-        300: '#f687b3',
-        400: '#ed64a6',
-        500: '#d53f8c',
-        600: '#b83280',
-        700: '#97266d',
-        800: '#702459',
-        900: '#521B41',
+    text: {
+        primary: '--vscode-list-activeSelectionForeground',
+        secondary: '--vscode-list-inactiveSelectionForeground',
     },
 };
 
-const lightTheme = {
+const backupVSCodeColors = {
+    background: {
+        primary: getComputedStyle(document.documentElement).getPropertyValue(
+            CSSVariableNames.background.primary
+        ),
+        secondary: getComputedStyle(document.documentElement).getPropertyValue(
+            CSSVariableNames.background.secondary
+        ),
+    },
+    input: {
+        background: getComputedStyle(document.documentElement).getPropertyValue(
+            CSSVariableNames.input.background
+        ),
+        border: getComputedStyle(document.documentElement).getPropertyValue(
+            CSSVariableNames.input.border
+        ),
+    },
+    button: {
+        background: getComputedStyle(document.documentElement).getPropertyValue(
+            CSSVariableNames.button.background
+        ),
+        foreground: getComputedStyle(document.documentElement).getPropertyValue(
+            CSSVariableNames.button.foreground
+        ),
+    },
+    text: {
+        primary: getComputedStyle(document.documentElement).getPropertyValue(
+            CSSVariableNames.text.primary
+        ),
+        secondary: getComputedStyle(document.documentElement).getPropertyValue(
+            CSSVariableNames.text.secondary
+        ),
+    },
+};
+
+const colors = {
+    ...theme.colors,
+    background: {
+        primary: `var(${CSSVariableNames.background.primary})`,
+        secondary: `var(${CSSVariableNames.background.secondary})`,
+    },
+    input: {
+        background: `var(${CSSVariableNames.input.background})`,
+        border: `var(${CSSVariableNames.input.border})`,
+    },
+    button: {
+        background: `var(${CSSVariableNames.button.background})`,
+        foreground: `var(${CSSVariableNames.button.foreground})`,
+    },
+    text: {
+        primary: `var(${CSSVariableNames.text.primary})`,
+        secondary: `var(${CSSVariableNames.text.secondary})`,
+    },
+};
+
+const vsCodeTheme = {
     ...theme,
     colors,
 };
+export default vsCodeTheme;
 
-export default lightTheme;
+interface Theme {
+    background: {
+        primary: string;
+        secondary: string;
+    };
+    input: {
+        background: string;
+        border: string;
+    };
+    button: {
+        background: string;
+        foreground: string;
+    };
+    text: {
+        primary: string;
+        secondary: string;
+    };
+}
+
+function setThemeVariables(theme: Theme) {
+    document.documentElement.style.setProperty(
+        CSSVariableNames.background.primary,
+        theme.background.primary
+    );
+    document.documentElement.style.setProperty(
+        CSSVariableNames.background.secondary,
+        theme.background.secondary
+    );
+
+    document.documentElement.style.setProperty(
+        CSSVariableNames.input.background,
+        theme.input.background
+    );
+    document.documentElement.style.setProperty(
+        CSSVariableNames.input.border,
+        theme.input.border
+    );
+
+    document.documentElement.style.setProperty(
+        CSSVariableNames.button.background,
+        theme.button.background
+    );
+    document.documentElement.style.setProperty(
+        CSSVariableNames.button.foreground,
+        theme.button.foreground
+    );
+
+    document.documentElement.style.setProperty(
+        CSSVariableNames.text.primary,
+        theme.text.primary
+    );
+    document.documentElement.style.setProperty(
+        CSSVariableNames.text.secondary,
+        theme.text.secondary
+    );
+}
+
+const darkTheme: Theme = {
+    background: {
+        primary: '#1D1D1D',
+        secondary: '#222322',
+    },
+    button: { background: '#008CFE', foreground: '#F9F9F9' },
+    input: { background: '#0A0A0B', border: '#222322' },
+    text: { primary: '#F9F9F9', secondary: '#F9F9F9' },
+};
+const lightTheme: Theme = {
+    background: {
+        primary: '#FFFFFF',
+        secondary: '#f4f4f4',
+    },
+    button: { background: '#1A1A1A', foreground: '#F9F9F9' },
+    input: { background: '#FFFFFF', border: '#E5E5E5' },
+    text: { primary: '#1A1A1A', secondary: '#1A1A1A' },
+};
+
+export function switchTheme(theme: 'light' | 'dark' | 'vscode') {
+    if (theme === 'light') {
+        setThemeVariables(lightTheme);
+    } else if (theme === 'dark') {
+        setThemeVariables(darkTheme);
+    } else if (theme === 'vscode') {
+        setThemeVariables(backupVSCodeColors);
+    }
+}

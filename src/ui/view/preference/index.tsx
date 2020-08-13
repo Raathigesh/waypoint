@@ -17,8 +17,16 @@ import {
     Text,
     Code,
     Link,
+    Switch,
+    RadioGroup,
+    Radio,
 } from '@chakra-ui/core';
-import { pathMapStore, indexerStatusStore, appStore } from 'ui/store';
+import {
+    pathMapStore,
+    indexerStatusStore,
+    appStore,
+    preferenceStore,
+} from 'ui/store';
 import { Coffee, Activity, Play } from 'react-feather';
 import { openURL } from 'ui/store/services/misc';
 import DirectoryPanel from './directory-panel';
@@ -32,6 +40,7 @@ function Preference({ isOpen, onClose }: Props) {
     const pathMap = useContext(pathMapStore);
     const app = useContext(appStore);
     const indexerStatus = useContext(indexerStatusStore);
+    const preference = useContext(preferenceStore);
 
     const handleUpdate = (id: string, alias: string, path: string) => {
         pathMap.update(id, alias, path);
@@ -201,6 +210,27 @@ function Preference({ isOpen, onClose }: Props) {
                     >
                         Start Indexing
                     </Button>
+
+                    <Flex flexDir="column" mt="35px">
+                        <Heading size="sm" fontWeight={400}>
+                            Theme
+                        </Heading>
+                        <Text fontSize="12px" mb="5px">
+                            Enable dark theme
+                        </Text>
+                        <RadioGroup
+                            isInline
+                            size="sm"
+                            onChange={(e: any) => {
+                                preference.setTheme(e.target.value);
+                            }}
+                            value={preference.theme}
+                        >
+                            <Radio value="light">Light</Radio>
+                            <Radio value="dark">Dark</Radio>
+                            <Radio value="vscode">Use VSCode Theme</Radio>
+                        </RadioGroup>
+                    </Flex>
                 </DrawerBody>
 
                 <DrawerFooter>

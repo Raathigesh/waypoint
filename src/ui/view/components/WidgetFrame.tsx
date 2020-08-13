@@ -5,7 +5,7 @@ export default function WidgetFrame({ children, mb }: any) {
     return (
         <Flex mb={mb} height="calc(100vh - 80px)">
             <Flex
-                backgroundColor="#F9F9F9"
+                backgroundColor="panels.primaryBackground"
                 direction="column"
                 borderStyle="solid"
                 width="100%"
