@@ -36,6 +36,8 @@ function DirectoryPanel({
                     return (
                         <Flex key={id} alignItems="center" marginBottom="5px">
                             <Input
+                                backgroundColor="input.background"
+                                borderColor="input.border"
                                 value={directory}
                                 placeholder="Directory"
                                 size="sm"
@@ -60,6 +62,8 @@ function DirectoryPanel({
             </Flex>
             <Flex justifyContent="flex-end" marginTop="5px" marginBottom="5px">
                 <Button
+                    backgroundColor="button.background"
+                    color="button.foreground"
                     leftIcon="plus-square"
                     variant="outline"
                     size="xs"

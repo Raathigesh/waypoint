@@ -42,10 +42,12 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
         return (
             <Flex
                 flexDir="column"
-                color="#F9F9F9"
-                borderBottom="1px solid #F9F9F9"
+                color="text.primary"
+                borderWidth="1x"
+                borderStyle="solid"
+                borderBottomColor="background.secondary"
                 padding="9px"
-                backgroundColor="#18184F"
+                backgroundColor="background.primary"
             >
                 <Flex justifyContent="space-between">
                     <Flex alignItems="center">
@@ -71,7 +73,7 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
                         variant="outline"
                         fontWeight={400}
                         _hover={{
-                            backgroundColor: '#AF3A83',
+                            backgroundColor: 'button.background',
                         }}
                         onClick={() => {
                             preference.setIndexingOnStartUp(true);
@@ -89,7 +91,7 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
                         variant="outline"
                         fontWeight={400}
                         _hover={{
-                            backgroundColor: '#AF3A83',
+                            backgroundColor: 'button.background',
                         }}
                         onClick={() => {
                             preference.setIndexingOnStartUp(true);
@@ -106,7 +108,12 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
 
     if (indexerStatus.status === 'indexing') {
         return (
-            <Flex flexDir="column" borderBottom="1px solid #F9F9F9">
+            <Flex
+                flexDir="column"
+                borderWidth="1x"
+                borderStyle="solid"
+                borderBottomColor="background.secondary"
+            >
                 <Progress
                     size="sm"
                     value={
@@ -127,6 +134,9 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
                         <Button
                             size="xs"
                             variant="outline"
+                            _hover={{
+                                backgroundColor: 'button.background',
+                            }}
                             onClick={() => {
                                 stopIndexing();
                             }}
@@ -151,6 +161,9 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
                         <Button
                             size="xs"
                             variant="outline"
+                            _hover={{
+                                backgroundColor: 'button.background',
+                            }}
                             onClick={() => {
                                 indexerStatus.initiateIndexing();
                             }}

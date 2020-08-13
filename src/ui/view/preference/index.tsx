@@ -49,7 +49,10 @@ function Preference({ isOpen, onClose }: Props) {
     return (
         <Drawer size="lg" isOpen={isOpen} placement="right" onClose={onClose}>
             <DrawerOverlay />
-            <DrawerContent>
+            <DrawerContent
+                backgroundColor="background.primary"
+                color="text.primary"
+            >
                 <DrawerCloseButton />
                 <DrawerHeader fontWeight={400}>Preference</DrawerHeader>
 
@@ -65,7 +68,7 @@ function Preference({ isOpen, onClose }: Props) {
                                     Path should be relative to the folder opened
                                     in VSCode.{' '}
                                     <Link
-                                        color="#3f51b5"
+                                        fontWeight={600}
                                         href="https://waypoint.netlify.app/docs/folder-to-index"
                                         target="_blank"
                                         onClick={() => {
@@ -125,7 +128,7 @@ function Preference({ isOpen, onClose }: Props) {
                         second value is the relative path which points to the
                         actual directory (e.g: ./src/components).{' '}
                         <Link
-                            color="#3f51b5"
+                            fontWeight={600}
                             href="https://waypoint.netlify.app/docs/alias-configuration"
                             target="_blank"
                             onClick={() => {
@@ -146,6 +149,8 @@ function Preference({ isOpen, onClose }: Props) {
                                     marginBottom="5px"
                                 >
                                     <Input
+                                        backgroundColor="input.background"
+                                        borderColor="input.border"
                                         value={item.alias}
                                         placeholder="Alias"
                                         size="sm"
@@ -159,6 +164,8 @@ function Preference({ isOpen, onClose }: Props) {
                                         }
                                     />
                                     <Input
+                                        backgroundColor="input.background"
+                                        borderColor="input.border"
                                         value={item.path}
                                         placeholder="Path"
                                         size="sm"
@@ -188,6 +195,8 @@ function Preference({ isOpen, onClose }: Props) {
                         marginBottom="5px"
                     >
                         <Button
+                            backgroundColor="button.background"
+                            color="button.foreground"
                             leftIcon="plus-square"
                             variant="outline"
                             size="xs"
@@ -202,6 +211,8 @@ function Preference({ isOpen, onClose }: Props) {
                     </Heading>
                     <Text fontSize="12px">Run the code indexer</Text>
                     <Button
+                        backgroundColor="button.background"
+                        color="button.foreground"
                         size="sm"
                         marginTop="10px"
                         leftIcon={Play}
