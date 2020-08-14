@@ -44,6 +44,7 @@ export default class ConfigResolver {
         if (this.shouldUseInMemoryStorage()) {
             this.inMemoryStorage = {};
         }
+        return '';
     }
 
     @Mutation(returns => String)
