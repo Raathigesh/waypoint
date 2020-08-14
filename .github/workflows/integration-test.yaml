@@ -11,7 +11,7 @@ jobs:
             - name: Cypress run
               uses: cypress-io/github-action@v2
               with:
-                  start: npm e2e
+                  start: yarn e2e
                   wait-on: 'http://localhost:4545'
                   record: true
               env:
