@@ -308,7 +308,9 @@ export default class Indexer {
     private isChildOf(child: string, parent: string) {
         if (child === parent) return true;
         const parentTokens = parent.split(sep).filter(i => i.length);
-        return parentTokens.every((t, i) => child.split(sep)[i] === t);
+        return parentTokens.every(
+            (t, i) => child.split(sep).filter(i => i.length)[i] === t
+        );
     }
 
     private isPathLiesInProvidedDirectories(
