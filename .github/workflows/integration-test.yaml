@@ -8,9 +8,17 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v1
 
+            - name: Install dependencies
+              uses: cypress-io/github-action@v2
+              with:
+                  # just perform install
+                  runTests: false
+
+            - run: yarn build
             - name: Cypress run
               uses: cypress-io/github-action@v2
               with:
+                  install: false
                   start: yarn e2e
                   wait-on: 'http://localhost:4545'
                   wait-on-timeout: 180
