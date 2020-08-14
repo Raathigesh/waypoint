@@ -13,6 +13,7 @@ jobs:
               with:
                   start: yarn e2e
                   wait-on: 'http://localhost:4545'
+                  wait-on-timeout: 180
                   record: true
               env:
                   # pass the Dashboard record key as an environment variable
