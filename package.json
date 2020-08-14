@@ -76,7 +76,7 @@
         "docs": "cd website && yarn install && yarn build",
         "e2e": "node ./out/test/runTest.js",
         "cypress-open": "cypress open",
-        "cypress-run": "wait-on http://localhost:4545 && cypress run",
+        "cypress-run": "wait-on http://localhost:4545 && cypress run --record --key 52f74a09-002c-4bfa-bf4a-898276423aba",
         "integration-ci": "concurrently -s first -k \"yarn e2e\" \"yarn cypress-run\""
     },
     "devDependencies": {
