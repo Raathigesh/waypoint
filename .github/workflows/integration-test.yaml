@@ -3,7 +3,10 @@ on: [push]
 jobs:
     cypress-run:
         name: Cypress run
-        runs-on: macos-latest
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os: [macos-latest, windows-latest]
         steps:
             - name: Checkout
               uses: actions/checkout@v1
