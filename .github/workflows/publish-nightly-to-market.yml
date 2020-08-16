@@ -1,0 +1,28 @@
+on: [push]
+name: Publish nightly to market
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v1
+            - name: Use Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 10.x
+            - name: yarn install, build, and test
+              run: |
+                  yarn install
+                  yarn build
+                  yarn test
+                  yarn prepare-nightly
+            - name: integration test
+              uses: GabrielBB/xvfb-action@v1.2
+              with:
+                  run: yarn integration-ci
+            - uses: lannonbr/vsce-action@master
+              with:
+                  args: 'publish -p $VSCE_TOKEN --yarn'
+              env:
+                  CI: true
+                  VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
