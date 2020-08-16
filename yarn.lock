@@ -5267,11 +5267,6 @@ getpass@^0.1.1:
   dependencies:
     assert-plus "^1.0.0"
 
-git-last-commit@^1.0.0:
-  version "1.0.0"
-  resolved "https://registry.yarnpkg.com/git-last-commit/-/git-last-commit-1.0.0.tgz#49acbad49b0ec4dae33d3a3ac7ab0a1bacf4928e"
-  integrity sha512-wpnmsd2dW1MnoencljcWO/06VUealfMaY40ZjK5t3v9ljL+bKCMbNaTn/YzwIh4pDo2hk5QcN+pLzUJ8aWB17A==
-
 glob-parent@^3.1.0:
   version "3.1.0"
   resolved "https://registry.yarnpkg.com/glob-parent/-/glob-parent-3.1.0.tgz#9e6af6299d8d3bd2bd40430832bd113df906c5ae"
