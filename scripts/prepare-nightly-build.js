@@ -6,9 +6,9 @@ const date = new Date();
 
 const newPackageJson = {
     ...packageJson,
-    version: `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}${date.getHours()}`,
+    version: `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}${date.getHours()}${date.getMinutes()}`,
     name: 'waypoint-nightly',
-    displayName: 'waypoint nightly',
+    displayName: 'Waypoint Nightly Build',
 };
 
 fs.writeFileSync(
