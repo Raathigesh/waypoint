@@ -308,10 +308,20 @@ export default class Indexer {
     private isChildOf(child: string, parent: string) {
         if (child === parent) return true;
         const parentTokens = parent.split(sep).filter(i => i.length);
-        return parentTokens.every(
-            (t, i) => child.split(sep).filter(i => i.length)[i] === t
-        );
+        return parentTokens.every((token, index) => {
+            return child.split(sep).filter(t => t.length)[index] === token;
+        });
     }
+
+    private isParentOf(child: string, parent: string) {
+        if (child === parent) return true;
+        const childTokens = child.split(sep).filter(i => i.length);
+        return childTokens.every((token, index) => {
+            return parent.split(sep).filter(t => t.length)[index] === token;
+        });
+    }
+
+    //(t, i) => child.split(sep).filter(i => i.length)[i] === t
 
     private isPathLiesInProvidedDirectories(
         path: string,
@@ -319,8 +329,10 @@ export default class Indexer {
         directories: string[]
     ) {
         if (stats.isDirectory()) {
-            return directories.some(directory =>
-                this.isChildOf(path, directory)
+            return directories.some(
+                directory =>
+                    this.isChildOf(path, directory) ||
+                    this.isParentOf(path, directory)
             );
         }
 
