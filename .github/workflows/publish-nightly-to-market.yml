@@ -16,10 +16,6 @@ jobs:
                   yarn build
                   yarn test
                   yarn prepare-nightly
-            - name: integration test
-              uses: GabrielBB/xvfb-action@v1.2
-              with:
-                  run: yarn integration-ci
             - uses: lannonbr/vsce-action@master
               with:
                   args: 'publish -p $VSCE_TOKEN --yarn'
