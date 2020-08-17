@@ -6,8 +6,6 @@ const path = require('path');
 module.exports = env => ({
     entry: {
         ui: './src/ui/index.tsx',
-        // "editor.worker": "monaco-editor/esm/vs/editor/editor.worker.js",
-        // "ts.worker": "monaco-editor/esm/vs/language/typescript/ts.worker"
     },
     mode: env.production ? 'production' : 'development',
     output: {
