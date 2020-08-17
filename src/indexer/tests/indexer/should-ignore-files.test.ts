@@ -186,4 +186,20 @@ describe('Indexer ignore func', () => {
         );
         expect(shouldIgnore).toBe(true);
     });
+
+    it('should not ignore a parent directory when a child directory is included', () => {
+        const indexer = new Indexer();
+        const ignoreFunc = indexer.getIgnoreFunc(
+            [
+                `c:${sep}dev${sep}waypoint${sep}packages${sep}frontend${sep}view${sep}sidebar`,
+            ],
+            []
+        );
+
+        const shouldIgnore = ignoreFunc(
+            `c:${sep}dev${sep}waypoint${sep}packages`,
+            getMockFSStat(false, true)
+        );
+        expect(shouldIgnore).toBe(false);
+    });
 });

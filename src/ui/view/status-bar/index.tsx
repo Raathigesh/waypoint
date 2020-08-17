@@ -129,7 +129,7 @@ export default observer(function IndexerStatus({ onOpen }: Props) {
 
                 <TopStatusBar
                     icon={<Coffee size={12} />}
-                    label={`Indexing in progress (${indexerStatus.indexedFiles}) of ${indexerStatus.totalFiles})`}
+                    label={`Indexing in progress (${indexerStatus.indexedFiles} of ${indexerStatus.totalFiles})`}
                     rightActions={
                         <Button
                             size="xs"

@@ -321,8 +321,6 @@ export default class Indexer {
         });
     }
 
-    //(t, i) => child.split(sep).filter(i => i.length)[i] === t
-
     private isPathLiesInProvidedDirectories(
         path: string,
         stats: Stats,
