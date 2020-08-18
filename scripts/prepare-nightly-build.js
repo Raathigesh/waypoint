@@ -4,9 +4,15 @@ const path = require('path');
 
 const date = new Date();
 
+const padToTwoDigit = value => (value < 10 ? `0${value}` : `${value}`);
+
 const newPackageJson = {
     ...packageJson,
-    version: `${date.getFullYear()}.${date.getMonth()}.${date.getDate()}${date.getHours()}${date.getMinutes()}`,
+    version: `${date.getFullYear()}.${padToTwoDigit(
+        date.getMonth()
+    )}.${padToTwoDigit(date.getDate())}${padToTwoDigit(
+        date.getHours()
+    )}${padToTwoDigit(date.getMinutes())}`,
     name: 'waypoint-nightly',
     displayName: 'Waypoint Nightly Build',
 };
