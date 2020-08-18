@@ -34,24 +34,26 @@ Join [waypoint community discord](https://discord.gg/4TN27KK) to discuss ways to
 
 <br />
 
-## Get started
+### Get started
 
 -   Install the extension from [marketplace](https://marketplace.visualstudio.com/items?itemName=Raathigeshan.waypoint).
 -   Click on the Waypoint icon on the top right corner of any file to open the Waypoint panel.
 
 <br />
 
-## Configuring your project
+### Configuring your project
 
 Read the docs for [additional configurations](https://waypoint.netlify.app/docs/folder-to-index).
 
 <br/>
 
-## Contributing to Waypoint
+### Contributing to Waypoint
 
 Have a look at our [contribution guide](https://waypoint.netlify.app/docs/running-locally).
 
-## Contributors ✨
+<br />
+
+### Contributors
 
 Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/docs/en/emoji-key)):
 
@@ -67,6 +69,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
+
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
 This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
