@@ -17,7 +17,7 @@ export const Preference = types
             const preference: PreferenceJSON = yield getPreference();
             self.startIndexingOnStarUp =
                 preference.startIndexingOnStarUp || false;
-            self.theme = preference.theme || 'dark';
+            self.theme = preference.theme || 'light';
             switchTheme(self.theme as any);
         });
 
