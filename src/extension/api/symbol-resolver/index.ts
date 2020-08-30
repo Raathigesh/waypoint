@@ -28,6 +28,7 @@ import { Uri } from 'vscode';
 import { OpenFileArgs } from './OpenFileArgs';
 import ConfigResolver from '../ConfigResolver';
 import SourceFile, { isInLocation } from 'indexer/SourceFile';
+import { pubSub } from 'common/pubSub';
 
 @Service()
 @Resolver(GqlSearchResult)
@@ -35,6 +36,7 @@ export default class SymbolsResolver {
     private activeEditorPath: string | undefined;
     private activeEditor: vscode.TextEditor | undefined;
     private configResolver: ConfigResolver;
+    private workspaceFiles: { [path: string]: boolean } = {};
 
     constructor(
         private readonly container: ContainerInstance,
@@ -48,6 +50,25 @@ export default class SymbolsResolver {
         });
         vscode.workspace.onDidSaveTextDocument(e => {
             indexer.indexFile(e.fileName);
+        });
+
+        vscode.workspace.textDocuments.forEach(doc => {
+            this.workspaceFiles[doc.fileName] = true;
+        });
+
+        vscode.workspace.onDidCloseTextDocument(e => {
+            delete this.workspaceFiles[e.fileName];
+            pubSub.publish(
+                'waypoint.didChangeOpenTextDocuments',
+                'waypoint.didChangeOpenTextDocuments'
+            );
+        });
+        vscode.workspace.onDidOpenTextDocument(e => {
+            this.workspaceFiles[e.fileName] = true;
+            pubSub.publish(
+                'waypoint.didChangeOpenTextDocuments',
+                'waypoint.didChangeOpenTextDocuments'
+            );
         });
 
         this.configResolver = new ConfigResolver();
@@ -290,10 +311,15 @@ export default class SymbolsResolver {
     }
 
     @Subscription(() => String, {
-        topics: ['waypoint.addSymbol'],
+        topics: ['waypoint.addSymbol', 'waypoint.didChangeOpenTextDocuments'],
     })
     events(@Root() eventName: string) {
         return eventName;
+    }
+
+    @Query(returns => [String])
+    public async getAllOpenTextDocuments() {
+        return Object.keys(this.workspaceFiles);
     }
 
     @Query(returns => String)

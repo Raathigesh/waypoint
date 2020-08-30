@@ -16,8 +16,9 @@ import Preference from './preference';
 import SymbolSearch from './symbol-search';
 import Bookmarks from './bookmarks';
 import IndexerStatus from './status-bar';
-import { Search, Bookmark } from 'react-feather';
+import { Search, Bookmark, File } from 'react-feather';
 import { useCSSVarColor } from './components/useThemeColor';
+import WorkspaceOverview from './workspace-overview';
 
 const TabsComponent: any = Tabs;
 
@@ -43,6 +44,42 @@ function App() {
                 <IndexerStatus onOpen={onOpen as any} />
                 <TabsComponent isFitted>
                     <TabList>
+                        <Tab
+                            _selected={{
+                                borderBottom: '2px solid',
+                                borderBottomColor: variableColor,
+                            }}
+                            padding="0px"
+                            _focus={{
+                                boxShadow: 'none',
+                            }}
+                        >
+                            <Flex
+                                borderRadius="3px"
+                                padding="8px"
+                                alignItems="center"
+                            >
+                                <Flex borderRadius="5px" padding="9px" mr="3px">
+                                    <File size={20} stroke={tabHeaderColor} />
+                                </Flex>
+                                <Flex flexDirection="column">
+                                    <Flex
+                                        ml="5px"
+                                        fontSize="13px"
+                                        color="text.primary"
+                                    >
+                                        Workspace
+                                    </Flex>
+                                    <Flex
+                                        ml="5px"
+                                        fontSize="11px"
+                                        color="text.primary"
+                                    >
+                                        Open files
+                                    </Flex>
+                                </Flex>
+                            </Flex>
+                        </Tab>
                         <Tab
                             _selected={{
                                 borderBottom: '2px solid',
@@ -121,6 +158,9 @@ function App() {
                     </TabList>
 
                     <TabPanels>
+                        <TabPanel>
+                            <WorkspaceOverview />
+                        </TabPanel>
                         <TabPanel>
                             <SymbolSearch />
                         </TabPanel>
