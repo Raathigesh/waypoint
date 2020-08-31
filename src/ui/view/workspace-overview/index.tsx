@@ -89,7 +89,10 @@ function Row({ tree }: { tree: TreeNode }) {
 function WorkspaceOverview() {
     const workspace = useContext(workspaceStore);
     const app = useContext(appStore);
-    const tree = constructTree(workspace.textDocuments, app.separator);
+    const textDocs = workspace.textDocuments.map(doc =>
+        doc.replace(app.root, '')
+    );
+    const tree = constructTree(textDocs, app.separator);
 
     return (
         <div>

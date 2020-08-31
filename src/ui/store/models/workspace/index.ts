@@ -12,6 +12,7 @@ const Workspace = types
         }),
         fetchOpenDocuments: flow(function*() {
             const openEditors = yield getAllOpenTextDocuments();
+            self.textDocuments.clear();
             self.textDocuments.push(...openEditors);
         }),
     }));
