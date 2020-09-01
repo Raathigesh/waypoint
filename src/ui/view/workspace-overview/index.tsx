@@ -51,6 +51,7 @@ export function constructTree(paths: string[], separator: string): TreeNode {
 }
 
 function Row({ tree }: { tree: TreeNode }) {
+    const app = useContext(appStore);
     const Icon = tree.type === 'file' ? File : Folder;
     return (
         <Flex flexDir="column" ml="15px">
@@ -60,7 +61,7 @@ function Row({ tree }: { tree: TreeNode }) {
                 cursor="pointer"
                 padding="3px"
                 onClick={() => {
-                    openFile(tree.path, {
+                    openFile(`${app.root}${tree.path}`, {
                         start: {
                             line: 1,
                             column: 1,
