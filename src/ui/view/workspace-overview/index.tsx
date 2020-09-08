@@ -12,13 +12,15 @@ interface TreeNode {
     children: TreeNode[];
 }
 
-function ensurePath(root: TreeNode, path: string, tokens: string[]) {
+function ensurePath(root: TreeNode | null, path: string, tokens: string[]) {
     const currentToken = tokens.shift();
-    const children = root.children || [];
-
     const isAFile = tokens.length === 0 && (currentToken || '').includes('.');
 
-    let hasTokenChildren = children.find(child => child.name === currentToken);
+    let hasTokenChildren =
+        root && root.name === currentToken
+            ? root
+            : root &&
+              (root.children || []).find(child => child.name === currentToken);
 
     if (!hasTokenChildren) {
         hasTokenChildren = {
@@ -27,31 +29,44 @@ function ensurePath(root: TreeNode, path: string, tokens: string[]) {
             type: isAFile ? 'file' : 'directory',
             children: [],
         };
-        root.children?.push(hasTokenChildren);
+
+        if (root) {
+            root.children?.push(hasTokenChildren);
+        } else {
+            root = hasTokenChildren;
+        }
     }
 
     if (tokens.length !== 0) {
         ensurePath(hasTokenChildren, path, tokens);
     }
+
+    return root;
 }
 
-export function constructTree(paths: string[], separator: string): TreeNode {
-    const tree: TreeNode = {
-        name: 'root',
-        type: 'directory',
-        children: [],
-        path: '',
-    };
+export function constructTree(
+    paths: string[],
+    separator: string
+): TreeNode | null {
+    let tree: TreeNode | null = null;
+
     paths.forEach(item => {
-        const tokens = item.split(separator);
-        ensurePath(tree, item, tokens);
+        const tokens = item
+            .split(separator)
+            .filter(token => token.trim() !== '');
+        tree = ensurePath(tree, item, tokens);
     });
 
     return tree;
 }
 
-function Row({ tree }: { tree: TreeNode }) {
+function Row({ tree }: { tree: TreeNode | null }) {
     const app = useContext(appStore);
+
+    if (tree === null) {
+        return null;
+    }
+
     const Icon = tree.type === 'file' ? File : Folder;
     return (
         <Flex flexDir="column" ml="15px">
@@ -90,9 +105,12 @@ function Row({ tree }: { tree: TreeNode }) {
 function WorkspaceOverview() {
     const workspace = useContext(workspaceStore);
     const app = useContext(appStore);
-    const textDocs = workspace.textDocuments.map(doc =>
-        doc.replace(app.root, '')
-    );
+    const textDocs = workspace.textDocuments
+        .filter(doc => {
+            const extension = doc.split('.').pop();
+            return ['js', 'tsx', 'txt', 'ts'].includes(extension || '');
+        })
+        .map(doc => doc.replace(app.root, ''));
     const tree = constructTree(textDocs, app.separator);
 
     return (
