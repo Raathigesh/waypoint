@@ -40,7 +40,9 @@ onSnapshot(
     }, 1000)
 );
 
-const workspace = Workspace.create();
+const workspace = Workspace.create({
+    docs: [],
+});
 export const workspaceStore = createContext(workspace);
 
 listenToMessages(async (event: string) => {
@@ -49,6 +51,11 @@ listenToMessages(async (event: string) => {
         bookmarks.addBookmark(symbol.name, symbol.filePath);
     } else if (event === 'waypoint.didChangeOpenTextDocuments') {
         workspace.fetchOpenDocuments();
+    } else if (event === 'waypoint.didChangeTextSelection') {
+        const symbol = await getActiveSymbolForFile();
+        if (symbol) {
+            workspace.setActiveDocAndSymbol(symbol.filePath, symbol.name);
+        }
     }
 });
 

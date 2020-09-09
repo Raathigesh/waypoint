@@ -62,12 +62,19 @@ export function constructTree(
 
 function Row({ tree }: { tree: TreeNode | null }) {
     const app = useContext(appStore);
+    const workspace = useContext(workspaceStore);
 
     if (tree === null) {
         return null;
     }
 
+    const fullPath = `${app.root}${tree.path}`;
+    const doc = workspace.getDocForPath(fullPath);
+
     const Icon = tree.type === 'file' ? File : Folder;
+
+    const ObservedRow = observer(Row);
+
     return (
         <Flex flexDir="column" ml="15px">
             <PseudoBox
@@ -76,7 +83,7 @@ function Row({ tree }: { tree: TreeNode | null }) {
                 cursor="pointer"
                 padding="3px"
                 onClick={() => {
-                    openFile(`${app.root}${tree.path}`, {
+                    openFile(fullPath, {
                         start: {
                             line: 1,
                             column: 1,
@@ -95,17 +102,25 @@ function Row({ tree }: { tree: TreeNode | null }) {
                 <Icon size="15px" />
                 <Flex ml="5px">{tree.name}</Flex>
             </PseudoBox>
+            {doc && tree.type === 'file' && (
+                <Flex ml="30px" fontSize="13px">
+                    {doc.activeSymbol}
+                </Flex>
+            )}
             {tree.children.map(child => (
-                <Row tree={child} />
+                <ObservedRow tree={child} />
             ))}
         </Flex>
     );
 }
 
+const ObservedRow = observer(Row);
+
 function WorkspaceOverview() {
     const workspace = useContext(workspaceStore);
     const app = useContext(appStore);
-    const textDocs = workspace.textDocuments
+    const textDocs = workspace.docs
+        .map(d => d.path)
         .filter(doc => {
             const extension = doc.split('.').pop();
             return ['js', 'tsx', 'txt', 'ts'].includes(extension || '');
@@ -115,7 +130,7 @@ function WorkspaceOverview() {
 
     return (
         <div>
-            <Row tree={tree} />
+            <ObservedRow tree={tree} />
         </div>
     );
 }

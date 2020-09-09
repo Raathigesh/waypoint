@@ -71,6 +71,13 @@ export default class SymbolsResolver {
             );
         });
 
+        vscode.window.onDidChangeTextEditorSelection(e => {
+            pubSub.publish(
+                'waypoint.didChangeTextSelection',
+                'waypoint.didChangeTextSelection'
+            );
+        });
+
         this.configResolver = new ConfigResolver();
         const pathMap = JSON.parse(this.configResolver.getPathMap() || '{}');
         const directories = JSON.parse(this.configResolver.getDirectories());
@@ -311,7 +318,11 @@ export default class SymbolsResolver {
     }
 
     @Subscription(() => String, {
-        topics: ['waypoint.addSymbol', 'waypoint.didChangeOpenTextDocuments'],
+        topics: [
+            'waypoint.addSymbol',
+            'waypoint.didChangeOpenTextDocuments',
+            'waypoint.didChangeTextSelection',
+        ],
     })
     events(@Root() eventName: string) {
         return eventName;
