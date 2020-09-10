@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { observer } from 'mobx-react-lite';
-import { File, Folder } from 'react-feather';
+import { File, Folder, Code } from 'react-feather';
 import { Flex, PseudoBox } from '@chakra-ui/core';
 import { workspaceStore, appStore } from 'ui/store';
 import { openFile } from 'ui/store/services/file';
@@ -99,12 +99,13 @@ function Row({ tree }: { tree: TreeNode | null }) {
                     backgroundColor: 'background.secondary',
                 }}
             >
-                <Icon size="15px" />
+                <Icon size="15px" color="#008CFE" fill="#008CFE" />
                 <Flex ml="5px">{tree.name}</Flex>
             </PseudoBox>
-            {doc && tree.type === 'file' && (
-                <Flex ml="30px" fontSize="13px">
-                    {doc.activeSymbol}
+            {doc && doc.activeSymbol && tree.type === 'file' && (
+                <Flex ml="20px" fontSize="13px" alignItems="center">
+                    <Code size="12px" color="#1A1A1A" />
+                    <Flex ml="5px">{doc.activeSymbol}</Flex>
                 </Flex>
             )}
             {tree.children.map(child => (

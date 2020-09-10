@@ -36,16 +36,25 @@ const Workspace = types
             });
         }),
         fetchOpenDocuments: flow(function*() {
-            const openEditors = yield getAllOpenTextDocuments();
-            self.docs.clear();
-            openEditors.forEach((editor: string) => {
-                const doc = WorkspaceDoc.create({
-                    path: editor,
-                    activeSymbol: '',
-                    isActive: false,
-                });
+            const openEditors: string[] = yield getAllOpenTextDocuments();
 
-                self.docs.push(doc);
+            self.docs.forEach(doc => {
+                const editor = openEditors.find(editor => editor === doc.path);
+                if (!editor) {
+                    self.docs.remove(doc);
+                }
+            });
+
+            openEditors.forEach((editor: string) => {
+                const previousDoc = self.docs.find(d => d.path === editor);
+                if (!previousDoc) {
+                    const doc = WorkspaceDoc.create({
+                        path: editor,
+                        activeSymbol: '',
+                        isActive: false,
+                    });
+                    self.docs.push(doc);
+                }
             });
         }),
         setActiveDocAndSymbol: (file: string, symbol: string) => {
