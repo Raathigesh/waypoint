@@ -20,13 +20,6 @@ const key = '46773bdf-6391-4142-91b2-471574b947eb';
 let reporter: any;
 
 export function activate(context: vscode.ExtensionContext) {
-    let disposable = vscode.commands.registerCommand(
-        'waypoint.showPanel',
-        () => {
-            initialize(context);
-        }
-    );
-
     let disposableAddSymbolToStage = vscode.commands.registerCommand(
         'waypoint.addSymbol',
         e => {
@@ -34,10 +27,7 @@ export function activate(context: vscode.ExtensionContext) {
         }
     );
 
-    if (process.env.dev) {
-        initialize(context);
-    }
-    context.subscriptions.push(disposable);
+    initialize(context);
     context.subscriptions.push(disposableAddSymbolToStage);
 
     reporter = new TelemetryReporter(extensionId, extensionVersion, key);
