@@ -1,5 +1,3 @@
-import { ExtensionContext } from 'vscode';
-
 export default class ContentProvider {
     getDevServerContent() {
         return `
@@ -19,7 +17,7 @@ export default class ContentProvider {
       `;
     }
 
-    getProdContent(context: ExtensionContext, port: number) {
+    getProdContent(port: number) {
         return `
     <!DOCTYPE html>
 <html lang="en">
@@ -41,11 +39,11 @@ export default class ContentProvider {
     `;
     }
 
-    getContent(context: ExtensionContext, port: number) {
+    getContent(port: number) {
         if (process.env.dev) {
             return this.getDevServerContent();
         }
 
-        return this.getProdContent(context, port);
+        return this.getProdContent(port);
     }
 }

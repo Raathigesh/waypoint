@@ -66,32 +66,35 @@ async function initialize(context: vscode.ExtensionContext) {
         isServerRunning = true;
     }
 
-    const contentProvider = new ContentProvider();
-    let currentPanel: vscode.WebviewPanel | undefined = undefined;
+    const provider = new WaypointViewProvider();
+    context.subscriptions.push(
+        vscode.window.registerWebviewViewProvider(
+            WaypointViewProvider.viewType,
+            provider
+        )
+    );
+}
 
-    currentPanel = vscode.window.createWebviewPanel(
-        'waypoint',
-        'Waypoint',
-        vscode.ViewColumn.Beside,
-        {
+class WaypointViewProvider implements vscode.WebviewViewProvider {
+    public static readonly viewType = 'waypoint.search';
+
+    private _view?: vscode.WebviewView;
+
+    constructor() {}
+
+    public resolveWebviewView(
+        webviewView: vscode.WebviewView,
+        context: vscode.WebviewViewResolveContext,
+        _token: vscode.CancellationToken
+    ) {
+        this._view = webviewView;
+
+        webviewView.webview.options = {
+            // Allow scripts in the webview
             enableScripts: true,
-            retainContextWhenHidden: true,
-        }
-    );
+        };
 
-    currentPanel.webview.html = contentProvider.getContent(context, port);
-
-    const root = join(context.extensionPath, 'icons');
-    currentPanel.iconPath = {
-        dark: vscode.Uri.file(join(root, 'bubbles.png')),
-        light: vscode.Uri.file(join(root, 'bubbles.png')),
-    };
-
-    currentPanel.onDidDispose(
-        () => {
-            currentPanel = undefined;
-        },
-        null,
-        context.subscriptions
-    );
+        const contentProvider = new ContentProvider();
+        webviewView.webview.html = contentProvider.getContent(port);
+    }
 }
