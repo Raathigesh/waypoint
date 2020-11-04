@@ -10,7 +10,7 @@ import {
 } from './services/config';
 import { App } from './models/app';
 import { listenToMessages } from 'ui/util/graphql';
-import { getActiveSymbolForFile } from './services/file';
+import { getActiveSymbolForFile, getHistoryItems } from './services/file';
 import Bookmarks from './models/bookmarks';
 import { Preference } from './models/Preference';
 import Workspace from './models/workspace';
@@ -41,7 +41,7 @@ onSnapshot(
 );
 
 const workspace = Workspace.create({
-    docs: [],
+    entries: [],
 });
 export const workspaceStore = createContext(workspace);
 
@@ -50,12 +50,10 @@ listenToMessages(async (event: string) => {
         const symbol = await getActiveSymbolForFile();
         bookmarks.addBookmark(symbol.name, symbol.filePath);
     } else if (event === 'waypoint.didChangeOpenTextDocuments') {
-        workspace.fetchOpenDocuments();
+        // workspace.fetchOpenDocuments();
     } else if (event === 'waypoint.didChangeTextSelection') {
-        const symbol = await getActiveSymbolForFile();
-        if (symbol) {
-            workspace.setActiveDocAndSymbol(symbol.filePath, symbol.name);
-        }
+        const symbol = await getHistoryItems();
+        workspace.setEntries(symbol);
     }
 });
 

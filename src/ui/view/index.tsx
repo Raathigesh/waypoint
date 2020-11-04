@@ -68,14 +68,14 @@ function App() {
                                         fontSize="13px"
                                         color="text.primary"
                                     >
-                                        Workspace
+                                        Insights
                                     </Flex>
                                     <Flex
                                         ml="5px"
                                         fontSize="11px"
                                         color="text.primary"
                                     >
-                                        Open files
+                                        Navigation history
                                     </Flex>
                                 </Flex>
                             </Flex>

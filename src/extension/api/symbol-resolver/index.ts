@@ -14,6 +14,7 @@ import { GqlSearchResult } from '../../../entities/GqlSearchResult';
 import {
     GqlSymbolInformation,
     GqlMarkers,
+    GqlNavigationEntry,
 } from 'entities/GqlSymbolInformation';
 import ESModuleItem, { Marker } from 'indexer/ESModuleItem';
 import { ReIndexArgs } from './ReIndexArgs';
@@ -37,6 +38,10 @@ export default class SymbolsResolver {
     private activeEditor: vscode.TextEditor | undefined;
     private configResolver: ConfigResolver;
     private workspaceFiles: { [path: string]: boolean } = {};
+    private navigationHistory: {
+        lastVisited: number;
+        symbol: GqlSymbolInformation;
+    }[] = [];
 
     constructor(
         private readonly container: ContainerInstance,
@@ -71,7 +76,26 @@ export default class SymbolsResolver {
             );
         });
 
-        vscode.window.onDidChangeTextEditorSelection(e => {
+        vscode.window.onDidChangeTextEditorSelection(async e => {
+            const activeSymbol = await this.getActiveSymbolForFile();
+            const activeSymbolFromHistory = this.navigationHistory.find(
+                item => item.symbol.id === activeSymbol.id
+            );
+            if (activeSymbolFromHistory) {
+                activeSymbolFromHistory.lastVisited = new Date().getTime();
+            } else {
+                this.navigationHistory.push({
+                    lastVisited: new Date().getTime(),
+                    symbol: activeSymbol,
+                });
+            }
+
+            this.navigationHistory.sort(
+                (a, b) => b.lastVisited - a.lastVisited
+            );
+
+            this.navigationHistory = this.navigationHistory.slice(0, 20);
+
             pubSub.publish(
                 'waypoint.didChangeTextSelection',
                 'waypoint.didChangeTextSelection'
@@ -288,6 +312,7 @@ export default class SymbolsResolver {
                 item.kind = symbol.kind;
                 item.name = symbol.name;
                 item.id = symbol.id;
+                item.location = symbol.location;
             }
         }
         return item;
@@ -415,5 +440,10 @@ export default class SymbolsResolver {
     public async openURL(@Arg('url') url: string) {
         vscode.env.openExternal(vscode.Uri.parse(url));
         return 'OK';
+    }
+
+    @Query(returns => [GqlNavigationEntry])
+    public async getNavigationHistory() {
+        return this.navigationHistory;
     }
 }

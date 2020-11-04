@@ -39,3 +39,12 @@ export class GqlSymbolInformation {
     @Field(returns => [GqlMarkers], { nullable: true })
     markers?: GqlMarkers[] = [];
 }
+
+@ObjectType()
+export class GqlNavigationEntry {
+    @Field({ nullable: true })
+    lastVisited: number = 0;
+
+    @Field(returns => GqlSymbolInformation, { nullable: true })
+    symbol?: GqlSymbolInformation;
+}

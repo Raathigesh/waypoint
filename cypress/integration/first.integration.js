@@ -12,6 +12,7 @@ describe('Intro', () => {
 
         cy.wait(5000);
 
+        cy.findByText('Search').click();
         cy.findByText('Search here...').type('get');
         cy.wait(5000);
         cy.contains('getItems');

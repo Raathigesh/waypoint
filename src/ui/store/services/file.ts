@@ -128,3 +128,38 @@ export async function insertImport(symbol: string, path: string) {
     });
     return results.insertImport;
 }
+
+export async function getHistoryItems() {
+    const query = gql`
+        query GetNavigationHistory {
+            getNavigationHistory {
+                lastVisited
+                symbol {
+                    id
+                    name
+                    filePath
+                    kind
+                    location {
+                        start {
+                            line
+                            column
+                        }
+                        end {
+                            line
+                            column
+                        }
+                    }
+                }
+            }
+        }
+    `;
+
+    const results = await sendQuery<{
+        getNavigationHistory: {
+            symbol: GqlSymbolInformation;
+            lastVisited: number;
+        }[];
+    }>(query, {});
+
+    return results.getNavigationHistory;
+}

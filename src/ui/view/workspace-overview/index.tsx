@@ -4,135 +4,59 @@ import { File, Folder, Code } from 'react-feather';
 import { Flex, PseudoBox } from '@chakra-ui/core';
 import { workspaceStore, appStore } from 'ui/store';
 import { openFile } from 'ui/store/services/file';
+import SymbolKindIcon from '../components/SymbolKindIcon';
 
-interface TreeNode {
-    name: string;
-    type: string;
-    path: string;
-    children: TreeNode[];
-}
-
-function ensurePath(root: TreeNode | null, path: string, tokens: string[]) {
-    const currentToken = tokens.shift();
-    const isAFile = tokens.length === 0 && (currentToken || '').includes('.');
-
-    let hasTokenChildren =
-        root && root.name === currentToken
-            ? root
-            : root &&
-              (root.children || []).find(child => child.name === currentToken);
-
-    if (!hasTokenChildren) {
-        hasTokenChildren = {
-            name: currentToken || '',
-            path,
-            type: isAFile ? 'file' : 'directory',
-            children: [],
-        };
-
-        if (root) {
-            root.children?.push(hasTokenChildren);
-        } else {
-            root = hasTokenChildren;
-        }
-    }
-
-    if (tokens.length !== 0) {
-        ensurePath(hasTokenChildren, path, tokens);
-    }
-
-    return root;
-}
-
-export function constructTree(
-    paths: string[],
-    separator: string
-): TreeNode | null {
-    let tree: TreeNode | null = null;
-
-    paths.forEach(item => {
-        const tokens = item
-            .split(separator)
-            .filter(token => token.trim() !== '');
-        tree = ensurePath(tree, item, tokens);
-    });
-
-    return tree;
-}
-
-function Row({ tree }: { tree: TreeNode | null }) {
-    const app = useContext(appStore);
-    const workspace = useContext(workspaceStore);
-
-    if (tree === null) {
-        return null;
-    }
-
-    const fullPath = `${app.root}${tree.path}`;
-    const doc = workspace.getDocForPath(fullPath);
-
-    const Icon = tree.type === 'file' ? File : Folder;
-
-    const ObservedRow = observer(Row);
-
+function Items({ header, items }: any) {
     return (
-        <Flex flexDir="column" ml="15px">
-            <PseudoBox
-                display="flex"
-                alignItems="center"
-                cursor="pointer"
-                padding="3px"
-                onClick={() => {
-                    openFile(fullPath, {
-                        start: {
-                            line: 1,
-                            column: 1,
-                        },
-                        end: {
-                            line: 1,
-                            column: 1,
-                        },
-                    });
-                }}
-                borderRadius="3px"
-                _hover={{
-                    backgroundColor: 'background.secondary',
-                }}
-            >
-                <Icon size="15px" color="#008CFE" fill="#008CFE" />
-                <Flex ml="5px">{tree.name}</Flex>
-            </PseudoBox>
-            {doc && doc.activeSymbol && tree.type === 'file' && (
-                <Flex ml="20px" fontSize="13px" alignItems="center">
-                    <Code size="12px" color="#1A1A1A" />
-                    <Flex ml="5px">{doc.activeSymbol}</Flex>
-                </Flex>
-            )}
-            {tree.children.map(child => (
-                <ObservedRow tree={child} />
-            ))}
+        <Flex flexDir="column" fontSize="15px" mb="20px">
+            {header}
+            <Flex flexDir="column">
+                {items.map((item: any) => (
+                    <PseudoBox
+                        display="flex"
+                        marginLeft="10px"
+                        borderRadius="3px"
+                        cursor="pointer"
+                        alignItems="center"
+                        fontSize="14px"
+                        padding="5px"
+                        _hover={{
+                            backgroundColor: 'button.foreground',
+                        }}
+                        onClick={() => {
+                            openFile(item.filePath, item.location);
+                        }}
+                    >
+                        <SymbolKindIcon kind={item.kind} size="12px" />
+                        <Flex ml="5px" pb="2px">
+                            {item.name}
+                        </Flex>
+                    </PseudoBox>
+                ))}
+            </Flex>
         </Flex>
     );
 }
 
-const ObservedRow = observer(Row);
-
 function WorkspaceOverview() {
     const workspace = useContext(workspaceStore);
     const app = useContext(appStore);
-    const textDocs = workspace.docs
-        .map(d => d.path)
-        .filter(doc => {
-            const extension = doc.split('.').pop();
-            return ['js', 'tsx', 'txt', 'ts'].includes(extension || '');
-        })
-        .map(doc => doc.replace(app.root, ''));
-    const tree = constructTree(textDocs, app.separator);
+    const groupedItems = workspace.entries.reduce((acc: any, item) => {
+        if (!acc[item.filePath]) {
+            acc[item.filePath] = [];
+        }
+        acc[item.filePath].push(item);
+        return acc;
+    }, {});
 
     return (
-        <div>
-            <ObservedRow tree={tree} />
-        </div>
+        <Flex padding="10px" flexDir="column">
+            {Object.entries(groupedItems).map(([key, items]) => {
+                return (
+                    <Items header={key.replace(app.root, '')} items={items} />
+                );
+            })}
+        </Flex>
     );
 }
 
